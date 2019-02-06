@@ -1,6 +1,8 @@
-package com.ryunen344.kdroid.timeline
+package com.ryunen344.kdroid.presenter
 
-class TimelinePresenter : TimelineContract.Presenter{
+import com.ryunen344.kdroid.contract.TimelineContract
+
+class TimelinePresenter : TimelineContract.Presenter {
     override fun loadTweet() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

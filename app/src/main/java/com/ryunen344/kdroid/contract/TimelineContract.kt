@@ -1,4 +1,4 @@
-package com.ryunen344.kdroid.timeline
+package com.ryunen344.kdroid.contract
 
 import com.ryunen344.kdroid.BasePresenter
 import com.ryunen344.kdroid.BaseView
@@ -11,7 +11,7 @@ interface TimelineContract{
         fun openTweetArea();
     }
 
-    interface Presenter : BasePresenter{
+    interface Presenter : BasePresenter {
 
         fun loadTweet();
 

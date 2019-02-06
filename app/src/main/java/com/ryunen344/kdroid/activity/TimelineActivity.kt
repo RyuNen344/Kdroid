@@ -1,4 +1,4 @@
-package com.ryunen344.kdroid.timeline
+package com.ryunen344.kdroid.activity
 
 import android.os.Bundle
 import android.os.PersistableBundle
