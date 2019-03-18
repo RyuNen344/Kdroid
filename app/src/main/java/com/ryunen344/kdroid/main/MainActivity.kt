@@ -1,20 +1,18 @@
-package com.ryunen344.kdroid.activity
+package com.ryunen344.kdroid.main
 
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 
-
-
 class MainActivity : AppCompatActivity() {
 
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+    private val mOnNavigationItemSelectedListener : BottomNavigationView.OnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
                 message.setText(R.string.title_home)
@@ -37,12 +35,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        fab.setOnLongClickListener { view ->
+            Snackbar.make(view, "Long tap action", Snackbar.LENGTH_SHORT)
+                    .setAction("Action", null).show()
+            true
+        }
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            Snackbar.make(view, "Single tap action", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show()
         }
+
     }
 
     override fun onCreateOptionsMenu(menu : Menu?) : Boolean {

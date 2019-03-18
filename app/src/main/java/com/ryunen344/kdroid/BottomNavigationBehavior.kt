@@ -3,10 +3,10 @@ package com.ryunen344.kdroid
 import android.util.AttributeSet
 import android.content.Context
 import android.view.View
-import android.support.design.widget.BottomNavigationView
-import android.support.design.widget.Snackbar
-import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.AppBarLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 
 
 class BottomNavigationBehavior(context : Context, attrs : AttributeSet) : CoordinatorLayout.Behavior<BottomNavigationView>(context, attrs) {

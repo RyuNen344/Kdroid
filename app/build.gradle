@@ -12,6 +12,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        project.version 1
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -25,12 +26,34 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
     implementation 'org.twitter4j:twitter4j:4.0.7'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+
+    implementation "androidx.appcompat:appcompat:1.0.2"
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "com.google.android.material:material:1.0.0"
+    implementation "androidx.recyclerview:recyclerview:1.0.0"
+    implementation "androidx.annotation:annotation:1.0.2"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
+    implementation 'com.google.android.material:material:1.1.0-alpha04'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.constraintlayout:constraintlayout-solver:1.1.3'
+
+
+    implementation "androidx.legacy:legacy-support-v4:1.0.0"
+    implementation "androidx.test.espresso:espresso-idling-resource:3.1.1"
+    implementation "com.google.guava:guava:27.0.1-android"
+    implementation "androidx.room:room-runtime:2.0.0"
+    annotationProcessor "androidx.room:room-compiler:2.0.0"
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    // Resolve conflicts between main and test APK:
+    androidTestImplementation "androidx.annotation:annotation:1.0.2"
+    androidTestImplementation "androidx.legacy:legacy-support-v4:1.0.0"
+    androidTestImplementation "androidx.recyclerview:recyclerview:1.0.0"
+    androidTestImplementation "androidx.appcompat:appcompat:1.0.2"
+    androidTestImplementation "com.google.android.material:material:1.0.0"
 }
