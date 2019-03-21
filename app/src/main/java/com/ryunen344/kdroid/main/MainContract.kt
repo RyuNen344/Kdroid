@@ -3,13 +3,14 @@ package com.ryunen344.kdroid.main
 import com.ryunen344.kdroid.BasePresenter
 import com.ryunen344.kdroid.BaseView
 
-interface MainContract{
+interface MainContract {
 
     interface View : BaseView<Presenter> {
 
-        val isActive : Boolean
+        fun isActive() : Boolean
+        fun setLoadingIndicator(active : Boolean)
         fun showTitle(title : String)
-        fun hideDescription()
+        fun showDescription(description : String)
     }
 
     interface Presenter : BasePresenter {
