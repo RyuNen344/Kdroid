@@ -84,10 +84,6 @@ class MainFragment : Fragment(), MainContract.View{
         return isAdded
     }
 
-    override fun setLoadingIndicator(active : Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun showTitle(title : String) {
         mTitle?.visibility = View.VISIBLE
         mTitle?.text = title
@@ -99,8 +95,8 @@ class MainFragment : Fragment(), MainContract.View{
     }
 
     override fun setPresenter(presenter : MainContract.Presenter) {
-        ensureNotNull(presenter){ presenter ->
-            mPresenter = presenter
+        ensureNotNull(presenter){ p ->
+            mPresenter = p
         }
     }
 

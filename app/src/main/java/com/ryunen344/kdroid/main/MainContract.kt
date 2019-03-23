@@ -8,7 +8,6 @@ interface MainContract {
     interface View : BaseView<Presenter> {
 
         fun isActive() : Boolean
-        fun setLoadingIndicator(active : Boolean)
         fun showTitle(title : String)
         fun showDescription(description : String)
     }

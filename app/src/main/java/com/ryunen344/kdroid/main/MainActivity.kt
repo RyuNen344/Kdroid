@@ -17,11 +17,13 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
 
+        var mainFragment : MainFragment? = supportFragmentManager.findFragmentById(R.id.contentFrame) as MainFragment?
         // fragmentがnullだったらnewInstance
         if (savedInstanceState == null) {
-            val mainFragment = MainFragment.newInstance()
+            mainFragment = MainFragment.newInstance()
             addFragmentToActivity(supportFragmentManager,mainFragment,R.id.contentFrame)
         }
+        MainPresenter(mainFragment!!)
     }
 
 }
