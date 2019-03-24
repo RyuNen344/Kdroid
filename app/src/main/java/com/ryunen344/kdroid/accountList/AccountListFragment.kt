@@ -78,7 +78,10 @@ class AccountListFragment : Fragment() , AccountListContract.View{
     }
 
     override fun showAccountList(accountList : List<Account>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        accountListAdapter.accountList = accountList
+        accountListView.visibility = View.VISIBLE
+        noAccountListView.visibility = View.GONE
+
     }
 
     override fun showNoAccount() {
