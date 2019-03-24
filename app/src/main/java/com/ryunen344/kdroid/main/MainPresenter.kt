@@ -10,11 +10,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 
-class MainPresenter(mainView : MainContract.View) : MainContract.Presenter{
+class MainPresenter(val mainView : MainContract.View) : MainContract.Presenter{
 
-    var mMainView : MainContract.View = mainView
     init {
-        mMainView.setPresenter(this)
+        mainView.setPresenter(this)
     }
 
     override fun editTask() {
@@ -46,8 +45,8 @@ class MainPresenter(mainView : MainContract.View) : MainContract.Presenter{
                                 type = user.type
                                 name = user.name
 
-                                mMainView.showTitle(login + type)
-                                mMainView.showDescription(name)
+                                mainView.showTitle(login + type)
+                                mainView.showDescription(name)
                             }
                         } else {
                         }
@@ -57,8 +56,8 @@ class MainPresenter(mainView : MainContract.View) : MainContract.Presenter{
                     }
                 })
 
-        mMainView.showTitle("no set")
-        mMainView.showDescription("no set")
+        mainView.showTitle("no set")
+        mainView.showDescription("no set")
     }
 
 }

@@ -14,10 +14,10 @@ import kotlinx.android.synthetic.main.fragment_main.view.*
 
 class MainFragment : Fragment(), MainContract.View{
 
-    var mPresenter : MainContract.Presenter? = null
-    var mTitle : TextView? = null
-    var mDescription : TextView? = null
-    var mCheckBox : CheckBox? = null
+    lateinit var mPresenter : MainContract.Presenter
+    lateinit var mTitle : TextView
+    lateinit var mDescription : TextView
+    lateinit var mCheckBox : CheckBox
 
     companion object {
         fun newInstance() : MainFragment{
@@ -25,14 +25,9 @@ class MainFragment : Fragment(), MainContract.View{
         }
     }
 
-    fun newInstance() : MainFragment {
-        val fragment = MainFragment()
-        return fragment
-    }
-
     override fun onResume() {
         super.onResume()
-        mPresenter?.start()
+        mPresenter.start()
     }
 
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
@@ -85,13 +80,13 @@ class MainFragment : Fragment(), MainContract.View{
     }
 
     override fun showTitle(title : String) {
-        mTitle?.visibility = View.VISIBLE
-        mTitle?.text = title
+        mTitle.visibility = View.VISIBLE
+        mTitle.text = title
     }
 
     override fun showDescription(description : String) {
-        mDescription?.visibility = View.VISIBLE
-        mDescription?.text = description
+        mDescription.visibility = View.VISIBLE
+        mDescription.text = description
     }
 
     override fun setPresenter(presenter : MainContract.Presenter) {
