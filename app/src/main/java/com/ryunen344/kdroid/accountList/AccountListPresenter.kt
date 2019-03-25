@@ -1,8 +1,11 @@
 package com.ryunen344.kdroid.accountList
 
-import android.content.res.Resources
-import android.text.TextUtils
-import com.ryunen344.kdroid.R.string.*
+import android.net.Uri
+import android.os.Handler
+import twitter4j.TwitterException
+import twitter4j.auth.OAuthAuthorization
+import twitter4j.auth.RequestToken
+import kotlin.concurrent.thread
 
 class AccountListPresenter(val accountListView : AccountListContract.View) : AccountListContract.Presenter{
 
@@ -19,8 +22,33 @@ class AccountListPresenter(val accountListView : AccountListContract.View) : Acc
         accountListView.showProgress(true)
     }
 
-    override fun addAccountWithOAuth() {
+    override fun addAccountWithOAuth(oauth : OAuthAuthorization, consumerKey : String, consumerSecretKey : String) {
         //fixme
+        var mReq: RequestToken? = null
+        // Oauth認証オブジェクトにconsumerKeyとconsumerSecretを設定
+        oauth.setOAuthConsumer(consumerKey, consumerSecretKey)
+        oauth.oAuthAccessToken = null
+        var mUri: Uri? = null
+
+        val handler = Handler()
+        thread {
+            //アプリの認証オブジェクト作成
+            try {
+                mReq  = oauth.getOAuthRequestToken("kdroidappscheme://")
+                mUri  = Uri.parse(mReq?.authorizationURL)
+                // Log.i(TAG, mUri.toString())
+            } catch (e: TwitterException) {
+                e.printStackTrace()
+            }
+            handler.post {
+                if (mUri != null) {
+                    accountListView.showCallbak(mReq,mUri)
+                } else {
+                    //startActivity(ErrorActivity)
+                }
+            }
+        }
+
     }
 
     override fun deleteAccount() {

@@ -2,30 +2,30 @@ package com.ryunen344.kdroid.accountList
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_account_list
+import com.ryunen344.kdroid.R.string.consumer_key
+import com.ryunen344.kdroid.R.string.consumer_secret_key
 import com.ryunen344.kdroid.data.Account
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.activity_account_lsit.*
-import kotlinx.android.synthetic.main.activity_account_lsit.view.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_account_list.*
 import kotlinx.android.synthetic.main.fragment_account_list.view.*
+import twitter4j.auth.OAuthAuthorization
+import twitter4j.auth.RequestToken
+import twitter4j.conf.ConfigurationContext
 
 
 class AccountListFragment : Fragment() , AccountListContract.View{
-
 
     lateinit var mPresenter : AccountListContract.Presenter
     private lateinit var noAccountListView: View
@@ -35,11 +35,14 @@ class AccountListFragment : Fragment() , AccountListContract.View{
     lateinit var filteringLabelView : TextView
     lateinit var accountListView : LinearLayout
 
+
     companion object {
         fun newInstance() =  AccountListFragment()
+        var mOauth = OAuthAuthorization(ConfigurationContext.getInstance())
+        var mReq: RequestToken? = null
     }
 
-    internal var itemListener: AccountListContract.AccountItemListner = object : AccountListContract.AccountItemListner {
+    private var itemListener: AccountListContract.AccountItemListner = object : AccountListContract.AccountItemListner {
         override fun onAccountClick(clickedAccount : Account) {
             //fixme
             //mPresenter.openAccountTimeLine()
@@ -65,7 +68,7 @@ class AccountListFragment : Fragment() , AccountListContract.View{
             noAccountListAddView = noAccountListAdd
 
             activity?.account_fab?.setOnClickListener {
-                mPresenter.addAccountWithOAuth()
+                mPresenter.addAccountWithOAuth(mOauth,getString(consumer_key),getString(consumer_secret_key))
             }
         }
 
@@ -85,7 +88,8 @@ class AccountListFragment : Fragment() , AccountListContract.View{
     }
 
     override fun showNoAccount() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        accountListView.visibility = View.GONE
+        noAccountListView.visibility = View.VISIBLE
     }
 
     override fun showProgress(show : Boolean) {
@@ -109,6 +113,11 @@ class AccountListFragment : Fragment() , AccountListContract.View{
             // and hide the relevant UI components.
             login_progress.visibility = if (show) View.VISIBLE else View.GONE
         }
+    }
+
+    override fun showCallbak(req: RequestToken? , uri : Uri?) {
+        mReq = req
+        startActivityForResult(Intent(Intent.ACTION_VIEW, uri), 0)
     }
 
 
