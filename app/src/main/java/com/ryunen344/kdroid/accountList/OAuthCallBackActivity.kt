@@ -7,6 +7,7 @@ import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.ryunen344.kdroid.R.layout.activity_oauth_callback
+import com.ryunen344.kdroid.util.nullableString
 import kotlinx.android.synthetic.main.activity_oauth_callback.*
 import twitter4j.TwitterException
 import twitter4j.auth.AccessToken

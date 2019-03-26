@@ -19,7 +19,9 @@ import com.ryunen344.kdroid.R.string.consumer_secret_key
 import com.ryunen344.kdroid.data.Account
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.activity_account_lsit.*
+import kotlinx.android.synthetic.main.fragment_account_list.*
 import kotlinx.android.synthetic.main.fragment_account_list.view.*
+import kotlinx.android.synthetic.main.item_account_list.*
 import twitter4j.auth.OAuthAuthorization
 import twitter4j.auth.RequestToken
 import twitter4j.conf.ConfigurationContext
@@ -75,6 +77,10 @@ class AccountListFragment : Fragment() , AccountListContract.View{
         return root
     }
 
+    override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
+        account_list.adapter = accountListAdapter
+    }
+
     override fun onResume() {
         super.onResume()
         mPresenter.start()
@@ -84,7 +90,7 @@ class AccountListFragment : Fragment() , AccountListContract.View{
         accountListAdapter.accountList = accountList
         accountListView.visibility = View.VISIBLE
         noAccountListView.visibility = View.GONE
-
+        accountListAdapter.notifyDataSetChanged()
     }
 
     override fun showNoAccount() {

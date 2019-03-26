@@ -1,13 +1,22 @@
 package com.ryunen344.kdroid.accountList
 
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Handler
+import com.ryunen344.kdroid.data.Account
+import com.ryunen344.kdroid.util.nullableLong
+import com.ryunen344.kdroid.util.nullableString
 import twitter4j.TwitterException
 import twitter4j.auth.OAuthAuthorization
 import twitter4j.auth.RequestToken
 import kotlin.concurrent.thread
 
-class AccountListPresenter(val accountListView : AccountListContract.View) : AccountListContract.Presenter{
+class AccountListPresenter(val accountListView : AccountListContract.View,val preferences : SharedPreferences) : AccountListContract.Presenter{
+    var screenName : String? by preferences.nullableString("screenName")
+    var userId : Long? by preferences.nullableLong("userId")
+    var token : String? by preferences.nullableString("token")
+    var tokenSecret : String? by preferences.nullableString("tokenSecret")
+
 
     init {
         accountListView.setPresenter(this)
@@ -15,11 +24,13 @@ class AccountListPresenter(val accountListView : AccountListContract.View) : Acc
 
     override fun start() {
         //fixme
-        //loadAccountList()
+        loadAccountList()
     }
 
     override fun loadAccountList() {
-        accountListView.showProgress(true)
+        //accountListView.showProgress(true)
+        val ac : Account = Account(screenName,userId,token,tokenSecret)
+        accountListView.showAccountList(listOf(ac))
     }
 
     override fun addAccountWithOAuth(oauth : OAuthAuthorization, consumerKey : String, consumerSecretKey : String) {

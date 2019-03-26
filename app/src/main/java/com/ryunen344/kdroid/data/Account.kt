@@ -1,5 +1,8 @@
 package com.ryunen344.kdroid.data
 
 data class Account(
-        val userName: String
+        val screenName : String?,
+        val userId : Long?,
+        val token : String?,
+        val tokenSecret : String?
 )
