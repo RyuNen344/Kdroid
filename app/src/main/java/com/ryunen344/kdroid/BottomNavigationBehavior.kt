@@ -1,9 +1,10 @@
 package com.ryunen344.kdroid
 
-import android.util.AttributeSet
 import android.content.Context
+import android.util.AttributeSet
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat.TYPE_TOUCH
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -28,12 +29,12 @@ class BottomNavigationBehavior(context : Context, attrs : AttributeSet) : Coordi
                 updateSnackbarPaddingByBottomNavigationView(child)
             }
         }
-        super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed)
+        super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed,TYPE_TOUCH)
     }
 
     override fun onDependentViewChanged(parent : CoordinatorLayout, child : BottomNavigationView, dependency : View) : Boolean {
         if (dependency is AppBarLayout) {
-            val appbar : AppBarLayout = dependency as AppBarLayout
+            val appbar : AppBarLayout = dependency
             val bottom : Float = appbar.bottom.toFloat()
             val height :Float = appbar.height.toFloat()
             val hidingRate : Float = (height - bottom) / height

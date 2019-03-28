@@ -14,7 +14,7 @@ interface AccountListContract {
         fun showNoAccount()
         fun showProgress(show : Boolean)
         fun showCallbak(req : RequestToken?, uri : Uri?)
-
+        fun openAccountTimeLine(account : Account)
     }
 
     interface Presenter : BasePresenter {

@@ -17,17 +17,18 @@ import com.ryunen344.kdroid.R.layout.fragment_account_list
 import com.ryunen344.kdroid.R.string.consumer_key
 import com.ryunen344.kdroid.R.string.consumer_secret_key
 import com.ryunen344.kdroid.data.Account
+import com.ryunen344.kdroid.main.MainActivity
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.activity_account_lsit.*
 import kotlinx.android.synthetic.main.fragment_account_list.*
 import kotlinx.android.synthetic.main.fragment_account_list.view.*
-import kotlinx.android.synthetic.main.item_account_list.*
 import twitter4j.auth.OAuthAuthorization
 import twitter4j.auth.RequestToken
 import twitter4j.conf.ConfigurationContext
 
 
 class AccountListFragment : Fragment() , AccountListContract.View{
+
 
     lateinit var mPresenter : AccountListContract.Presenter
     private lateinit var noAccountListView: View
@@ -47,8 +48,9 @@ class AccountListFragment : Fragment() , AccountListContract.View{
     private var itemListener: AccountListContract.AccountItemListner = object : AccountListContract.AccountItemListner {
         override fun onAccountClick(clickedAccount : Account) {
             //fixme
-            //mPresenter.openAccountTimeLine()
             println("open timeline")
+            openAccountTimeLine(clickedAccount)
+
         }
     }
 
@@ -131,6 +133,11 @@ class AccountListFragment : Fragment() , AccountListContract.View{
         ensureNotNull(presenter){ p ->
             mPresenter = p
         }
+    }
+
+    override fun openAccountTimeLine(account : Account) {
+        val intent = Intent(context, MainActivity::class.java)
+        startActivity(intent)
     }
 
 }

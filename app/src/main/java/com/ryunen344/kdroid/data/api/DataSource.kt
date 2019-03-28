@@ -1,4 +1,4 @@
-package com.ryunen344.kdroid.data.source
+package com.ryunen344.kdroid.data.api
 
 import com.ryunen344.kdroid.data.User
 import retrofit2.Call

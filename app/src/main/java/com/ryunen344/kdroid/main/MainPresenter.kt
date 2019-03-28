@@ -1,16 +1,16 @@
 package com.ryunen344.kdroid.main
 
 import android.util.Log
-import com.ryunen344.kdroid.data.ProvideRetrofit
 import com.ryunen344.kdroid.data.User
-import com.ryunen344.kdroid.data.source.DataSource
-import okhttp3.OkHttpClient
+import com.ryunen344.kdroid.data.api.DataSource
+import com.ryunen344.kdroid.di.provider.AppProvider
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import twitter4j.Twitter
 
-class MainPresenter(val mainView : MainContract.View) : MainContract.Presenter{
+class MainPresenter(val mainView : MainContract.View,val appProvider : AppProvider) : MainContract.Presenter{
 
     init {
         mainView.setPresenter(this)
@@ -22,9 +22,8 @@ class MainPresenter(val mainView : MainContract.View) : MainContract.Presenter{
 
     override fun start() {
 
-        val httpClient : OkHttpClient = OkHttpClient()
-        val retrofit : Retrofit = ProvideRetrofit(httpClient)
-
+        val twitter : Twitter = appProvider.provideTwitter()
+        val retrofit : Retrofit = appProvider.provideRetrofit()
         var service : DataSource = retrofit.create(DataSource::class.java)
 
         var login : String

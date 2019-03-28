@@ -29,7 +29,7 @@ class AccountListPresenter(val accountListView : AccountListContract.View,val pr
 
     override fun loadAccountList() {
         //accountListView.showProgress(true)
-        val ac : Account = Account(screenName,userId,token,tokenSecret)
+        val ac : Account = Account(userId,screenName,token,tokenSecret)
         accountListView.showAccountList(listOf(ac))
     }
 
