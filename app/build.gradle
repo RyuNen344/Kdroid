@@ -1,7 +1,8 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 28
@@ -25,8 +26,10 @@ android {
     }
 
     compileOptions {
-        targetCompatibility = "11"
-        sourceCompatibility = "11"
+        targetCompatibility = "8"
+        sourceCompatibility = "8"
+        //targetCompatibility = JavaVersion.VERSION_11
+        //sourceCompatibility = JavaVersion.VERSION_11
     }
 }
 
@@ -38,21 +41,34 @@ dependencies {
     implementation 'org.twitter4j:twitter4j-async:4.0.7'
     implementation 'org.twitter4j:twitter4j-media-support:4.0.6'
 
+    //rxjava
     implementation "io.reactivex.rxjava2:rxjava:2.2.7"
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
+
+    //retrofit2
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation "com.squareup.retrofit2:adapter-rxjava2:2.5.0"
+
+    //okhttp3
     implementation 'com.squareup.okhttp3:okhttp:3.14.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.14.0'
-    implementation 'org.glassfish:javax.annotation:10.0-b28'
 
+    // Koin for Android
+    implementation 'org.koin:koin-android:2.0.0-rc-1'
+    //implementation 'org.koin:koin-androidx-scope:2.0.0-rc-1'
+    //implementation 'org.koin:koin-androidx-viewmodel:2.0.0-rc-1'
+
+    //coroutines
+    def coroutines_version = '1.0.1' //Kotlin coroutines用ライブラリ(async, await)のバージョン
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version" //Kotlin coroutines用ライブラリ(async, await)
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version" //Kotlin coroutines用ライブラリ(async, await
 
     implementation 'com.google.android.material:material:1.1.0-alpha04'
     implementation "android.arch.navigation:navigation-common-ktx:1.0.0"
     implementation "android.arch.navigation:navigation-fragment-ktx:1.0.0"
     implementation "android.arch.navigation:navigation-runtime-ktx:1.0.0"
-    implementation "android.arch.navigation:navigation-testing-ktx:1.0.0-alpha06"
+
     implementation "android.arch.navigation:navigation-ui-ktx:1.0.0"
     implementation "android.arch.work:work-runtime-ktx:1.0.0"
     implementation "androidx.appcompat:appcompat:1.0.2"
@@ -67,28 +83,24 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.0.0"
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
     implementation "androidx.recyclerview:recyclerview:1.0.0"
+    implementation "androidx.annotation:annotation:1.0.2"
 
-    implementation "androidx.test.espresso:espresso-idling-resource:3.1.1"
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     implementation "com.google.guava:guava:27.0.1-android"
+
+    //room
     implementation "androidx.room:room-runtime:2.0.0"
     annotationProcessor "androidx.room:room-compiler:2.0.0"
 
-    // Koin for Android
-    implementation 'org.koin:koin-android:2.0.0-rc-1'
-    //implementation 'org.koin:koin-androidx-scope:2.0.0-rc-1'
-    //implementation 'org.koin:koin-androidx-viewmodel:2.0.0-rc-1'
-
+    //test
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
-    // Resolve conflicts between main and test APK:
-    androidTestImplementation "androidx.annotation:annotation:1.0.2"
+    androidTestImplementation "android.arch.navigation:navigation-testing-ktx:1.0.0-alpha06"
     androidTestImplementation "androidx.legacy:legacy-support-v4:1.0.0"
     androidTestImplementation "androidx.recyclerview:recyclerview:1.0.0"
     androidTestImplementation "androidx.appcompat:appcompat:1.0.2"
     androidTestImplementation "com.google.android.material:material:1.0.0"
-
+    androidTestImplementation "androidx.test.espresso:espresso-idling-resource:3.1.1"
 }

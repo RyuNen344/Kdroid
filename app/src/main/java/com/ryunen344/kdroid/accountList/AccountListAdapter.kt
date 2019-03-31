@@ -10,24 +10,24 @@ import com.ryunen344.kdroid.R.layout.item_account_list
 import com.ryunen344.kdroid.data.Account
 import kotlinx.android.synthetic.main.item_account_list.view.*
 
-class AccountListAdapter(accountList : List<Account>,val accountItemListner : AccountListContract.AccountItemListner) : BaseAdapter(){
+class AccountListAdapter(accountList : List<Account>, val accountItemListner : AccountListContract.AccountItemListner) : BaseAdapter() {
 
     var accountList : List<Account> = accountList
-    set(accountList: List<Account>){
-        field = accountList
-        notifyDataSetChanged()
-    }
+        set(accountList : List<Account>) {
+            field = accountList
+            notifyDataSetChanged()
+        }
 
     override fun getView(position : Int, convertView : View?, parent : ViewGroup) : View {
         val account : Account = getItem(position)
         var view : View? = convertView
         var holder : ViewHolder
 
-        if(view == null){
+        if (view == null) {
             view = LayoutInflater.from(parent.context).inflate(item_account_list, parent, false)
-            holder = ViewHolder(view.account_icon,view.account_user_name,view.account_user_id)
+            holder = ViewHolder(view.account_icon, view.account_user_name, view.account_user_id)
             view.tag = holder
-        }else{
+        } else {
             holder = view.tag as ViewHolder
         }
 
@@ -35,7 +35,7 @@ class AccountListAdapter(accountList : List<Account>,val accountItemListner : Ac
         holder.account_user_name.text = account.screenName
 //        val rowView = convertView ?: LayoutInflater.from(parent.context)
 //                .inflate(fragment_account_list, parent, false)
-        view!!.setOnClickListener{accountItemListner.onAccountClick(account)}
+        view!!.setOnClickListener { accountItemListner.onAccountClick(account) }
         return view
     }
 
@@ -51,5 +51,5 @@ class AccountListAdapter(accountList : List<Account>,val accountItemListner : Ac
         return accountList.size
     }
 
-    data class ViewHolder(var account_icon: ImageView,var account_user_name: TextView, var account_user_id: TextView)
+    data class ViewHolder(var account_icon : ImageView, var account_user_name : TextView, var account_user_id : TextView)
 }

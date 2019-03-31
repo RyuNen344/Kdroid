@@ -2,17 +2,21 @@ package com.ryunen344.kdroid.main
 
 import com.ryunen344.kdroid.BasePresenter
 import com.ryunen344.kdroid.BaseView
+import twitter4j.Status
 
 interface MainContract {
 
     interface View : BaseView<Presenter> {
+        fun showTweetList(mainList : List<Status>)
 
-        fun isActive() : Boolean
-        fun showTitle(title : String)
-        fun showDescription(description : String)
     }
 
     interface Presenter : BasePresenter {
-        fun editTask()
+        fun loadTweetList()
+        fun openTweetDetail()
+    }
+
+    interface MainItemListner {
+        fun onAccountClick()
     }
 }

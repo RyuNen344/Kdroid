@@ -50,7 +50,6 @@ class AccountListFragment : Fragment() , AccountListContract.View{
             //fixme
             println("open timeline")
             openAccountTimeLine(clickedAccount)
-
         }
     }
 
@@ -71,9 +70,10 @@ class AccountListFragment : Fragment() , AccountListContract.View{
             noAccountListMainView =noAccountListMain
             noAccountListAddView = noAccountListAdd
 
-            activity?.account_fab?.setOnClickListener {
-                mPresenter.addAccountWithOAuth(mOauth,getString(consumer_key),getString(consumer_secret_key))
-            }
+
+        }
+        activity?.account_fab?.setOnClickListener {
+            mPresenter.addAccountWithOAuth(mOauth,getString(consumer_key),getString(consumer_secret_key))
         }
 
         return root

@@ -1,17 +1,18 @@
 package com.ryunen344.kdroid.main
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
-import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.activity_main
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.addFragmentToActivity
+import com.ryunen344.kdroid.util.replaceFragmentInActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
     val appProvider : AppProvider by inject()
+    lateinit var mPresenter : MainContract.Presenter
 
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,14 +22,11 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
 
-        var mainFragment : MainFragment? = supportFragmentManager.findFragmentById(R.id.contentFrame) as MainFragment?
-        // fragmentがnullだったらnewInstance
-        if (savedInstanceState == null) {
-            mainFragment = MainFragment.newInstance()
-            addFragmentToActivity(supportFragmentManager,mainFragment,R.id.contentFrame)
+        var mainFragment : MainFragment? = supportFragmentManager.findFragmentById(mainFrame.id) as MainFragment? ?: MainFragment.newInstance().also{
+            replaceFragmentInActivity(supportFragmentManager,it,mainFrame.id)
         }
-        MainPresenter(mainFragment!!,appProvider)
 
+        mPresenter = MainPresenter(mainFragment!!,appProvider, PreferenceManager.getDefaultSharedPreferences(this))
 
     }
 

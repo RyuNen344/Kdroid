@@ -6,6 +6,10 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import twitter4j.Twitter
 import twitter4j.TwitterFactory
+import twitter4j.AsyncTwitter
+import twitter4j.AsyncTwitterFactory
+
+
 
 
 class AppProvider{
@@ -27,5 +31,6 @@ class AppProvider{
 
     fun provideTwitter() : Twitter {
         return TwitterFactory.getSingleton()
+        //return AsyncTwitterFactory().instance
     }
 }
