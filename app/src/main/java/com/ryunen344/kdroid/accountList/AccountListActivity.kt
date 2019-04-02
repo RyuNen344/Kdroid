@@ -19,7 +19,7 @@ class AccountListActivity : AppCompatActivity() {
             replaceFragmentInActivity(supportFragmentManager,it,accountListFrame.id)
         }
 
-        mPresenter = AccountListPresenter(accountListFragment, PreferenceManager.getDefaultSharedPreferences(this))
+        mPresenter = AccountListPresenter(accountListFragment)
 
     }
 }

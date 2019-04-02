@@ -3,7 +3,7 @@ package com.ryunen344.kdroid.main
 import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R

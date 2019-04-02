@@ -4,19 +4,18 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Handler
 import com.ryunen344.kdroid.data.Account
+import com.ryunen344.kdroid.data.dao.AccountDao
+import com.ryunen344.kdroid.data.db.AccountDatabase
 import com.ryunen344.kdroid.util.nullableLong
 import com.ryunen344.kdroid.util.nullableString
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import twitter4j.TwitterException
 import twitter4j.auth.OAuthAuthorization
 import twitter4j.auth.RequestToken
 import kotlin.concurrent.thread
 
-class AccountListPresenter(val accountListView : AccountListContract.View,val preferences : SharedPreferences) : AccountListContract.Presenter{
-    var screenName : String? by preferences.nullableString("screenName")
-    var userId : Long? by preferences.nullableLong("userId")
-    var token : String? by preferences.nullableString("token")
-    var tokenSecret : String? by preferences.nullableString("tokenSecret")
-
+class AccountListPresenter(val accountListView : AccountListContract.View) : AccountListContract.Presenter{
 
     init {
         accountListView.setPresenter(this)
@@ -29,8 +28,14 @@ class AccountListPresenter(val accountListView : AccountListContract.View,val pr
 
     override fun loadAccountList() {
         //accountListView.showProgress(true)
-        val ac : Account = Account(userId,screenName,token,tokenSecret)
-        accountListView.showAccountList(listOf(ac))
+        AccountDatabase.getInstance()?.let { accountDatabase ->
+            val accountDao : AccountDao = accountDatabase.accountDao()
+
+            accountDao.getAccountList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({accountListView.showAccountList(it)}, { e -> e.printStackTrace() })
+        }
     }
 
     override fun addAccountWithOAuth(oauth : OAuthAuthorization, consumerKey : String, consumerSecretKey : String) {
