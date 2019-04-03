@@ -1,7 +1,6 @@
 package com.ryunen344.kdroid.main
 
 import android.os.Bundle
-import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
 import com.ryunen344.kdroid.R.layout.activity_main
 import com.ryunen344.kdroid.di.provider.AppProvider
@@ -20,13 +19,14 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        intent.getLongExtra("userId", 0)
 
 
         var mainFragment : MainFragment? = supportFragmentManager.findFragmentById(mainFrame.id) as MainFragment? ?: MainFragment.newInstance().also{
             replaceFragmentInActivity(supportFragmentManager,it,mainFrame.id)
         }
 
-        mPresenter = MainPresenter(mainFragment!!,appProvider, PreferenceManager.getDefaultSharedPreferences(this))
+        mPresenter = MainPresenter(mainFragment!!, appProvider, intent.getLongExtra("userId", 0))
 
     }
 

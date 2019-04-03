@@ -8,6 +8,7 @@ import com.ryunen344.kdroid.R.layout.activity_oauth_callback
 import com.ryunen344.kdroid.data.Account
 import com.ryunen344.kdroid.data.dao.AccountDao
 import com.ryunen344.kdroid.data.db.AccountDatabase
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_oauth_callback.*
 import twitter4j.TwitterException
 import twitter4j.auth.AccessToken
@@ -49,12 +50,19 @@ class OAuthCallBackActivity : AppCompatActivity() {
                     AccountDatabase.getInstance()?.let { accountDatabase ->
                         val accountDao : AccountDao = accountDatabase.accountDao()
 
-                        accountDao.insertAccount(Account(token!!.userId, token?.screenName, token?.token, token?.tokenSecret))
+                        accountDao
+                                .insertAccount(Account(token!!.userId, token?.screenName, token?.token, token?.tokenSecret))
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({}, { e -> e.printStackTrace() })
                     }
                 }
             }
         } else {
             callback_text.text = "uri is unknown"
+        }
+
+        callback_button.setOnClickListener {
+            finish()
         }
 
     }

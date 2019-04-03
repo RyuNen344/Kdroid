@@ -53,7 +53,7 @@ class AccountListFragment : Fragment() , AccountListContract.View{
         }
     }
 
-    private val accountListAdapter = AccountListAdapter(ArrayList(0), itemListener)
+    private var accountListAdapter = AccountListAdapter(ArrayList(0), itemListener)
 
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
         var root : View = inflater.inflate(fragment_account_list,container,false)
@@ -89,6 +89,7 @@ class AccountListFragment : Fragment() , AccountListContract.View{
     }
 
     override fun showAccountList(accountList : List<Account>) {
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + accountList.size)
         accountListAdapter.accountList = accountList
         accountListView.visibility = View.VISIBLE
         noAccountListView.visibility = View.GONE
@@ -137,6 +138,7 @@ class AccountListFragment : Fragment() , AccountListContract.View{
 
     override fun openAccountTimeLine(account : Account) {
         val intent = Intent(context, MainActivity::class.java)
+        intent.putExtra("userId", account.userId)
         startActivity(intent)
     }
 
