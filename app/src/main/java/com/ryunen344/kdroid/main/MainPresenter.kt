@@ -1,8 +1,11 @@
 package com.ryunen344.kdroid.main
 
+import android.app.Activity
+import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
 import com.ryunen344.kdroid.data.dao.AccountDao
 import com.ryunen344.kdroid.data.db.AccountDatabase
 import com.ryunen344.kdroid.di.provider.AppProvider
+import com.ryunen344.kdroid.util.debugLog
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -31,8 +34,6 @@ class MainPresenter(val mainView : MainContract.View, val appProvider : AppProvi
                     .subscribe(
                             {
                                 val twitter : Twitter = appProvider.provideTwitter()
-                                //var user : User = twitter.verifyCredentials()
-                                twitter.setOAuthConsumer("FY914IvJrO3kxcXPpx7hCDDQq", "vbyCmfDAQljPVuGBso66F4k0vXffxCCGTWzIVobMmNsKUywVg9")
                                 twitter.oAuthAccessToken = AccessToken(it.token, it.tokenSecret)
                                 lateinit var tweetLsit : List<Status>
                                 GlobalScope.launch(Dispatchers.Main) {
@@ -49,7 +50,22 @@ class MainPresenter(val mainView : MainContract.View, val appProvider : AppProvi
     }
 
     override fun openTweetDetail() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        debugLog("start")
+        debugLog("end")
     }
+
+    override fun result(requestCode : Int, resultCode : Int) {
+        debugLog("start")
+        when (requestCode) {
+            AddTweetReplyActivity.REQUEST_ADD_TWEET -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> mainView.showSuccessfullyTweet()
+                    Activity.RESULT_CANCELED -> mainView.showFailTweet()
+                }
+            }
+        }
+        debugLog("end")
+    }
+
 }
 

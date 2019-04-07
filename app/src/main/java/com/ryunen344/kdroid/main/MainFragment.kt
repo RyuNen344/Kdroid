@@ -1,5 +1,6 @@
 package com.ryunen344.kdroid.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
@@ -7,8 +8,9 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
+import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
+import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
-import kotlinx.android.synthetic.main.activity_account_lsit.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
@@ -41,12 +43,7 @@ class MainFragment : Fragment(), MainContract.View{
             val listView = main_list.apply {
                 adapter = mainAdapter
             }
-
             mainListView = mainLL
-
-            activity?.account_fab?.setOnClickListener {
-                mPresenter.openTweetDetail()
-            }
         }
         setHasOptionsMenu(true)
 
@@ -56,12 +53,11 @@ class MainFragment : Fragment(), MainContract.View{
                     .setAction("Action", null).show()
             true
         }
-        activity?.fab?.setOnClickListener { view ->
-            Snackbar.make(view, "Single tap action", Snackbar.LENGTH_SHORT)
-                    .setAction("Action", null).show()
+        activity?.fab?.setOnClickListener {
+            addNewTweet()
         }
 
-        //configure navigation bar
+        //configure timeline_navigation bar
         activity?.navigation!!.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
@@ -94,9 +90,30 @@ class MainFragment : Fragment(), MainContract.View{
         mainAdapter.notifyDataSetChanged()
     }
 
+    override fun addNewTweet() {
+        //fixme
+        val intent = Intent(context, AddTweetReplyActivity::class.java)
+        startActivityForResult(intent, AddTweetReplyActivity.REQUEST_ADD_TWEET)
+    }
+
+    override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?) {
+        mPresenter.result(requestCode, resultCode)
+    }
+
+    override fun showSuccessfullyTweet() {
+        debugLog("start")
+        Snackbar.make(view!!, "tweet sent", Snackbar.LENGTH_LONG).show()
+        debugLog("end")
+
+    }
+
+    override fun showFailTweet() {
+        Snackbar.make(view!!, "tweet fail", Snackbar.LENGTH_LONG).show()
+    }
+
 
     override fun onCreateOptionsMenu(menu : Menu, inflater : MenuInflater) {
-        inflater.inflate(R.menu.navigation, menu)
+        inflater.inflate(R.menu.timeline_navigation, menu)
     }
 
     override fun setPresenter(presenter : MainContract.Presenter) {

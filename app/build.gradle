@@ -79,9 +79,9 @@ dependencies {
     implementation "android.arch.navigation:navigation-common-ktx:1.0.0"
     implementation "android.arch.navigation:navigation-fragment-ktx:1.0.0"
     implementation "android.arch.navigation:navigation-runtime-ktx:1.0.0"
-
     implementation "android.arch.navigation:navigation-ui-ktx:1.0.0"
     implementation "android.arch.work:work-runtime-ktx:1.0.0"
+
     implementation "androidx.appcompat:appcompat:1.0.2"
     implementation "androidx.annotation:annotation:1.0.2"
     implementation 'androidx.core:core-ktx:1.1.0-alpha05'

@@ -8,12 +8,15 @@ interface MainContract {
 
     interface View : BaseView<Presenter> {
         fun showTweetList(mainList : List<Status>)
-
+        fun addNewTweet()
+        fun showSuccessfullyTweet()
+        fun showFailTweet()
     }
 
     interface Presenter : BasePresenter {
         fun loadTweetList()
         fun openTweetDetail()
+        fun result(requestCode : Int, resultCode : Int)
     }
 
     interface MainItemListner {

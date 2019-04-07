@@ -6,13 +6,12 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import twitter4j.Twitter
 import twitter4j.TwitterFactory
-import twitter4j.AsyncTwitter
-import twitter4j.AsyncTwitterFactory
-
-
-
+import twitter4j.conf.Configuration
+import twitter4j.conf.ConfigurationBuilder
 
 class AppProvider{
+
+    lateinit var twitter : Twitter
 
     fun provideOkhttpClient() : OkHttpClient {
         //var client : OkHttpClient.Builder = OkHttpClient.Builder()
@@ -29,8 +28,16 @@ class AppProvider{
                 .build()
     }
 
+    /**
+     * this method has to call after config twitter instance
+     */
     fun provideTwitter() : Twitter {
-        return TwitterFactory.getSingleton()
-        //return AsyncTwitterFactory().instance
+        return twitter
+    }
+
+    fun configureTwitter(builder : ConfigurationBuilder) {
+        var configuration : Configuration = builder.build()
+        var factory : TwitterFactory = TwitterFactory(configuration)
+        twitter = factory.instance
     }
 }
