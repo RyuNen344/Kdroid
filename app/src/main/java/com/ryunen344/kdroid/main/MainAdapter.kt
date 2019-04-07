@@ -21,7 +21,7 @@ class MainAdapter(mainList : List<Status>, val mainItemListner : MainContract.Ma
     override fun getView(position : Int, convertView : View?, parent : ViewGroup) : View {
         val main : Status = getItem(position)
         var view : View? = convertView
-        var holder : ViewHolder
+        val holder: ViewHolder
 
         if (view == null) {
             view = LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)

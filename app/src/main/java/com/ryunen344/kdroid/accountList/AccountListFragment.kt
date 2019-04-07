@@ -13,6 +13,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ryunen344.kdroid.R.layout.fragment_account_list
 import com.ryunen344.kdroid.R.string.consumer_key
 import com.ryunen344.kdroid.R.string.consumer_secret_key
@@ -58,8 +60,11 @@ class AccountListFragment : Fragment() , AccountListContract.View{
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
         var root : View = inflater.inflate(fragment_account_list,container,false)
         with(root){
-            val listView = account_list.apply {
-                adapter = accountListAdapter
+            val mLayoutManager: LinearLayoutManager = LinearLayoutManager(context)
+            val mRecyclerView: RecyclerView = account_list.apply {
+                this.layoutManager = mLayoutManager
+                this.setHasFixedSize(true)
+                this.adapter = accountListAdapter
             }
 
             filteringLabelView = filteringLabel
