@@ -7,6 +7,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.ryunen344.kdroid.R
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_main.view.*
 import twitter4j.Status
 
@@ -34,6 +35,12 @@ class MainAdapter(mainList : List<Status>, val mainItemListner : MainContract.Ma
         holder.main_account_name.text = main.user.name
         holder.main_screen_name.text = main.user.screenName
         holder.main_description.text = main.text
+
+
+        Picasso.get()
+                .load(main.user.biggerProfileImageURLHttps)
+                .resize(30, 30)
+                .into(view?.main_icon)
 
 //        val rowView = convertView ?: LayoutInflater.from(parent.context)
 //                .inflate(fragment_account_list, parent, false)
