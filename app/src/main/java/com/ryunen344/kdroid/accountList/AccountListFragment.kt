@@ -29,26 +29,27 @@ import twitter4j.auth.RequestToken
 import twitter4j.conf.ConfigurationContext
 
 
-class AccountListFragment : Fragment() , AccountListContract.View{
+class AccountListFragment : Fragment(), AccountListContract.View {
 
 
-    lateinit var mPresenter : AccountListContract.Presenter
+    lateinit var mPresenter: AccountListContract.Presenter
     private lateinit var noAccountListView: View
     private lateinit var noAccountIconView: ImageView
     private lateinit var noAccountListMainView: TextView
     private lateinit var noAccountListAddView: TextView
-    lateinit var filteringLabelView : TextView
-    lateinit var accountListView : LinearLayout
-
+    lateinit var filteringLabelView: TextView
+    lateinit var accountListView: LinearLayout
+    private lateinit var mLayoutManager: LinearLayoutManager
+    private lateinit var mRecyclerView: RecyclerView
 
     companion object {
-        fun newInstance() =  AccountListFragment()
+        fun newInstance() = AccountListFragment()
         var mOauth = OAuthAuthorization(ConfigurationContext.getInstance())
         var mReq: RequestToken? = null
     }
 
     private var itemListener: AccountListContract.AccountItemListner = object : AccountListContract.AccountItemListner {
-        override fun onAccountClick(clickedAccount : Account) {
+        override fun onAccountClick(clickedAccount: Account) {
             //fixme
             println("open timeline")
             openAccountTimeLine(clickedAccount)
@@ -57,11 +58,11 @@ class AccountListFragment : Fragment() , AccountListContract.View{
 
     private var accountListAdapter = AccountListAdapter(ArrayList(0), itemListener)
 
-    override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
-        var root : View = inflater.inflate(fragment_account_list,container,false)
-        with(root){
-            val mLayoutManager: LinearLayoutManager = LinearLayoutManager(context)
-            val mRecyclerView: RecyclerView = account_list.apply {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        var root: View = inflater.inflate(fragment_account_list, container, false)
+        with(root) {
+            mLayoutManager = LinearLayoutManager(context)
+            mRecyclerView = account_list.apply {
                 this.layoutManager = mLayoutManager
                 this.setHasFixedSize(true)
                 this.adapter = accountListAdapter
@@ -72,19 +73,19 @@ class AccountListFragment : Fragment() , AccountListContract.View{
 
             noAccountListView = noAccountList
             noAccountIconView = noAccountIcon
-            noAccountListMainView =noAccountListMain
+            noAccountListMainView = noAccountListMain
             noAccountListAddView = noAccountListAdd
 
 
         }
         activity?.account_fab?.setOnClickListener {
-            mPresenter.addAccountWithOAuth(mOauth,getString(consumer_key),getString(consumer_secret_key))
+            mPresenter.addAccountWithOAuth(mOauth, getString(consumer_key), getString(consumer_secret_key))
         }
 
         return root
     }
 
-    override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         account_list.adapter = accountListAdapter
     }
 
@@ -93,7 +94,7 @@ class AccountListFragment : Fragment() , AccountListContract.View{
         mPresenter.start()
     }
 
-    override fun showAccountList(accountList : List<Account>) {
+    override fun showAccountList(accountList: List<Account>) {
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + accountList.size)
         accountListAdapter.accountList = accountList
         accountListView.visibility = View.VISIBLE
@@ -106,7 +107,7 @@ class AccountListFragment : Fragment() , AccountListContract.View{
         noAccountListView.visibility = View.VISIBLE
     }
 
-    override fun showProgress(show : Boolean) {
+    override fun showProgress(show: Boolean) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
@@ -118,7 +119,7 @@ class AccountListFragment : Fragment() , AccountListContract.View{
                     .setDuration(shortAnimTime)
                     .alpha((if (show) 1 else 0).toFloat())
                     .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation : Animator) {
+                        override fun onAnimationEnd(animation: Animator) {
                             login_progress.visibility = if (show) View.VISIBLE else View.GONE
                         }
                     })
@@ -129,19 +130,19 @@ class AccountListFragment : Fragment() , AccountListContract.View{
         }
     }
 
-    override fun showCallbak(req: RequestToken? , uri : Uri?) {
+    override fun showCallbak(req: RequestToken?, uri: Uri?) {
         mReq = req
         startActivityForResult(Intent(Intent.ACTION_VIEW, uri), 0)
     }
 
 
-    override fun setPresenter(presenter : AccountListContract.Presenter) {
-        ensureNotNull(presenter){ p ->
+    override fun setPresenter(presenter: AccountListContract.Presenter) {
+        ensureNotNull(presenter) { p ->
             mPresenter = p
         }
     }
 
-    override fun openAccountTimeLine(account : Account) {
+    override fun openAccountTimeLine(account: Account) {
         val intent = Intent(context, MainActivity::class.java)
         intent.putExtra("userId", account.userId)
         startActivity(intent)

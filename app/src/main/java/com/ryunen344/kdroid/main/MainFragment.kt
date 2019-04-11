@@ -5,9 +5,12 @@ import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
+import com.ryunen344.kdroid.R.layout.fragment_main
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
@@ -21,6 +24,8 @@ class MainFragment : Fragment(), MainContract.View{
 
     lateinit var mPresenter : MainContract.Presenter
     lateinit var mainListView : LinearLayout
+    lateinit var mLayoutManager: LinearLayoutManager
+    lateinit var mRecyclerView: RecyclerView
 
     companion object {
         fun newInstance() = MainFragment()
@@ -37,14 +42,27 @@ class MainFragment : Fragment(), MainContract.View{
     private val mainAdapter = MainAdapter(ArrayList(0), itemListener)
 
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
-        var root : View = inflater.inflate(R.layout.fragment_main,container,false)
+        var root: View = inflater.inflate(fragment_main, container, false)
 
         with(root){
-            val listView = main_list.apply {
-                adapter = mainAdapter
+            mLayoutManager = LinearLayoutManager(context)
+            mRecyclerView = main_list.apply {
+                this.layoutManager = mLayoutManager
+                this.setHasFixedSize(true)
+                this.adapter = mainAdapter
             }
             mainListView = mainLL
         }
+
+        mRecyclerView.addOnScrollListener(object : EndlessScrollListener(mLayoutManager) {
+            override fun onLoadMore(currentPage: Int) {
+                debugLog("current page is " + currentPage)
+                mPresenter.loadMoreTweetList(currentPage)
+            }
+        })
+
+
+
         setHasOptionsMenu(true)
 
         //configure float action button

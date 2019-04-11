@@ -15,6 +15,7 @@ interface MainContract {
 
     interface Presenter : BasePresenter {
         fun loadTweetList()
+        fun loadMoreTweetList(currentPage: Int)
         fun openTweetDetail()
         fun result(requestCode : Int, resultCode : Int)
     }

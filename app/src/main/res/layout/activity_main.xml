@@ -42,7 +42,6 @@
                 android:background="?android:attr/windowBackground"
                 app:layout_anchorGravity="bottom"
                 app:layout_insetEdge="bottom"
-                app:layout_behavior="com.ryunen344.kdroid.BottomNavigationBehavior"
                 app:menu="@menu/timeline_navigation"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

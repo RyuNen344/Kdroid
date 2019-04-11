@@ -22,7 +22,6 @@ class AccountListAdapter(accountList: List<Account>, val accountItemListner: Acc
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         var view: View = LayoutInflater.from(parent.context).inflate(item_account_list, parent, false)
-        //view.setOnClickListener { accountItemListner.onAccountClick(account) }
         return ViewHolder(view)
     }
 
