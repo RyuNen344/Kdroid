@@ -38,9 +38,10 @@ class MainPresenter(val mainView : MainContract.View, val appProvider : AppProvi
                             {
                                 val twitter : Twitter = appProvider.provideTwitter()
                                 twitter.oAuthAccessToken = AccessToken(it.token, it.tokenSecret)
+                                var paging: Paging = Paging(1, 200)
                                 GlobalScope.launch(Dispatchers.Main) {
                                     async(Dispatchers.Default) {
-                                        tweetLsit = twitter.homeTimeline
+                                        tweetLsit = twitter.getHomeTimeline(paging)
                                     }.await().let {
                                         mainView.showTweetList(tweetLsit)
                                     }

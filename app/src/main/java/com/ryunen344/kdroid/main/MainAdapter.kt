@@ -22,8 +22,9 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
             notifyDataSetChanged()
         }
     private val SCREEN_NAME_PREFIX: String = "@"
-    private val VIA_PREFIX: String = "<html><head></head><body>"
-    private val VIA_SUFIX: String = "</body></html>"
+    private val VIA_PREFIX: String = "via "
+    private val HTML_VIA_PREFIX: String = "<html><head></head><body>"
+    private val HTML_VIA_SUFIX: String = "</body></html>"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)
@@ -43,8 +44,8 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
         holder.main_account_name.text = mainList[position].user.name
         holder.main_screen_name.text = SCREEN_NAME_PREFIX + mainList[position].user.screenName
         holder.main_description.text = mainList[position].text
-        var doc: Document = Jsoup.parse(VIA_PREFIX + mainList[position].source + VIA_SUFIX)
-        holder.main_via_and_date.text = doc.getElementsByTag("a").text() + " (" + utilProvider.provideSdf().format(mainList[position].createdAt) + ")"
+        var doc: Document = Jsoup.parse(HTML_VIA_PREFIX + mainList[position].source + HTML_VIA_SUFIX)
+        holder.main_via_and_date.text = VIA_PREFIX + doc.getElementsByTag("a").text() + " (" + utilProvider.provideSdf().format(mainList[position].createdAt) + ")"
         Picasso.get()
                 .load(mainList[position].user.biggerProfileImageURLHttps)
                 .resize(50, 50)
