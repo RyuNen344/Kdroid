@@ -12,16 +12,18 @@ import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_main
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
+import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
+import org.koin.android.ext.android.inject
 import twitter4j.Status
 
 class MainFragment : Fragment(), MainContract.View{
 
-
+    val utilProvider: UtilProvider by inject()
     lateinit var mPresenter : MainContract.Presenter
     lateinit var mainListView : LinearLayout
     lateinit var mLayoutManager: LinearLayoutManager
@@ -39,7 +41,7 @@ class MainFragment : Fragment(), MainContract.View{
         }
     }
 
-    private val mainAdapter = MainAdapter(ArrayList(0), itemListener)
+    private val mainAdapter = MainAdapter(ArrayList(0), itemListener, utilProvider)
 
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
         var root: View = inflater.inflate(fragment_main, container, false)

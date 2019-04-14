@@ -3,6 +3,7 @@ package com.ryunen344.kdroid
 import android.app.Application
 import com.ryunen344.kdroid.data.db.AccountDatabase
 import com.ryunen344.kdroid.di.module.AppModule
+import com.ryunen344.kdroid.di.module.UtilModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
@@ -22,7 +23,7 @@ class MyApplication : Application() {
             androidLogger(Level.DEBUG)
             androidContext(this@MyApplication)
             androidFileProperties()
-            modules(AppModule)
+            modules(AppModule, UtilModule)
         }
     }
 

@@ -11,8 +11,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 import twitter4j.conf.ConfigurationBuilder
 
-
-
 class MainActivity : AppCompatActivity() {
 
     val appProvider : AppProvider by inject()
