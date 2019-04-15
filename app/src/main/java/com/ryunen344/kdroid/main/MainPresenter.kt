@@ -41,7 +41,6 @@ class MainPresenter(val mainView: MainContract.View, val appProvider: AppProvide
                                 var paging: Paging = Paging(1, 50)
                                 val disposable: Disposable = apiProvider.getTimeLine(twitter, paging).subscribe(
                                         { list: List<Status> ->
-                                            debugLog(list.toString())
                                             tweetLsit = list
                                             mainView.showTweetList(list)
                                         }
@@ -52,7 +51,9 @@ class MainPresenter(val mainView: MainContract.View, val appProvider: AppProvide
                                 mCompositeDisposable.add(disposable)
 
                             },
-                            { e -> e.printStackTrace() })
+                            { e ->
+                                mainView.showError(e)
+                            })
         }
 
     }

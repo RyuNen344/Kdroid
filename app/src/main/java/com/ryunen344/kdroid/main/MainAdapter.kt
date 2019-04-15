@@ -1,5 +1,6 @@
 package com.ryunen344.kdroid.main
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +41,12 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        //holder.main_color_bar.visibility = View.VISIBLE
+        if (mainList[position].isRetweet) {
+            holder.main_color_bar.setBackgroundColor(Color.GREEN)
+        } else {
+            holder.main_color_bar.setBackgroundColor(Color.TRANSPARENT)
+        }
+
         holder.main_account_name.text = mainList[position].user.name
         holder.main_screen_name.text = SCREEN_NAME_PREFIX + mainList[position].user.screenName
         holder.main_description.text = mainList[position].text

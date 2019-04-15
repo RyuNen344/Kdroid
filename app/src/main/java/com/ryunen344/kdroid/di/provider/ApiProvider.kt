@@ -11,7 +11,14 @@ import twitter4j.Twitter
 class ApiProvider {
 
     fun getTimeLine(twitter: Twitter, paging: Paging): Single<List<Status>> {
-        return Single.create(SingleOnSubscribe<List<Status>> { twitter.getHomeTimeline(paging) })
+        return Single.create(SingleOnSubscribe<List<Status>>
+        { emitter ->
+            try {
+                emitter.onSuccess(twitter.getHomeTimeline(paging))
+            } catch (t: Throwable) {
+                emitter.onError(t)
+            }
+        })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
