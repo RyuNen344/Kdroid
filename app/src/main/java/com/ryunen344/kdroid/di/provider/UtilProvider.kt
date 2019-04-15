@@ -9,9 +9,6 @@ class UtilProvider {
 
     lateinit var sdf: SimpleDateFormat
 
-    /**
-     * this method has to call after config twitter instance
-     */
     fun provideSdf(): SimpleDateFormat {
         return SimpleDateFormat("MM/dd HH:mm:ss")
     }

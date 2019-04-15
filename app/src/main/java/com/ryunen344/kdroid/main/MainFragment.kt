@@ -23,6 +23,7 @@ import twitter4j.Status
 
 class MainFragment : Fragment(), MainContract.View{
 
+
     val utilProvider: UtilProvider by inject()
     lateinit var mPresenter : MainContract.Presenter
     lateinit var mainListView : LinearLayout
@@ -105,6 +106,11 @@ class MainFragment : Fragment(), MainContract.View{
         mPresenter.start()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mPresenter.clearDisposable()
+    }
+
     override fun showTweetList(mainList : List<Status>) {
         mainAdapter.mainList = mainList
         mainAdapter.notifyDataSetChanged()
@@ -129,6 +135,10 @@ class MainFragment : Fragment(), MainContract.View{
 
     override fun showFailTweet() {
         Snackbar.make(view!!, "tweet fail", Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun showError(e: Throwable) {
+        Snackbar.make(view!!, e.localizedMessage, Snackbar.LENGTH_LONG).show()
     }
 
 

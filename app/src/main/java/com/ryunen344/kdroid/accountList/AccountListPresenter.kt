@@ -24,7 +24,6 @@ class AccountListPresenter(val accountListView : AccountListContract.View) : Acc
 
     override fun loadAccountList() {
         //accountListView.showProgress(true)
-        var hoge = null
         AccountDatabase.getInstance()?.let { accountDatabase ->
             val accountDao : AccountDao = accountDatabase.accountDao()
 

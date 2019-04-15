@@ -24,7 +24,7 @@ class AddTweetReplyPresenter(var addTweetReplyView : AddTweetReplyContract.View,
         debugLog("start")
         debugLog(tweetDescription)
 
-        tweetDescription?.let {
+        tweetDescription.let {
             Completable.create {
                 appProvider.provideTwitter().updateStatus(tweetDescription)
                 it.onComplete()

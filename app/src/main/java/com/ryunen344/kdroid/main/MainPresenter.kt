@@ -4,21 +4,22 @@ import android.app.Activity
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
 import com.ryunen344.kdroid.data.dao.AccountDao
 import com.ryunen344.kdroid.data.db.AccountDatabase
+import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.util.debugLog
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import twitter4j.Paging
 import twitter4j.Status
 import twitter4j.Twitter
 import twitter4j.auth.AccessToken
 
-class MainPresenter(val mainView : MainContract.View, val appProvider : AppProvider, val userId : Long) : MainContract.Presenter {
+class MainPresenter(val mainView: MainContract.View, val appProvider: AppProvider, val apiProvider: ApiProvider, val userId: Long) : MainContract.Presenter {
 
     lateinit var tweetLsit: List<Status>
+    var twitter: Twitter = appProvider.provideTwitter()
+    var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
     init {
         mainView.setPresenter(this)
@@ -30,22 +31,26 @@ class MainPresenter(val mainView : MainContract.View, val appProvider : AppProvi
 
     override fun loadTweetList() {
         AccountDatabase.getInstance()?.let { accountDatabase ->
-            val accountDao : AccountDao = accountDatabase.accountDao()
+            val accountDao: AccountDao = accountDatabase.accountDao()
 
             accountDao.loadAccountById(userId)
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                             {
-                                val twitter : Twitter = appProvider.provideTwitter()
                                 twitter.oAuthAccessToken = AccessToken(it.token, it.tokenSecret)
-                                var paging: Paging = Paging(1, 200)
-                                GlobalScope.launch(Dispatchers.Main) {
-                                    async(Dispatchers.Default) {
-                                        tweetLsit = twitter.getHomeTimeline(paging)
-                                    }.await().let {
-                                        mainView.showTweetList(tweetLsit)
-                                    }
+                                var paging: Paging = Paging(1, 50)
+                                val disposable: Disposable = apiProvider.getTimeLine(twitter, paging).subscribe(
+                                        { list: List<Status> ->
+                                            debugLog(list.toString())
+                                            tweetLsit = list
+                                            mainView.showTweetList(list)
+                                        }
+                                        , { e ->
+                                    mainView.showError(e)
                                 }
+                                )
+                                mCompositeDisposable.add(disposable)
+
                             },
                             { e -> e.printStackTrace() })
         }
@@ -53,17 +58,17 @@ class MainPresenter(val mainView : MainContract.View, val appProvider : AppProvi
     }
 
     override fun loadMoreTweetList(currentPage: Int) {
-        val twitter: Twitter = appProvider.provideTwitter()
-        var paging: Paging = Paging(currentPage + 1, 40)
-        lateinit var addTweetLsit: List<Status>
-        GlobalScope.launch(Dispatchers.Main) {
-            async(Dispatchers.Default) {
-                addTweetLsit = twitter.getHomeTimeline(paging)
-            }.await().let {
-                tweetLsit = tweetLsit + addTweetLsit
-                mainView.showTweetList(tweetLsit)
-            }
+        var paging: Paging = Paging(currentPage + 1, 100)
+        val disposable: Disposable = apiProvider.getTimeLine(twitter, paging).subscribe(
+                { list: List<Status> ->
+                    tweetLsit = tweetLsit + list
+                    mainView.showTweetList(tweetLsit)
+                }
+                , { e ->
+            mainView.showError(e)
         }
+        )
+        mCompositeDisposable.add(disposable)
     }
 
     override fun openTweetDetail() {
@@ -71,7 +76,7 @@ class MainPresenter(val mainView : MainContract.View, val appProvider : AppProvi
         debugLog("end")
     }
 
-    override fun result(requestCode : Int, resultCode : Int) {
+    override fun result(requestCode: Int, resultCode: Int) {
         debugLog("start")
         when (requestCode) {
             AddTweetReplyActivity.REQUEST_ADD_TWEET -> {
@@ -82,6 +87,10 @@ class MainPresenter(val mainView : MainContract.View, val appProvider : AppProvi
             }
         }
         debugLog("end")
+    }
+
+    override fun clearDisposable() {
+        mCompositeDisposable.clear()
     }
 
 }

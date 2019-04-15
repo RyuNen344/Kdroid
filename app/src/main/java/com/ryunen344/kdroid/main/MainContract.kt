@@ -11,6 +11,7 @@ interface MainContract {
         fun addNewTweet()
         fun showSuccessfullyTweet()
         fun showFailTweet()
+        fun showError(e: Throwable)
     }
 
     interface Presenter : BasePresenter {
@@ -18,6 +19,7 @@ interface MainContract {
         fun loadMoreTweetList(currentPage: Int)
         fun openTweetDetail()
         fun result(requestCode : Int, resultCode : Int)
+        fun clearDisposable()
     }
 
     interface MainItemListner {
