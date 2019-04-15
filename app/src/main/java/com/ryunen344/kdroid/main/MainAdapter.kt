@@ -55,7 +55,7 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        //var main_color_bar : View = itemView.main_color_bar
+        var main_color_bar: View = itemView.main_color_bar
         var main_icon: ImageView = itemView.main_icon
         var main_account_name: TextView = itemView.main_account_name
         var main_screen_name: TextView = itemView.main_screen_name
