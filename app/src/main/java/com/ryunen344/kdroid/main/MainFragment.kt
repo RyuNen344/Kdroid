@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -64,7 +65,9 @@ class MainFragment : Fragment(), MainContract.View{
             }
         })
 
-
+        //divier set
+        val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        mRecyclerView.addItemDecoration(itemDecoration)
 
         setHasOptionsMenu(true)
 

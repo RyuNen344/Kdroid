@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ryunen344.kdroid.R.layout.fragment_account_list
@@ -78,6 +79,11 @@ class AccountListFragment : Fragment(), AccountListContract.View {
 
 
         }
+
+        //divier set
+        val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        mRecyclerView.addItemDecoration(itemDecoration)
+
         activity?.account_fab?.setOnClickListener {
             mPresenter.addAccountWithOAuth(mOauth, getString(consumer_key), getString(consumer_secret_key))
         }
