@@ -41,17 +41,34 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        //set status bar
         if (mainList[position].isRetweet) {
             holder.main_color_bar.setBackgroundColor(Color.GREEN)
         } else {
             holder.main_color_bar.setBackgroundColor(Color.TRANSPARENT)
         }
 
+        //set user name and screen name
         holder.main_account_name.text = mainList[position].user.name
-        holder.main_screen_name.text = SCREEN_NAME_PREFIX + mainList[position].user.screenName
+        var mScreenName: String = SCREEN_NAME_PREFIX + mainList[position].user.screenName
+        holder.main_screen_name.text = mScreenName
+
+        if (mainList[position].user.isProtected) {
+            holder.main_lock_icon.visibility = ImageView.VISIBLE
+        } else {
+            holder.main_lock_icon.visibility = ImageView.INVISIBLE
+        }
+
+        //set tweet detail
         holder.main_description.text = mainList[position].text
+
+        //set via and date
         var doc: Document = Jsoup.parse(HTML_VIA_PREFIX + mainList[position].source + HTML_VIA_SUFIX)
-        holder.main_via_and_date.text = VIA_PREFIX + doc.getElementsByTag("a").text() + " (" + utilProvider.provideSdf().format(mainList[position].createdAt) + ")"
+        var mViaAndDate: String = VIA_PREFIX + doc.getElementsByTag("a").text() + " (" + utilProvider.provideSdf().format(mainList[position].createdAt) + ")"
+        holder.main_via_and_date.text = mViaAndDate
+
+        //set image icon
         Picasso.get()
                 .load(mainList[position].user.biggerProfileImageURLHttps)
                 .resize(50, 50)
@@ -65,6 +82,7 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
         var main_icon: ImageView = itemView.main_icon
         var main_account_name: TextView = itemView.main_account_name
         var main_screen_name: TextView = itemView.main_screen_name
+        var main_lock_icon: ImageView = itemView.main_lock_icon
         var main_via_and_date: TextView = itemView.main_via_and_date
         var main_description: TextView = itemView.main_description
 
