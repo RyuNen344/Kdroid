@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R.layout.fragment_account_list
 import com.ryunen344.kdroid.R.string.consumer_key
 import com.ryunen344.kdroid.R.string.consumer_secret_key
@@ -31,7 +32,6 @@ import twitter4j.conf.ConfigurationContext
 
 
 class AccountListFragment : Fragment(), AccountListContract.View {
-
 
     lateinit var mPresenter: AccountListContract.Presenter
     private lateinit var noAccountListView: View
@@ -152,6 +152,10 @@ class AccountListFragment : Fragment(), AccountListContract.View {
         val intent = Intent(context, MainActivity::class.java)
         intent.putExtra("userId", account.userId)
         startActivity(intent)
+    }
+
+    override fun showError(e: Throwable) {
+        Snackbar.make(view!!, e.localizedMessage, Snackbar.LENGTH_LONG).show()
     }
 
 }

@@ -44,42 +44,72 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
 
         //set status bar
         if (mainList[position].isRetweet) {
+            initTweet(holder, mainList[position].retweetedStatus)
+
+            //set image icon who retweeted
+            holder.rt_icon.visibility = View.VISIBLE
+            Picasso.get()
+                    .load(mainList[position].user.biggerProfileImageURLHttps)
+                    .resize(23, 23)
+                    .into(holder.rt_icon)
+
             holder.main_color_bar.setBackgroundColor(Color.GREEN)
         } else {
+            initTweet(holder, mainList[position])
+
+            //set image icon who retweeted
+            holder.rt_icon.visibility = View.INVISIBLE
             holder.main_color_bar.setBackgroundColor(Color.TRANSPARENT)
         }
 
+        holder.itemView.setOnClickListener { mainItemListner.onAccountClick() }
+    }
+
+    private fun initTweet(holder: ViewHolder, tweetStatus: Status) {
         //set user name and screen name
-        holder.main_account_name.text = mainList[position].user.name
-        var mScreenName: String = SCREEN_NAME_PREFIX + mainList[position].user.screenName
+        holder.main_account_name.text = tweetStatus.user.name
+        var mScreenName: String = SCREEN_NAME_PREFIX + tweetStatus.user.screenName
         holder.main_screen_name.text = mScreenName
 
-        if (mainList[position].user.isProtected) {
+        //set protect icon
+        if (tweetStatus.user.isProtected) {
             holder.main_lock_icon.visibility = ImageView.VISIBLE
         } else {
             holder.main_lock_icon.visibility = ImageView.INVISIBLE
         }
 
         //set tweet detail
-        holder.main_description.text = mainList[position].text
+        holder.main_description.text = tweetStatus.text
 
         //set via and date
-        var doc: Document = Jsoup.parse(HTML_VIA_PREFIX + mainList[position].source + HTML_VIA_SUFIX)
-        var mViaAndDate: String = VIA_PREFIX + doc.getElementsByTag("a").text() + " (" + utilProvider.provideSdf().format(mainList[position].createdAt) + ")"
+        var doc: Document = Jsoup.parse(HTML_VIA_PREFIX + tweetStatus.source + HTML_VIA_SUFIX)
+        var mViaAndDate: String = VIA_PREFIX + doc.getElementsByTag("a").text() + " (" + utilProvider.provideSdf().format(tweetStatus.createdAt) + ")"
         holder.main_via_and_date.text = mViaAndDate
+
 
         //set image icon
         Picasso.get()
-                .load(mainList[position].user.biggerProfileImageURLHttps)
+                .load(tweetStatus.user.biggerProfileImageURLHttps)
                 .resize(50, 50)
                 .into(holder.main_icon)
+    }
 
-        holder.itemView.setOnClickListener { mainItemListner.onAccountClick() }
+    private fun initRetweet(holder: ViewHolder, tweet: Status) {
+
+    }
+
+    private fun initMineTweet(holder: ViewHolder, tweet: Status) {
+
+    }
+
+    private fun initReply(holder: ViewHolder, tweet: Status) {
+
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var main_color_bar: View = itemView.main_color_bar
         var main_icon: ImageView = itemView.main_icon
+        var rt_icon: ImageView = itemView.rt_icon
         var main_account_name: TextView = itemView.main_account_name
         var main_screen_name: TextView = itemView.main_screen_name
         var main_lock_icon: ImageView = itemView.main_lock_icon

@@ -23,18 +23,35 @@
             android:paddingTop="@dimen/list_item_padding"
             >
 
-        <ImageView
-                android:id="@+id/main_icon"
-                android:src="@android:drawable/sym_def_app_icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
+        <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageFrame">
+
+            <ImageView
+                    android:id="@+id/main_icon"
+                    android:src="@android:drawable/sym_def_app_icon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
+
+            <ImageView
+                    android:id="@+id/rt_icon"
+                    android:src="@android:drawable/ic_input_add"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:layout_gravity="right|bottom"
+                    android:visibility="invisible"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
+
+        </FrameLayout>
 
         <TextView
                 android:id="@+id/main_account_name"
-                android:layout_toEndOf="@id/main_icon"
+                android:layout_toEndOf="@id/imageFrame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat"/>
@@ -55,12 +72,13 @@
                 android:layout_height="12sp"
                 android:layout_marginBottom="@dimen/list_item_padding"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:visibility="invisible"
                 android:src="@drawable/ic_lock"
                 />
 
         <TextView
                 android:id="@+id/main_description"
-                android:layout_toEndOf="@id/main_icon"
+                android:layout_toEndOf="@id/imageFrame"
                 android:layout_below="@id/main_screen_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,7 +86,7 @@
 
         <TextView
                 android:id="@+id/main_via_and_date"
-                android:layout_toEndOf="@id/main_icon"
+                android:layout_toEndOf="@id/imageFrame"
                 android:layout_below="@id/main_description"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_width="wrap_content"

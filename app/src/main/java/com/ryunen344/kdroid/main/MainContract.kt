@@ -11,7 +11,6 @@ interface MainContract {
         fun addNewTweet()
         fun showSuccessfullyTweet()
         fun showFailTweet()
-        fun showError(e: Throwable)
     }
 
     interface Presenter : BasePresenter {
