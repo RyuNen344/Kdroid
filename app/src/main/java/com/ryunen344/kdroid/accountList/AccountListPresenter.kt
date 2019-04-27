@@ -30,7 +30,10 @@ class AccountListPresenter(val accountListView : AccountListContract.View) : Acc
             accountDao.findAccountList()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ it -> accountListView.showAccountList(it) }, { e -> e.printStackTrace() })
+                    .subscribe(
+                            { accountListView.showAccountList(it) }
+                            , { e -> accountListView.showError(e) }
+                    )
         }
     }
 
@@ -50,13 +53,13 @@ class AccountListPresenter(val accountListView : AccountListContract.View) : Acc
                 mUri  = Uri.parse(mReq?.authorizationURL)
                 // Log.i(TAG, mUri.toString())
             } catch (e: TwitterException) {
-                e.printStackTrace()
+                accountListView.showError(e)
             }
             handler.post {
                 if (mUri != null) {
                     accountListView.showCallbak(mReq,mUri)
                 } else {
-                    //startActivity(ErrorActivity)
+                    accountListView.showError(throw NullPointerException())
                 }
             }
         }

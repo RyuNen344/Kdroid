@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ryunen344.kdroid.R.layout.item_account_list
 import com.ryunen344.kdroid.data.Account
+import com.ryunen344.kdroid.util.debugLog
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.item_account_list.view.*
-import java.util.concurrent.TimeUnit
 
 
 class AccountListAdapter(accountList: List<Account>, val accountItemListner: AccountListContract.AccountItemListner) : RecyclerView.Adapter<AccountListAdapter.ViewHolder>() {
@@ -39,9 +39,11 @@ class AccountListAdapter(accountList: List<Account>, val accountItemListner: Acc
         holder.account_user_id.text = accountList[position].userId.toString()
         holder.account_user_name.text = accountList[position].screenName
         mCompositeDisposable.add(holder.itemView.clicks()
-                .throttleFirst(3, TimeUnit.SECONDS)
+                //.throttleFirst(3, TimeUnit.SECONDS)
+                .take(1)
                 .subscribe {
                     accountItemListner.onAccountClick(accountList[position])
+                    debugLog("subscribe on account click")
                 })
     }
 

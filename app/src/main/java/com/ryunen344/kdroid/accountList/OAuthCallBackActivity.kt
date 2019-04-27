@@ -1,5 +1,6 @@
 package com.ryunen344.kdroid.accountList
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -62,6 +63,10 @@ class OAuthCallBackActivity : AppCompatActivity() {
         }
 
         callback_button.setOnClickListener {
+            var intent: Intent = Intent(this, AccountListActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+            overridePendingTransition(0, 0)
             finish()
         }
 

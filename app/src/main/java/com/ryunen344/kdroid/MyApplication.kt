@@ -16,10 +16,10 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        //db初期化
+        //init db
         AccountDatabase.init(this)
 
-        //di注入
+        //dependency inject
         startKoin {
             androidLogger(Level.DEBUG)
             androidContext(this@MyApplication)

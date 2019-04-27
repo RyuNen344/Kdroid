@@ -59,6 +59,7 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
 
             //set image icon who retweeted
             holder.rt_icon.visibility = View.INVISIBLE
+
             holder.main_color_bar.setBackgroundColor(Color.TRANSPARENT)
         }
 
@@ -92,18 +93,6 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
                 .load(tweetStatus.user.biggerProfileImageURLHttps)
                 .resize(50, 50)
                 .into(holder.main_icon)
-    }
-
-    private fun initRetweet(holder: ViewHolder, tweet: Status) {
-
-    }
-
-    private fun initMineTweet(holder: ViewHolder, tweet: Status) {
-
-    }
-
-    private fun initReply(holder: ViewHolder, tweet: Status) {
-
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
