@@ -16,4 +16,10 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_login">Login</string>
+
+
+    <string name="contentDescription_main_icon">this is main icon image</string>
+    <string name="contentDescription_rt_icon">this is rt icon image</string>
+    <string name="contentDescription_main_lock_icon">this is lock icon image</string>
+    <string name="contentDescription_image">this is tweet image</string>
 </resources>

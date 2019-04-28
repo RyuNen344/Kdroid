@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.UtilProvider
+import com.ryunen344.kdroid.util.debugLog
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_main.view.*
 import org.jsoup.Jsoup
@@ -92,7 +93,23 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
         Picasso.get()
                 .load(tweetStatus.user.biggerProfileImageURLHttps)
                 .resize(50, 50)
+                .placeholder(R.drawable.ic_loading_image_24dp)
+                .error(R.drawable.ic_loading_image_24dp)
                 .into(holder.main_icon)
+
+
+        //set image
+        if (tweetStatus.mediaEntities.isNotEmpty()) {
+            debugLog("image load")
+            holder.main_image1.visibility = ImageView.VISIBLE
+            Picasso.get()
+                    .load(tweetStatus.mediaEntities[0].mediaURLHttps)
+                    .placeholder(R.drawable.ic_loading_image_24dp)
+                    .error(R.drawable.ic_loading_image_24dp)
+                    .into(holder.main_image1)
+        } else {
+            holder.main_image1.visibility = ImageView.GONE
+        }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -104,6 +121,9 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
         var main_lock_icon: ImageView = itemView.main_lock_icon
         var main_via_and_date: TextView = itemView.main_via_and_date
         var main_description: TextView = itemView.main_description
-
+        var main_image1: ImageView = itemView.main_image1
+        var main_image2: ImageView = itemView.main_image2
+        var main_image3: ImageView = itemView.main_image3
+        var main_image4: ImageView = itemView.main_image4
     }
 }
