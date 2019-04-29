@@ -28,6 +28,8 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
     private val HTML_VIA_PREFIX: String = "<html><head></head><body>"
     private val HTML_VIA_SUFIX: String = "</body></html>"
 
+    private var mPicasso: Picasso = Picasso.get()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)
         return MainAdapter.ViewHolder(view)
@@ -42,6 +44,10 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        //init picasso instance
+        mPicasso.setIndicatorsEnabled(true)
+        mPicasso.isLoggingEnabled = true
 
         //set status bar
         if (mainList[position].isRetweet) {
@@ -90,7 +96,7 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
 
 
         //set image icon
-        Picasso.get()
+        mPicasso
                 .load(tweetStatus.user.biggerProfileImageURLHttps)
                 .resize(50, 50)
                 .placeholder(R.drawable.ic_loading_image_24dp)
@@ -101,8 +107,9 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
         //set image
         if (tweetStatus.mediaEntities.isNotEmpty()) {
             debugLog("image load")
+            debugLog("image url = " + tweetStatus.mediaEntities[0].mediaURLHttps)
             holder.main_image1.visibility = ImageView.VISIBLE
-            Picasso.get()
+            mPicasso
                     .load(tweetStatus.mediaEntities[0].mediaURLHttps)
                     .placeholder(R.drawable.ic_loading_image_24dp)
                     .error(R.drawable.ic_loading_image_24dp)

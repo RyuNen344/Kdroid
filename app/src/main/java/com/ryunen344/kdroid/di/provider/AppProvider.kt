@@ -1,5 +1,6 @@
 package com.ryunen344.kdroid.di.provider
 
+import com.squareup.picasso.Picasso
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -39,5 +40,10 @@ class AppProvider{
         var configuration : Configuration = builder.build()
         var factory : TwitterFactory = TwitterFactory(configuration)
         twitter = factory.instance
+    }
+
+    fun providePiccaso(): Picasso {
+        var picasso: Picasso = Picasso.get()
+        return picasso
     }
 }

@@ -5,6 +5,7 @@ import com.ryunen344.kdroid.data.db.AccountDatabase
 import com.ryunen344.kdroid.di.module.ApiModule
 import com.ryunen344.kdroid.di.module.AppModule
 import com.ryunen344.kdroid.di.module.UtilModule
+import com.ryunen344.kdroid.util.debugLog
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
@@ -15,6 +16,7 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        debugLog("start")
 
         //init db
         AccountDatabase.init(this)
@@ -26,6 +28,8 @@ class MyApplication : Application() {
             androidFileProperties()
             modules(AppModule, UtilModule, ApiModule)
         }
+
+        debugLog("end")
     }
 
 }
