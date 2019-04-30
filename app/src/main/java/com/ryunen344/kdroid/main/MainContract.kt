@@ -8,7 +8,10 @@ interface MainContract {
 
     interface View : BaseView<Presenter> {
         fun showTweetList(mainList : List<Status>)
-        fun addNewTweet()
+        fun showAddNewTweet()
+        fun showMediaViewer(mediaUrl: String)
+        fun showTweetDetail()
+        fun showProfile()
         fun showSuccessfullyTweet()
         fun showFailTweet()
     }
@@ -16,12 +19,17 @@ interface MainContract {
     interface Presenter : BasePresenter {
         fun loadTweetList()
         fun loadMoreTweetList(currentPage: Int)
+        fun addNewTweet()
+        fun openMedia(mediaUrl: String)
         fun openTweetDetail()
+        fun openProfile()
         fun result(requestCode : Int, resultCode : Int)
         fun clearDisposable()
     }
 
     interface MainItemListner {
         fun onAccountClick()
+        fun onImageClick(mediaUrl: String)
+        fun onTweetClick()
     }
 }

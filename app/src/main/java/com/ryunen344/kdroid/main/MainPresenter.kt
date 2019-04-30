@@ -6,6 +6,7 @@ import com.ryunen344.kdroid.data.dao.AccountDao
 import com.ryunen344.kdroid.data.db.AccountDatabase
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
+import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.util.debugLog
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -72,9 +73,20 @@ class MainPresenter(val mainView: MainContract.View, val appProvider: AppProvide
         mCompositeDisposable.add(disposable)
     }
 
+    override fun addNewTweet() {
+        mainView.showAddNewTweet()
+    }
+
+    override fun openMedia(mediaUrl: String) {
+        mainView.showMediaViewer(mediaUrl)
+    }
+
+    override fun openProfile() {
+        mainView.showProfile()
+    }
+
     override fun openTweetDetail() {
-        debugLog("start")
-        debugLog("end")
+        mainView.showTweetDetail()
     }
 
     override fun result(requestCode: Int, resultCode: Int) {
@@ -85,6 +97,9 @@ class MainPresenter(val mainView: MainContract.View, val appProvider: AppProvide
                     Activity.RESULT_OK -> mainView.showSuccessfullyTweet()
                     Activity.RESULT_CANCELED -> mainView.showFailTweet()
                 }
+            }
+            MediaViewerActivity.REQUEST_SHOW_MEDIA -> {
+                debugLog("media finish()")
             }
         }
         debugLog("end")

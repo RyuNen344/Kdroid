@@ -22,6 +22,7 @@ import com.ryunen344.kdroid.R.string.consumer_key
 import com.ryunen344.kdroid.R.string.consumer_secret_key
 import com.ryunen344.kdroid.data.Account
 import com.ryunen344.kdroid.main.MainActivity
+import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.activity_account_lsit.*
 import kotlinx.android.synthetic.main.fragment_account_list.*
@@ -52,7 +53,7 @@ class AccountListFragment : Fragment(), AccountListContract.View {
     private var itemListener: AccountListContract.AccountItemListner = object : AccountListContract.AccountItemListner {
         override fun onAccountClick(clickedAccount: Account) {
             //fixme
-            println("open timeline")
+            debugLog("open timeline")
             openAccountTimeLine(clickedAccount)
         }
     }
@@ -77,10 +78,9 @@ class AccountListFragment : Fragment(), AccountListContract.View {
             noAccountListMainView = noAccountListMain
             noAccountListAddView = noAccountListAdd
 
-
         }
 
-        //divier set
+        //divider set
         val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         mRecyclerView.addItemDecoration(itemDecoration)
 
@@ -101,7 +101,7 @@ class AccountListFragment : Fragment(), AccountListContract.View {
     }
 
     override fun showAccountList(accountList: List<Account>) {
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + accountList.size)
+        debugLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + accountList.size)
         accountListAdapter.accountList = accountList
         accountListView.visibility = View.VISIBLE
         noAccountListView.visibility = View.GONE

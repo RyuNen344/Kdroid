@@ -1,5 +1,6 @@
 package com.ryunen344.kdroid.main
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -14,6 +15,7 @@ import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_main
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
 import com.ryunen344.kdroid.di.provider.UtilProvider
+import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,12 +24,11 @@ import kotlinx.android.synthetic.main.fragment_main.view.*
 import org.koin.android.ext.android.inject
 import twitter4j.Status
 
-class MainFragment : Fragment(), MainContract.View{
-
+class MainFragment : Fragment(), MainContract.View {
 
     val utilProvider: UtilProvider by inject()
-    lateinit var mPresenter : MainContract.Presenter
-    lateinit var mainListView : LinearLayout
+    lateinit var mPresenter: MainContract.Presenter
+    lateinit var mainListView: LinearLayout
     lateinit var mLayoutManager: LinearLayoutManager
     lateinit var mRecyclerView: RecyclerView
 
@@ -37,18 +38,32 @@ class MainFragment : Fragment(), MainContract.View{
 
 
     private var itemListener: MainContract.MainItemListner = object : MainContract.MainItemListner {
+        override fun onImageClick(mediaUrl: String) {
+            debugLog("start")
+            mPresenter.openMedia(mediaUrl)
+            debugLog("end")
+        }
+
+        override fun onTweetClick() {
+            //fixme
+            debugLog("start")
+            mPresenter.openTweetDetail()
+            debugLog("end")
+        }
+
         override fun onAccountClick() {
             //fixme
-            println("open timeline")
+            debugLog("start")
+            debugLog("end")
         }
     }
 
     private val mainAdapter = MainAdapter(ArrayList(0), itemListener, utilProvider)
 
-    override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var root: View = inflater.inflate(fragment_main, container, false)
 
-        with(root){
+        with(root) {
             mLayoutManager = LinearLayoutManager(context)
             mRecyclerView = main_list.apply {
                 this.layoutManager = mLayoutManager
@@ -78,7 +93,7 @@ class MainFragment : Fragment(), MainContract.View{
             true
         }
         activity?.fab?.setOnClickListener {
-            addNewTweet()
+            showAddNewTweet()
         }
 
         //configure timeline_navigation bar
@@ -100,7 +115,7 @@ class MainFragment : Fragment(), MainContract.View{
         return root
     }
 
-    override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         main_list.adapter = mainAdapter
     }
 
@@ -114,18 +129,34 @@ class MainFragment : Fragment(), MainContract.View{
         mPresenter.clearDisposable()
     }
 
-    override fun showTweetList(mainList : List<Status>) {
+    override fun showTweetList(mainList: List<Status>) {
         mainAdapter.mainList = mainList
         mainAdapter.notifyDataSetChanged()
     }
 
-    override fun addNewTweet() {
+    override fun showAddNewTweet() {
         //fixme
         val intent = Intent(context, AddTweetReplyActivity::class.java)
         startActivityForResult(intent, AddTweetReplyActivity.REQUEST_ADD_TWEET)
     }
 
-    override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?) {
+    override fun showMediaViewer(mediaUrl: String) {
+        val intent = Intent(context, MediaViewerActivity::class.java).apply {
+            putExtra(MediaViewerActivity.INTENT_KEY_MEDIA_URL, mediaUrl)
+        }
+        startActivityForResult(intent, MediaViewerActivity.REQUEST_SHOW_MEDIA,
+                ActivityOptions.makeCustomAnimation(context, 0, 0).toBundle())
+    }
+
+    override fun showTweetDetail() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showProfile() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         mPresenter.result(requestCode, resultCode)
     }
 
@@ -145,16 +176,15 @@ class MainFragment : Fragment(), MainContract.View{
     }
 
 
-    override fun onCreateOptionsMenu(menu : Menu, inflater : MenuInflater) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.timeline_navigation, menu)
     }
 
-    override fun setPresenter(presenter : MainContract.Presenter) {
-        ensureNotNull(presenter){ p ->
+    override fun setPresenter(presenter: MainContract.Presenter) {
+        ensureNotNull(presenter) { p ->
             mPresenter = p
         }
     }
-
 
 
 }

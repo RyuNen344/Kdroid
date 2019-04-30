@@ -114,6 +114,12 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
                     .placeholder(R.drawable.ic_loading_image_24dp)
                     .error(R.drawable.ic_loading_image_24dp)
                     .into(holder.main_image1)
+
+            holder.main_image1.setOnClickListener {
+                mainItemListner.onImageClick(tweetStatus.mediaEntities[0].mediaURLHttps)
+            }
+
+
         } else {
             holder.main_image1.visibility = ImageView.GONE
         }

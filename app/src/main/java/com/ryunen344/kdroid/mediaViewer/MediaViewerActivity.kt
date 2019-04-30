@@ -13,6 +13,11 @@ class MediaViewerActivity : AppCompatActivity() {
     lateinit var mPresenter: MediaViewerContract.Presenter
     private val appProvider: AppProvider by inject()
 
+    companion object {
+        val REQUEST_SHOW_MEDIA: Int = 20
+        val INTENT_KEY_MEDIA_URL: String = "key_media_url"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         debugLog("start")
         super.onCreate(savedInstanceState)
@@ -23,8 +28,13 @@ class MediaViewerActivity : AppCompatActivity() {
                     replaceFragmentInActivity(supportFragmentManager, it, mediaViewerFrame.id)
                 }
 
-        mPresenter = MediaViewerPresenter(mediaViewerFragment!!, appProvider)
+        mPresenter = MediaViewerPresenter(mediaViewerFragment!!, appProvider, intent.getStringExtra(INTENT_KEY_MEDIA_URL))
         debugLog("end")
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(0, 0)
     }
 
 }

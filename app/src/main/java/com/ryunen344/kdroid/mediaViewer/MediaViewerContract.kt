@@ -6,11 +6,14 @@ import com.ryunen344.kdroid.BaseView
 interface MediaViewerContract {
 
     interface View : BaseView<Presenter> {
-
+        fun showImage(mediaUrl: String)
     }
 
     interface Presenter : BasePresenter {
-
+        fun saveImage()
+        fun reloadImage()
+        fun rotateRight()
+        fun rotateLeft()
     }
 
 
