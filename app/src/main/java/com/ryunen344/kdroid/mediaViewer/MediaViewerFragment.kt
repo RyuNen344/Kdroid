@@ -10,6 +10,7 @@ import com.ryunen344.kdroid.R.layout.fragment_media_viewer
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_media_viewer.*
 import kotlinx.android.synthetic.main.fragment_media_viewer.view.*
 
 class MediaViewerFragment : Fragment(), MediaViewerContract.View {
@@ -49,6 +50,20 @@ class MediaViewerFragment : Fragment(), MediaViewerContract.View {
         //init picasso instance
         mPicasso.setIndicatorsEnabled(true)
         mPicasso.isLoggingEnabled = true
+
+        //init save button
+        activity?.saveImageButton?.setOnClickListener {
+            debugLog("start saveImageButton onClick")
+            mPresenter.saveImage()
+            debugLog("end saveImageButton onClick")
+
+        }
+
+        //init close button
+        activity?.finishViewerButton?.setOnClickListener {
+            activity?.finish()
+        }
+
         debugLog("end")
     }
 
