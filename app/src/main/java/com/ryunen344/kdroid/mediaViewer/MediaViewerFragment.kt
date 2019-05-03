@@ -54,7 +54,7 @@ class MediaViewerFragment : Fragment(), MediaViewerContract.View {
         //init save button
         activity?.saveImageButton?.setOnClickListener {
             debugLog("start saveImageButton onClick")
-            mPresenter.saveImage()
+            mPresenter.saveImage(context!!)
             debugLog("end saveImageButton onClick")
 
         }

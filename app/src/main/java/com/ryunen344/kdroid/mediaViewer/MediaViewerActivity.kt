@@ -1,5 +1,7 @@
 package com.ryunen344.kdroid.mediaViewer
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.ryunen344.kdroid.R.layout.activity_media_viewer
@@ -22,6 +24,11 @@ class MediaViewerActivity : AppCompatActivity() {
         debugLog("start")
         super.onCreate(savedInstanceState)
         setContentView(activity_media_viewer)
+
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 0)
+        }
+        //requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),0)
 
         var mediaViewerFragment: MediaViewerFragment? = supportFragmentManager.findFragmentById(mediaViewerFrame.id) as MediaViewerFragment?
                 ?: MediaViewerFragment.newInstance().also {

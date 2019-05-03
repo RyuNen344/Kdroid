@@ -1,5 +1,6 @@
 package com.ryunen344.kdroid.mediaViewer
 
+import android.content.Context
 import com.ryunen344.kdroid.BasePresenter
 import com.ryunen344.kdroid.BaseView
 
@@ -10,7 +11,7 @@ interface MediaViewerContract {
     }
 
     interface Presenter : BasePresenter {
-        fun saveImage()
+        fun saveImage(context: Context)
         fun reloadImage()
         fun rotateRight()
         fun rotateLeft()
