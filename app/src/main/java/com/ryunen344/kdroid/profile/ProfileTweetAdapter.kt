@@ -9,7 +9,7 @@ import com.ryunen344.kdroid.di.provider.UtilProvider
 import kotlinx.android.synthetic.main.item_main.view.*
 import twitter4j.Status
 
-class ProfileAdapter(mainList: List<Status>, val profileItemListner: ProfileContract.ProfileItemListner, val utilProvider: UtilProvider) : RecyclerView.Adapter<ProfileAdapter.ViewHolder>() {
+class ProfileTweetAdapter(mainList: List<Status>, val profileItemListner: ProfileContract.ProfileItemListner, val utilProvider: UtilProvider) : RecyclerView.Adapter<ProfileTweetAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

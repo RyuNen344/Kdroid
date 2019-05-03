@@ -11,7 +11,7 @@ import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
-import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import org.koin.android.ext.android.inject
 
 class ProfileFragment : Fragment(), ProfileContract.View {
@@ -21,15 +21,7 @@ class ProfileFragment : Fragment(), ProfileContract.View {
     private lateinit var mSectionsPagerAdapter: ProfileSectionsPagerAdapter
 
     companion object {
-        private val ARG_SECTION_NUMBER = "section_number"
-
-        fun newInstance(sectionNumber: Int): ProfileFragment {
-            val fragment = ProfileFragment()
-            val args = Bundle()
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber)
-            fragment.arguments = args
-            return fragment
-        }
+        fun newInstance() = ProfileFragment()
     }
 
     private var itemListner: ProfileContract.ProfileItemListner = object : ProfileContract.ProfileItemListner {
@@ -61,20 +53,20 @@ class ProfileFragment : Fragment(), ProfileContract.View {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         debugLog("start")
         super.onActivityCreated(savedInstanceState)
-        mSectionsPagerAdapter = ProfileSectionsPagerAdapter(itemListner, utilProvider, fragmentManager!!)
+        mSectionsPagerAdapter = ProfileSectionsPagerAdapter(fragmentManager!!)
         debugLog("end")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         debugLog("start")
-        val rootView = inflater.inflate(R.layout.fragment_profile, container, false)
+        val root = inflater.inflate(R.layout.fragment_profile, container, false)
         //rootView.section_label.text = getString(R.string.section_format, arguments?.getInt(ARG_SECTION_NUMBER))
         view_pager_container.adapter = mSectionsPagerAdapter
         view_pager_container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(profileTabs))
         profileTabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(view_pager_container))
 
         debugLog("end")
-        return rootView
+        return root
     }
 
     override fun showError(e: Throwable) {

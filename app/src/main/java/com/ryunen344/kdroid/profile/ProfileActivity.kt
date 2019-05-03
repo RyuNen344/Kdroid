@@ -8,18 +8,15 @@ import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.main.MainContract
 import com.ryunen344.kdroid.util.replaceFragmentInActivity
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_profile.fab
-import kotlinx.android.synthetic.main.activity_profile.toolbar
+import kotlinx.android.synthetic.main.activity_profile.*
 import org.koin.android.ext.android.inject
 
 class ProfileActivity : AppCompatActivity() {
 
     val appProvider: AppProvider by inject()
     val apiProvider: ApiProvider by inject()
-    lateinit var mPresenter: MainContract.Presenter
+    lateinit var mPresenter: ProfileContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +30,9 @@ class ProfileActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
 
-        var profileFragment: ProfileFragment? = supportFragmentManager.findFragmentById(mainFrame.id) as ProfileFragment?
-                ?: ProfileFragment.newInstance(0).also {
-                    replaceFragmentInActivity(supportFragmentManager, it, mainFrame.id)
+        var profileFragment: ProfileFragment? = supportFragmentManager.findFragmentById(profileFrame.id) as ProfileFragment?
+                ?: ProfileFragment.newInstance().also {
+                    replaceFragmentInActivity(supportFragmentManager, it, profileFrame.id)
                 }
 
         mPresenter = ProfilePresenter(profileFragment!!, appProvider, apiProvider)
