@@ -1,4 +1,4 @@
-package com.ryunen344.kdroid.profile
+package com.ryunen344.kdroid.profile.user
 
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +9,7 @@ import com.ryunen344.kdroid.di.provider.UtilProvider
 import kotlinx.android.synthetic.main.item_main.view.*
 import twitter4j.Status
 
-class ProfileTweetAdapter(mainList: List<Status>, val profileItemListner: ProfileContract.ProfileItemListner, val utilProvider: UtilProvider) : RecyclerView.Adapter<ProfileTweetAdapter.ViewHolder>() {
+class ProfileUserAdapter(mainList: List<Status>, val profileItemListner: ProfileUserContract.ProfileItemListner, val utilProvider: UtilProvider) : RecyclerView.Adapter<ProfileUserAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

@@ -1,9 +1,9 @@
-package com.ryunen344.kdroid.profile
+package com.ryunen344.kdroid.profile.user
 
 import com.ryunen344.kdroid.BasePresenter
 import com.ryunen344.kdroid.BaseView
 
-interface ProfileContract {
+interface ProfileUserContract {
 
     interface View : BaseView<Presenter> {
 
