@@ -3,6 +3,7 @@ package com.ryunen344.kdroid.main
 import com.ryunen344.kdroid.BasePresenter
 import com.ryunen344.kdroid.BaseView
 import twitter4j.Status
+import twitter4j.User
 
 interface MainContract {
 
@@ -11,7 +12,7 @@ interface MainContract {
         fun showAddNewTweet()
         fun showMediaViewer(mediaUrl: String)
         fun showTweetDetail()
-        fun showProfile()
+        fun showProfile(user: User)
         fun showSuccessfullyTweet()
         fun showFailTweet()
     }
@@ -22,13 +23,13 @@ interface MainContract {
         fun addNewTweet()
         fun openMedia(mediaUrl: String)
         fun openTweetDetail()
-        fun openProfile()
+        fun openProfile(user: User)
         fun result(requestCode : Int, resultCode : Int)
         fun clearDisposable()
     }
 
     interface MainItemListner {
-        fun onAccountClick()
+        fun onAccountClick(user: User)
         fun onImageClick(mediaUrl: String)
         fun onTweetClick()
     }

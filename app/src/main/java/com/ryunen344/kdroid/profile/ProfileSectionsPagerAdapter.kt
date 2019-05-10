@@ -19,4 +19,13 @@ class ProfileSectionsPagerAdapter(fragmentManager: FragmentManager) : FragmentPa
         return 4
     }
 
+    override fun getPageTitle(position: Int): CharSequence? {
+        return when (position) {
+            0 -> "tweet"
+            1 -> "favorite"
+            3 -> "follow"
+            else -> "follower"
+        }
+    }
+
 }

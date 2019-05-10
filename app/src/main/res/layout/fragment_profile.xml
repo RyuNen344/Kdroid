@@ -8,42 +8,48 @@
         android:fitsSystemWindows="true"
         tools:context=".profile.ProfileFragment">
 
-    <com.google.android.material.tabs.TabLayout
-            android:id="@+id/profileTabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItemTweet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="tweet item"/>
-
-        <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItemFavorite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="favorite item"/>
-
-        <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItemFollow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="follow item"/>
-
-        <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItemFollower"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="follower item"/>
-
-    </com.google.android.material.tabs.TabLayout>
-
     <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.google.android.material.tabs.TabLayout
+                android:id="@+id/profileTabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabBackground="@color/colorPrimaryDark"
+                app:tabTextColor="@color/design_default_color_on_primary"
+                app:tabSelectedTextColor="@color/colorPrimary"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tabItemTweet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="tweet item"/>
+
+            <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tabItemFavorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="favorite item"/>
+
+            <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tabItemFollow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="follow item"/>
+
+            <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tabItemFollower"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="follower item"/>
+
+        </com.google.android.material.tabs.TabLayout>
+
+    </androidx.viewpager.widget.ViewPager>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

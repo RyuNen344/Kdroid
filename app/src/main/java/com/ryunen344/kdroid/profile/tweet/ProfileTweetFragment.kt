@@ -1,5 +1,7 @@
 package com.ryunen344.kdroid.profile.tweet
 
+import android.app.ActivityOptions
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +15,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R.layout.fragment_profile_tweet
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.main.EndlessScrollListener
+import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.fragment_profile_tweet.*
 import kotlinx.android.synthetic.main.fragment_profile_tweet.view.*
 import org.koin.android.ext.android.inject
+import twitter4j.Status
 
 class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
 
@@ -85,8 +89,31 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
     }
 
     override fun onResume() {
+        debugLog("start")
         super.onResume()
-        mPresenter.start()
+        debugLog("end")
+        //mPresenter.start()
+    }
+
+    override fun showTweetList(mainList: List<Status>) {
+        profileTweetAdapter.profileTweetList = mainList
+        profileTweetAdapter.notifyDataSetChanged()
+    }
+
+    override fun showMediaViewer(mediaUrl: String) {
+        val intent = Intent(context, MediaViewerActivity::class.java).apply {
+            putExtra(MediaViewerActivity.INTENT_KEY_MEDIA_URL, mediaUrl)
+        }
+        startActivityForResult(intent, MediaViewerActivity.REQUEST_SHOW_MEDIA,
+                ActivityOptions.makeCustomAnimation(context, 0, 0).toBundle())
+    }
+
+    override fun showTweetDetail() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showProfile() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun setPresenter(presenter: ProfileTweetContract.Presenter) {

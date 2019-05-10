@@ -70,7 +70,7 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
             holder.main_color_bar.setBackgroundColor(Color.TRANSPARENT)
         }
 
-        holder.itemView.setOnClickListener { mainItemListner.onAccountClick() }
+        //holder.itemView.setOnClickListener { mainItemListner.onAccountClick() }
     }
 
     private fun initTweet(holder: ViewHolder, tweetStatus: Status) {
@@ -102,6 +102,9 @@ class MainAdapter(mainList: List<Status>, val mainItemListner: MainContract.Main
                 .placeholder(R.drawable.ic_loading_image_24dp)
                 .error(R.drawable.ic_loading_image_24dp)
                 .into(holder.main_icon)
+        holder.main_icon.setOnClickListener {
+            mainItemListner.onAccountClick(tweetStatus.user)
+        }
 
 
         //set image

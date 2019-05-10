@@ -4,7 +4,7 @@ import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.util.debugLog
 
-class ProfilePresenter(val profileView: ProfileContract.View, val appProvider: AppProvider, val apiProvider: ApiProvider) : ProfileContract.Presenter {
+class ProfilePresenter(val profileView: ProfileContract.View, val appProvider: AppProvider, val apiProvider: ApiProvider, val userId: Long) : ProfileContract.Presenter {
 
     init {
         profileView.setPresenter(this)

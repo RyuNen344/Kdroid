@@ -14,6 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import twitter4j.Paging
 import twitter4j.Status
 import twitter4j.Twitter
+import twitter4j.User
 import twitter4j.auth.AccessToken
 
 class MainPresenter(val mainView: MainContract.View, val appProvider: AppProvider, val apiProvider: ApiProvider, val userId: Long) : MainContract.Presenter {
@@ -81,8 +82,8 @@ class MainPresenter(val mainView: MainContract.View, val appProvider: AppProvide
         mainView.showMediaViewer(mediaUrl)
     }
 
-    override fun openProfile() {
-        mainView.showProfile()
+    override fun openProfile(user: User) {
+        mainView.showProfile(user)
     }
 
     override fun openTweetDetail() {

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
@@ -18,6 +17,10 @@ class ProfileActivity : AppCompatActivity() {
     val apiProvider: ApiProvider by inject()
     lateinit var mPresenter: ProfileContract.Presenter
 
+    companion object {
+        val INTENT_KEY_USER_ID: String = "key_user_id"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -25,17 +28,12 @@ class ProfileActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-
         var profileFragment: ProfileFragment? = supportFragmentManager.findFragmentById(profileFrame.id) as ProfileFragment?
                 ?: ProfileFragment.newInstance().also {
                     replaceFragmentInActivity(supportFragmentManager, it, profileFrame.id)
                 }
 
-        mPresenter = ProfilePresenter(profileFragment!!, appProvider, apiProvider)
+        mPresenter = ProfilePresenter(profileFragment!!, appProvider, apiProvider, intent.getLongExtra(INTENT_KEY_USER_ID, 0))
 
     }
 
@@ -52,7 +50,7 @@ class ProfileActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.wrap) {
             return true
         }
 

@@ -16,6 +16,7 @@ import com.ryunen344.kdroid.R.layout.fragment_main
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
+import com.ryunen344.kdroid.profile.ProfileActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.activity_main.*
@@ -23,6 +24,7 @@ import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
 import org.koin.android.ext.android.inject
 import twitter4j.Status
+import twitter4j.User
 
 class MainFragment : Fragment(), MainContract.View {
 
@@ -51,9 +53,10 @@ class MainFragment : Fragment(), MainContract.View {
             debugLog("end")
         }
 
-        override fun onAccountClick() {
+        override fun onAccountClick(user: User) {
             //fixme
             debugLog("start")
+            mPresenter.openProfile(user)
             debugLog("end")
         }
     }
@@ -152,8 +155,11 @@ class MainFragment : Fragment(), MainContract.View {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun showProfile() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun showProfile(user: User) {
+        val intent = Intent(context, ProfileActivity::class.java).apply {
+            putExtra(ProfileActivity.INTENT_KEY_USER_ID, user.id)
+        }
+        startActivity(intent)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

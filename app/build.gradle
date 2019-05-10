@@ -10,7 +10,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.ryunen344.kdroid"
-        minSdkVersion 26
+        minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -53,7 +53,7 @@ dependencies {
     //room
     def room_version = "2.1.0-alpha06"
     implementation "androidx.room:room-runtime:$room_version"
-    kapt  "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
+    kapt "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
     implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
     implementation "androidx.room:room-guava:$room_version"
@@ -80,8 +80,10 @@ dependencies {
 
     //coroutines
     def coroutines_version = '1.0.1' //Kotlin coroutines用ライブラリ(async, await)のバージョン
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version" //Kotlin coroutines用ライブラリ(async, await)
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version" //Kotlin coroutines用ライブラリ(async, await
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    //Kotlin coroutines用ライブラリ(async, await)
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    //Kotlin coroutines用ライブラリ(async, await
 
     implementation 'com.google.android.material:material:1.1.0-alpha05'
     //implementation "android.arch.navigation:navigation-common-ktx:1.0.0"
