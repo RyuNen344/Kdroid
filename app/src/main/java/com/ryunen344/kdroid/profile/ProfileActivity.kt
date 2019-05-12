@@ -9,14 +9,40 @@ import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.replaceFragmentInActivity
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_profile.*
 import org.koin.android.ext.android.inject
+import twitter4j.User
 
 class ProfileActivity : AppCompatActivity() {
+
 
     val appProvider: AppProvider by inject()
     val apiProvider: ApiProvider by inject()
     lateinit var mPresenter: ProfileContract.Presenter
+    private var mPicasso: Picasso = Picasso.get()
+
+
+    private var infoListener: ProfileContract.ProfileInfoListener = object : ProfileContract.ProfileInfoListener {
+        override fun showUserInfo(user: User) {
+            debugLog("start")
+
+            debugLog(user.screenName)
+            debugLog(user.name)
+            debugLog(user.description)
+            profile_screen_name.text = user.screenName
+            profile_description.text = user.description
+            profile_place.text = user.name
+
+            mPicasso
+                    .load(user.profileBanner1500x500URL)
+                    .resize(1500, 500)
+                    .placeholder(R.drawable.ic_loading_image_24dp)
+                    .error(R.drawable.ic_loading_image_24dp)
+                    .into(profile_banner)
+            debugLog("start")
+        }
+    }
 
     companion object {
         val INTENT_KEY_USER_ID: String = "key_user_id"
@@ -27,8 +53,8 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(false)
 
         var profileFragment: ProfileFragment? = supportFragmentManager.findFragmentById(profileFrame.id) as ProfileFragment?
                 ?: ProfileFragment.newInstance().also {
@@ -36,9 +62,8 @@ class ProfileActivity : AppCompatActivity() {
                     replaceFragmentInActivity(supportFragmentManager, it, profileFrame.id)
                 }
 
-        mPresenter = ProfilePresenter(profileFragment!!, appProvider, apiProvider, intent.getLongExtra(INTENT_KEY_USER_ID, 0))
+        mPresenter = ProfilePresenter(profileFragment!!, appProvider, apiProvider, intent.getLongExtra(INTENT_KEY_USER_ID, 0), infoListener)
         debugLog("end")
-
 
     }
 
@@ -54,15 +79,15 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         debugLog("start")
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-        if (id == R.id.wrap) {
-            return true
+        when (item.itemId) {
+            android.R.id.home -> {
+                debugLog("back button pressed")
+                finish()
+            }
         }
         debugLog("end")
         return super.onOptionsItemSelected(item)
     }
+
+
 }

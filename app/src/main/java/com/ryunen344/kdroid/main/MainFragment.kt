@@ -120,11 +120,11 @@ class MainFragment : Fragment(), MainContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         main_list.adapter = mainAdapter
+        mPresenter.start()
     }
 
     override fun onResume() {
         super.onResume()
-        mPresenter.start()
     }
 
     override fun onDestroy() {

@@ -7,6 +7,7 @@ import io.reactivex.schedulers.Schedulers
 import twitter4j.Paging
 import twitter4j.Status
 import twitter4j.Twitter
+import twitter4j.User
 
 class ApiProvider {
 
@@ -15,6 +16,19 @@ class ApiProvider {
         { emitter ->
             try {
                 emitter.onSuccess(twitter.getHomeTimeline(paging))
+            } catch (t: Throwable) {
+                emitter.onError(t)
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun getUserFromUserId(twitter: Twitter, userId: Long): Single<User> {
+        return Single.create(SingleOnSubscribe<User>
+        { emitter ->
+            try {
+                emitter.onSuccess(twitter.showUser(userId))
             } catch (t: Throwable) {
                 emitter.onError(t)
             }

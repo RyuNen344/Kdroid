@@ -2,22 +2,27 @@ package com.ryunen344.kdroid.profile
 
 import com.ryunen344.kdroid.BasePresenter
 import com.ryunen344.kdroid.BaseView
+import twitter4j.User
 
 interface ProfileContract {
 
     interface View : BaseView<Presenter> {
+        fun showUserInfo(user: User)
 
     }
 
     interface Presenter : BasePresenter {
-        fun loadTweetList()
-        fun loadMoreTweetList(currentPage: Int)
+        fun loadProfile(userId: Long)
         fun clearDisposable()
     }
 
-    interface ProfileItemListner {
+    interface ProfileItemListener {
         fun onAccountClick()
         fun onImageClick(mediaUrl: String)
         fun onTweetClick()
+    }
+
+    interface ProfileInfoListener {
+        fun showUserInfo(user: User)
     }
 }
