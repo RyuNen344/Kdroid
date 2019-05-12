@@ -50,24 +50,26 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         debugLog("end")
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        debugLog("start")
+
+        debugLog(container.toString())
+        val root = inflater.inflate(R.layout.fragment_profile, container, false)
+        debugLog("end")
+        return root
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         debugLog("start")
         super.onActivityCreated(savedInstanceState)
         mSectionsPagerAdapter = ProfileSectionsPagerAdapter(fragmentManager!!)
         view_pager_container.adapter = mSectionsPagerAdapter
         view_pager_container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(profileTabs))
-        profileTabs.setupWithViewPager(view_pager_container)
+//        profileTabs.setupWithViewPager(view_pager_container)
         profileTabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(view_pager_container))
         debugLog("end")
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        debugLog("start")
-
-        val root = inflater.inflate(R.layout.fragment_profile, container, false)
-        debugLog("end")
-        return root
-    }
 
     override fun showError(e: Throwable) {
         debugLog("start")
