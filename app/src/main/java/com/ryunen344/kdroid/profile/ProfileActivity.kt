@@ -36,10 +36,16 @@ class ProfileActivity : AppCompatActivity() {
 
             mPicasso
                     .load(user.profileBanner1500x500URL)
-                    .resize(1500, 500)
                     .placeholder(R.drawable.ic_loading_image_24dp)
                     .error(R.drawable.ic_loading_image_24dp)
                     .into(profile_banner)
+
+            mPicasso
+                    .load(user.originalProfileImageURLHttps)
+                    .placeholder(R.drawable.ic_loading_image_24dp)
+                    .error(R.drawable.ic_loading_image_24dp)
+                    .into(profile_icon)
+
             debugLog("start")
         }
     }
