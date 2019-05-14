@@ -19,7 +19,7 @@ import twitter4j.auth.AccessToken
 
 class MainPresenter(val mainView: MainContract.View, val appProvider: AppProvider, val apiProvider: ApiProvider, val userId: Long) : MainContract.Presenter {
 
-    lateinit var tweetLsit: List<Status>
+    lateinit var tweetList: List<Status>
     var twitter: Twitter = appProvider.provideTwitter()
     var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -43,7 +43,7 @@ class MainPresenter(val mainView: MainContract.View, val appProvider: AppProvide
                                 var paging: Paging = Paging(1, 50)
                                 val disposable: Disposable = apiProvider.getTimeLine(twitter, paging).subscribe(
                                         { list: List<Status> ->
-                                            tweetLsit = list
+                                            tweetList = list
                                             mainView.showTweetList(list)
                                         }
                                         , { e ->
@@ -64,8 +64,8 @@ class MainPresenter(val mainView: MainContract.View, val appProvider: AppProvide
         var paging: Paging = Paging(currentPage + 1, 100)
         val disposable: Disposable = apiProvider.getTimeLine(twitter, paging).subscribe(
                 { list: List<Status> ->
-                    tweetLsit = tweetLsit + list
-                    mainView.showTweetList(tweetLsit)
+                    tweetList = tweetList + list
+                    mainView.showTweetList(tweetList)
                 }
                 , { e ->
             mainView.showError(e)

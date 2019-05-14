@@ -10,8 +10,18 @@ class ProfileSectionsPagerAdapter(fragmentManager: FragmentManager) : FragmentPa
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0, 1 -> ProfileTweetFragment.newInstance()
-            else -> ProfileUserFragment.newInstance()
+            0 -> ProfileTweetFragment.newInstance().also {
+                it.mPagerPosition = position
+            }
+            1 -> ProfileTweetFragment.newInstance().also {
+                it.mPagerPosition = position
+            }
+            2 -> ProfileUserFragment.newInstance().also {
+                it.mPagerPosition = position
+            }
+            else -> ProfileUserFragment.newInstance().also {
+                it.mPagerPosition = position
+            }
         }
     }
 
@@ -23,7 +33,7 @@ class ProfileSectionsPagerAdapter(fragmentManager: FragmentManager) : FragmentPa
         return when (position) {
             0 -> "tweet"
             1 -> "favorite"
-            3 -> "follow"
+            2 -> "follow"
             else -> "follower"
         }
     }

@@ -11,7 +11,6 @@ import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import org.koin.android.ext.android.inject
 import twitter4j.User
@@ -22,7 +21,6 @@ class ProfileFragment : Fragment(), ProfileContract.View {
     private lateinit var mPresenter: ProfileContract.Presenter
     private lateinit var mSectionsPagerAdapter: ProfileSectionsPagerAdapter
     private var mUserId: Long = 0
-    private var mPicasso: Picasso = Picasso.get()
 
     companion object {
         fun newInstance() = ProfileFragment()
@@ -78,13 +76,15 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         mSectionsPagerAdapter = ProfileSectionsPagerAdapter(fragmentManager!!)
         view_pager_container.adapter = mSectionsPagerAdapter
         view_pager_container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(profileTabs))
-//        profileTabs.setupWithViewPager(view_pager_container)
+        profileTabs.setupWithViewPager(view_pager_container)
         profileTabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(view_pager_container))
         debugLog("end")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        debugLog("start")
         mPresenter.start()
+        debugLog("end")
     }
 
     override fun onDestroy() {
@@ -98,17 +98,7 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         debugLog(user.screenName)
         debugLog(user.name)
         debugLog(user.description)
-        //activity.profile_screen_name.text
-        //activity.profile_screen_name.text = user.screenName
-        //profile_description.text = user.description
-        //profile_place.text = user.name
 
-//        mPicasso
-//                .load(user.profileBanner1500x500URL)
-//                .resize(1500, 500)
-//                .placeholder(R.drawable.ic_loading_image_24dp)
-//                .error(R.drawable.ic_loading_image_24dp)
-//                .into(profile_banner)
         debugLog("start")
     }
 

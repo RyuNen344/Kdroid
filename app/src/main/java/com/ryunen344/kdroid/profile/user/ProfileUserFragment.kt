@@ -10,6 +10,7 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
 
     private val utilProvider: UtilProvider by inject()
     private lateinit var mPresenter: ProfileUserContract.Presenter
+    var mPagerPosition: Int = 0
 
     companion object {
         fun newInstance() = ProfileUserFragment()

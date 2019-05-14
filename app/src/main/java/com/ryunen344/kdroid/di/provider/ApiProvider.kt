@@ -24,7 +24,7 @@ class ApiProvider {
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun getUserFromUserId(twitter: Twitter, userId: Long): Single<User> {
+    fun getUserByUserId(twitter: Twitter, userId: Long): Single<User> {
         return Single.create(SingleOnSubscribe<User>
         { emitter ->
             try {
@@ -36,4 +36,19 @@ class ApiProvider {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
+
+    fun getUserTimelineByUserId(twitter: Twitter, paging: Paging, userId: Long): Single<List<Status>> {
+        return Single.create(SingleOnSubscribe<List<Status>>
+        { emitter ->
+            try {
+                emitter.onSuccess(twitter.getUserTimeline(userId, paging))
+            } catch (t: Throwable) {
+                emitter.onError(t)
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+
 }

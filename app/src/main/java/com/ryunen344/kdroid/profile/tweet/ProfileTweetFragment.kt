@@ -13,9 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R.layout.fragment_profile_tweet
+import com.ryunen344.kdroid.di.provider.ApiProvider
+import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.main.EndlessScrollListener
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
+import com.ryunen344.kdroid.profile.ProfileActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.fragment_profile_tweet.*
@@ -25,11 +28,15 @@ import twitter4j.Status
 
 class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
 
+    private val appProvider: AppProvider by inject()
+    private val apiProvider: ApiProvider by inject()
     private val utilProvider: UtilProvider by inject()
     private lateinit var mPresenter: ProfileTweetContract.Presenter
     lateinit var profileTweetListView: LinearLayout
     lateinit var mLayoutManager: LinearLayoutManager
     lateinit var mRecyclerView: RecyclerView
+    var mPagerPosition: Int = 0
+    private var mUserId: Long = 0
 
     companion object {
         fun newInstance() = ProfileTweetFragment()
@@ -54,6 +61,22 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
     }
 
     private val profileTweetAdapter = ProfileTweetAdapter(ArrayList(0), itemListner, utilProvider)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        debugLog("start")
+        super.onCreate(savedInstanceState)
+        val bundle: Bundle? = arguments
+        if (bundle != null) {
+            mUserId = bundle.getLong(ProfileActivity.INTENT_KEY_USER_ID)
+            debugLog("#########################mUserId is " + mUserId.toString())
+        } else {
+            debugLog("############Bundle is null")
+        }
+
+        debugLog("setPresenter")
+        ProfileTweetPresenter(this, appProvider, apiProvider)
+        debugLog("end")
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var root: View = inflater.inflate(fragment_profile_tweet, container, false)
@@ -85,14 +108,24 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        debugLog("start")
         profile_tweet_list.adapter = profileTweetAdapter
+        mPresenter.start()
+        debugLog("end")
+        debugLog("#################mPagerPosition is " + mPagerPosition.toString())
+
     }
 
     override fun onResume() {
         debugLog("start")
         super.onResume()
         debugLog("end")
-        //mPresenter.start()
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mPresenter.clearDisposable()
     }
 
     override fun showTweetList(mainList: List<Status>) {

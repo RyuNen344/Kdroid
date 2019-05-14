@@ -23,7 +23,7 @@ class ProfilePresenter(val profileView: ProfileContract.View, val appProvider: A
 
     override fun loadProfile(userId: Long) {
         debugLog("start")
-        val disposable: Disposable = apiProvider.getUserFromUserId(twitter, userId).subscribe(
+        val disposable: Disposable = apiProvider.getUserByUserId(twitter, userId).subscribe(
                 {
                     profileView.showUserInfo(it)
                     infoListener.showUserInfo(it)
