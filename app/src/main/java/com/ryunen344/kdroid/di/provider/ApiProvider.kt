@@ -50,5 +50,18 @@ class ApiProvider {
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
+    fun getUserFavoriteByUserId(twitter: Twitter, paging: Paging, userId: Long): Single<List<Status>> {
+        return Single.create(SingleOnSubscribe<List<Status>>
+        { emitter ->
+            try {
+                emitter.onSuccess(twitter.getFavorites(userId, paging))
+            } catch (t: Throwable) {
+                emitter.onError(t)
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
 
 }

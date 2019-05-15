@@ -62,7 +62,7 @@
                             android:layout_width="80sp"
                             android:layout_height="80sp"
                             android:layout_margin="@dimen/activity_horizontal_margin"
-                            android:scaleType="center"
+                            android:scaleType="centerInside"
                             tools:srcCompat="@tools:sample/avatars"
                             app:layout_constraintLeft_toLeftOf="@+id/negativeMargin"
                             app:layout_constraintTop_toBottomOf="@id/negativeMargin"

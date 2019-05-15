@@ -15,7 +15,8 @@ interface ProfileTweetContract {
 
     interface Presenter : BasePresenter {
         fun loadTweetList()
-        fun loadMoreTweetList(currentPage: Int)
+        fun loadFavoriteList()
+        fun loadMoreList(currentPage: Int)
         fun clearDisposable()
     }
 

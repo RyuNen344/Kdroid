@@ -74,7 +74,7 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
         }
 
         debugLog("setPresenter")
-        ProfileTweetPresenter(this, appProvider, apiProvider)
+        ProfileTweetPresenter(this, appProvider, apiProvider, mPagerPosition)
         debugLog("end")
     }
 
@@ -94,7 +94,7 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
         mRecyclerView.addOnScrollListener(object : EndlessScrollListener(mLayoutManager) {
             override fun onLoadMore(currentPage: Int) {
                 debugLog("current page is " + currentPage)
-                mPresenter.loadMoreTweetList(currentPage)
+                mPresenter.loadMoreList(currentPage)
             }
         })
 
