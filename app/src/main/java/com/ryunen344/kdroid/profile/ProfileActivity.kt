@@ -20,7 +20,7 @@ class ProfileActivity : AppCompatActivity() {
     val appProvider: AppProvider by inject()
     val apiProvider: ApiProvider by inject()
     lateinit var mPresenter: ProfileContract.Presenter
-    private var mPicasso: Picasso = Picasso.get()
+    private var mPicasso: Picasso = appProvider.providePiccaso()
 
 
     private var infoListener: ProfileContract.ProfileInfoListener = object : ProfileContract.ProfileInfoListener {

@@ -25,7 +25,7 @@ class MediaViewerPresenter(var mediaViewerView: MediaViewerContract.View, var ap
         mediaViewerView.setPresenter(this)
     }
 
-    private var mPicasso: Picasso = Picasso.get()
+    private var mPicasso: Picasso = appProvider.providePiccaso()
 
     override fun start() {
         debugLog("start")

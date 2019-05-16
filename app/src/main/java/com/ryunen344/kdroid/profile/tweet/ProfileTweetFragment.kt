@@ -60,7 +60,7 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
 
     }
 
-    private val profileTweetAdapter = ProfileTweetAdapter(ArrayList(0), itemListner, utilProvider)
+    private val profileTweetAdapter = ProfileTweetAdapter(ArrayList(0), itemListner, appProvider, utilProvider)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         debugLog("start")

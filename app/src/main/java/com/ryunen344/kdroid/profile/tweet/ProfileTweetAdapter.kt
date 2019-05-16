@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ryunen344.kdroid.R
+import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.debugLog
 import com.squareup.picasso.Picasso
@@ -16,7 +17,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import twitter4j.Status
 
-class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner: ProfileTweetContract.ProfileItemListner, val utilProvider: UtilProvider) : RecyclerView.Adapter<ProfileTweetAdapter.ViewHolder>() {
+class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner: ProfileTweetContract.ProfileItemListner, val appProvider: AppProvider, val utilProvider: UtilProvider) : RecyclerView.Adapter<ProfileTweetAdapter.ViewHolder>() {
 
     var profileTweetList: List<Status> = profileTweetList
         set(profileTweetList: List<Status>) {
@@ -29,7 +30,7 @@ class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner
     private val HTML_VIA_PREFIX: String = "<html><head></head><body>"
     private val HTML_VIA_SUFIX: String = "</body></html>"
 
-    private var mPicasso: Picasso = Picasso.get()
+    private var mPicasso: Picasso = appProvider.providePiccaso()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)
@@ -45,9 +46,6 @@ class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        //init picasso instance
-        mPicasso.setIndicatorsEnabled(true)
-        mPicasso.isLoggingEnabled = true
 
         //set status bar
         if (profileTweetList[position].isRetweet) {

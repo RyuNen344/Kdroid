@@ -7,17 +7,20 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_media_viewer
+import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_media_viewer.*
 import kotlinx.android.synthetic.main.fragment_media_viewer.view.*
+import org.koin.android.ext.android.inject
 
 class MediaViewerFragment : Fragment(), MediaViewerContract.View {
 
+    val appProvider: AppProvider by inject()
     lateinit var mPresenter: MediaViewerContract.Presenter
     lateinit var mImageViewer: ImageView
-    private var mPicasso: Picasso = Picasso.get()
+    private var mPicasso: Picasso = appProvider.providePiccaso()
 
     private lateinit var mScaleGestureDetector: ScaleGestureDetector
     private lateinit var mPanGestureDetector: GestureDetectorCompat
@@ -47,9 +50,6 @@ class MediaViewerFragment : Fragment(), MediaViewerContract.View {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         debugLog("start")
         super.onActivityCreated(savedInstanceState)
-        //init picasso instance
-        mPicasso.setIndicatorsEnabled(true)
-        mPicasso.isLoggingEnabled = true
 
         //init save button
         activity?.saveImageButton?.setOnClickListener {

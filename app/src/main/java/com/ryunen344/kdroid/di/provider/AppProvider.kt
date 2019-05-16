@@ -43,7 +43,10 @@ class AppProvider{
     }
 
     fun providePiccaso(): Picasso {
-        var picasso: Picasso = Picasso.get()
+        val picasso: Picasso = Picasso.get()
+        //init picasso instance
+        picasso.setIndicatorsEnabled(true)
+        picasso.isLoggingEnabled = true
         return picasso
     }
 }
