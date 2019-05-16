@@ -4,6 +4,12 @@ import android.util.Log
 import com.ryunen344.kdroid.BuildConfig
 import java.util.regex.Pattern
 
+
+fun debugLog() {
+    if (!BuildConfig.DEBUG) return
+    Log.d(getTag(), "")
+}
+
 fun debugLog(msg : String) {
     if (!BuildConfig.DEBUG) return
     Log.d(getTag(), msg)
