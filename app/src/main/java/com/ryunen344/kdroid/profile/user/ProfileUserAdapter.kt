@@ -5,11 +5,22 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_main.view.*
-import twitter4j.Status
+import twitter4j.User
 
-class ProfileUserAdapter(mainList: List<Status>, val profileItemListner: ProfileUserContract.ProfileItemListner, val utilProvider: UtilProvider) : RecyclerView.Adapter<ProfileUserAdapter.ViewHolder>() {
+class ProfileUserAdapter(profileUserList: List<User>, val profileItemListner: ProfileUserContract.ProfileItemListner, val appProvider: AppProvider, val utilProvider: UtilProvider) : RecyclerView.Adapter<ProfileUserAdapter.ViewHolder>() {
+
+    var profileUserList: List<User> = profileUserList
+        set(profileUserList: List<User>) {
+            field = profileUserList
+            notifyDataSetChanged()
+        }
+
+
+    private var mPicasso: Picasso = appProvider.providePiccaso()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

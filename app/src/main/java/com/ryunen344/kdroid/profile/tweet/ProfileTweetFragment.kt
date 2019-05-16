@@ -22,7 +22,6 @@ import com.ryunen344.kdroid.profile.ProfileActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.fragment_profile_tweet.*
-import kotlinx.android.synthetic.main.fragment_profile_tweet.view.*
 import org.koin.android.ext.android.inject
 import twitter4j.Status
 
@@ -62,6 +61,21 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
 
     private val profileTweetAdapter = ProfileTweetAdapter(ArrayList(0), itemListner, appProvider, utilProvider)
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        debugLog("start")
+        super.onActivityCreated(savedInstanceState)
+        val bundle: Bundle? = arguments
+        if (bundle != null) {
+            mUserId = bundle.getLong(ProfileActivity.INTENT_KEY_USER_ID)
+            debugLog("#########################mUserId is " + mUserId.toString())
+        } else {
+            debugLog("############Bundle is null")
+        }
+
+        debugLog("end")
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         debugLog("start")
         super.onCreate(savedInstanceState)
@@ -79,6 +93,7 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
         var root: View = inflater.inflate(fragment_profile_tweet, container, false)
 
         with(root) {
@@ -102,7 +117,8 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
         val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         mRecyclerView.addItemDecoration(itemDecoration)
 
-        setHasOptionsMenu(true)
+        //fixme
+        //setHasOptionsMenu(true)
 
         return root
     }

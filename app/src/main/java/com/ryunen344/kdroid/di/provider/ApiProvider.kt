@@ -63,5 +63,31 @@ class ApiProvider {
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
+    fun getUserFollowByUserId(twitter: Twitter, userId: Long, cursor: Long): Single<List<User>> {
+        return Single.create(SingleOnSubscribe<List<User>>
+        { emitter ->
+            try {
+                emitter.onSuccess(twitter.getFriendsList(userId, cursor))
+            } catch (t: Throwable) {
+                emitter.onError(t)
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun getUserFollowerByUserId(twitter: Twitter, userId: Long, cursor: Long): Single<List<User>> {
+        return Single.create(SingleOnSubscribe<List<User>>
+        { emitter ->
+            try {
+                emitter.onSuccess(twitter.getFollowersList(userId, cursor))
+            } catch (t: Throwable) {
+                emitter.onError(t)
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
 
 }

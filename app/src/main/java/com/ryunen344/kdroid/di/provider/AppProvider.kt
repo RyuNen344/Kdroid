@@ -30,7 +30,7 @@ class AppProvider{
     }
 
     /**
-     * this method has to call after config twitter instance
+     * this method has to call after config mTwitter instance
      */
     fun provideTwitter() : Twitter {
         return twitter
