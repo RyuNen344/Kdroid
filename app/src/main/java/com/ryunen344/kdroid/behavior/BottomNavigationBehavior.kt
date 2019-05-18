@@ -9,29 +9,31 @@ import com.google.android.material.snackbar.Snackbar
 import kotlin.math.max
 import kotlin.math.min
 
-class BottomNavigationBehavior<V : View>(context: Context?, attrs: AttributeSet? = null) : CoordinatorLayout.Behavior<V>(context, attrs) {
+class BottomNavigationBehavior<V : View>(context : Context?, attrs : AttributeSet? = null) : CoordinatorLayout.Behavior<V>(context, attrs) {
+
+    override fun layoutDependsOn(parent : CoordinatorLayout, child : V, dependency : View) : Boolean {
+        if (dependency is Snackbar.SnackbarLayout) {
+            updateSnackbar(child, dependency)
+        }
+
+        return super.layoutDependsOn(parent, child, dependency)
+    }
 
     override fun onStartNestedScroll(
-            coordinatorLayout: CoordinatorLayout, child: V, directTargetChild: View, target: View, axes: Int, type: Int
-    ): Boolean {
+            coordinatorLayout : CoordinatorLayout, child : V, directTargetChild : View, target : View, axes : Int, type : Int
+    ) : Boolean {
         return axes == View.SCROLL_AXIS_VERTICAL
     }
 
     override fun onNestedPreScroll(
-            coordinatorLayout: CoordinatorLayout, child: V, target: View, dx: Int, dy: Int, consumed: IntArray, type: Int
+            coordinatorLayout : CoordinatorLayout, child : V, target : View, dx : Int, dy : Int, consumed : IntArray, type : Int
     ) {
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
         child.translationY = max(0f, min(child.height.toFloat(), child.translationY + dy))
     }
 
-    override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
-        if (dependency is Snackbar.SnackbarLayout) {
-            updateSnackbar(child, dependency)
-        }
-        return super.layoutDependsOn(parent, child, dependency)
-    }
 
-    private fun updateSnackbar(child: View, snackbarLayout: Snackbar.SnackbarLayout) {
+    private fun updateSnackbar(child : View, snackbarLayout : Snackbar.SnackbarLayout) {
         if (snackbarLayout.layoutParams is CoordinatorLayout.LayoutParams) {
             val params = snackbarLayout.layoutParams as CoordinatorLayout.LayoutParams
 

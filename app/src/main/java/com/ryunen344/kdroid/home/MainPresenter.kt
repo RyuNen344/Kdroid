@@ -8,6 +8,7 @@ import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.errorLog
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -61,7 +62,10 @@ class MainPresenter(val mainView : MainContract.View, val appProvider : AppProvi
     }
 
     override fun loadMoreTweetList(currentPage : Int) {
-        var paging : Paging = Paging(currentPage + 1, 100)
+        errorLog("!!!!!!!!!!!!!!!  loadMoreTweetList Run")
+        errorLog("currentPage is " + currentPage)
+
+        var paging : Paging = Paging(currentPage + 1, 50)
         val disposable : Disposable = apiProvider.getTimeLine(twitter, paging).subscribe(
                 { list : List<Status> ->
                     tweetList = tweetList + list

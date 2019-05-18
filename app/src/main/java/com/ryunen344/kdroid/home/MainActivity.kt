@@ -7,7 +7,9 @@ import com.ryunen344.kdroid.R.string.consumer_key
 import com.ryunen344.kdroid.R.string.consumer_secret_key
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
+import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.replaceFragmentInActivity
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_home.*
 import org.koin.android.ext.android.inject
 import twitter4j.conf.ConfigurationBuilder
@@ -17,8 +19,10 @@ class MainActivity : AppCompatActivity() {
     val appProvider : AppProvider by inject()
     val apiProvider : ApiProvider by inject()
     lateinit var mPresenter : MainContract.Presenter
+    private var mPicasso : Picasso = appProvider.providePiccaso()
 
     override fun onCreate(savedInstanceState : Bundle?) {
+        debugLog("end")
         super.onCreate(savedInstanceState)
         setContentView(activity_home)
         setSupportActionBar(toolbar)
@@ -26,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         intent.getLongExtra("userId", 0)
 
+        //config twitter instance
         val builder : ConfigurationBuilder = ConfigurationBuilder()
         builder.setOAuthConsumerKey(getString(consumer_key))
         builder.setOAuthConsumerSecret(getString(consumer_secret_key))
@@ -37,7 +42,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
         mPresenter = MainPresenter(mainFragment!!, appProvider, apiProvider, intent.getLongExtra("userId", 0))
-
+        debugLog("end")
     }
 
 }

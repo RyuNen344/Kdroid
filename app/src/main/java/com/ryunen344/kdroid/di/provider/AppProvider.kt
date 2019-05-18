@@ -45,8 +45,8 @@ class AppProvider{
     fun providePiccaso(): Picasso {
         val picasso: Picasso = Picasso.get()
         //init picasso instance
-        picasso.setIndicatorsEnabled(true)
-        picasso.isLoggingEnabled = true
+        picasso.setIndicatorsEnabled(false)
+        picasso.isLoggingEnabled = false
         return picasso
     }
 }
