@@ -4,12 +4,14 @@ import android.util.Log
 import com.ryunen344.kdroid.BuildConfig
 import java.util.regex.Pattern
 
+<<<<<<< HEAD
 
 fun debugLog() {
-    if (!BuildConfig.DEBUG) return
-    Log.d(getTag(), "")
+    debugLog("")
 }
 
+=======
+>>>>>>> parent of 9187e1f... profile画面を開くと落ちる問題を修正
 fun debugLog(msg : String) {
     if (!BuildConfig.DEBUG) return
     Log.d(getTag(), msg)

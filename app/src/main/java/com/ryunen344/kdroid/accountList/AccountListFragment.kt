@@ -21,7 +21,7 @@ import com.ryunen344.kdroid.R.layout.fragment_account_list
 import com.ryunen344.kdroid.R.string.consumer_key
 import com.ryunen344.kdroid.R.string.consumer_secret_key
 import com.ryunen344.kdroid.data.Account
-import com.ryunen344.kdroid.main.MainActivity
+import com.ryunen344.kdroid.home.MainActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.activity_account_lsit.*

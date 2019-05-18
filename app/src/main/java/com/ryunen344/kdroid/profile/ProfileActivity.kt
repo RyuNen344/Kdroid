@@ -26,10 +26,6 @@ class ProfileActivity : AppCompatActivity() {
     private var infoListener: ProfileContract.ProfileInfoListener = object : ProfileContract.ProfileInfoListener {
         override fun showUserInfo(user: User) {
             debugLog("start")
-
-            debugLog(user.screenName)
-            debugLog(user.name)
-            debugLog(user.description)
             profile_screen_name.text = user.screenName
             profile_description.text = user.description
             profile_place.text = user.name
@@ -41,7 +37,7 @@ class ProfileActivity : AppCompatActivity() {
                     .into(profile_banner)
 
             mPicasso
-                    .load(user.originalProfileImageURLHttps)
+                    .load(user.biggerProfileImageURLHttps)
                     .placeholder(R.drawable.ic_loading_image_24dp)
                     .error(R.drawable.ic_loading_image_24dp)
                     .into(profile_icon)
@@ -51,7 +47,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     companion object {
-        val INTENT_KEY_USER_ID: String = "key_user_id"
+        const val INTENT_KEY_USER_ID : String = "key_user_id"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,11 +61,10 @@ class ProfileActivity : AppCompatActivity() {
 
         var profileFragment: ProfileFragment? = supportFragmentManager.findFragmentById(profileFrame.id) as ProfileFragment?
                 ?: ProfileFragment.newInstance().also {
-                    it.arguments = intent.extras
                     replaceFragmentInActivity(supportFragmentManager, it, profileFrame.id)
                 }
 
-        mPresenter = ProfilePresenter(profileFragment!!, appProvider, apiProvider, intent.getLongExtra(INTENT_KEY_USER_ID, 0), infoListener)
+        mPresenter = ProfilePresenter(profileFragment!!, appProvider, apiProvider, intent.extras, infoListener)
         debugLog("end")
 
     }

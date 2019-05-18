@@ -9,11 +9,11 @@ import twitter4j.Paging
 import twitter4j.Twitter
 import twitter4j.User
 
-class ProfileUserPresenter(val profileView: ProfileUserContract.View, val appProvider: AppProvider, val apiProvider: ApiProvider, val pagerPosition: Int) : ProfileUserContract.Presenter {
+class ProfileUserPresenter(val profileView : ProfileUserContract.View, val appProvider : AppProvider, val apiProvider : ApiProvider, val pagerPosition : Int) : ProfileUserContract.Presenter {
 
-    lateinit var userList: List<User>
-    var mTwitter: Twitter = appProvider.provideTwitter()
-    var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
+    lateinit var userList : List<User>
+    var mTwitter : Twitter = appProvider.provideTwitter()
+    var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
 
     init {
         profileView.setPresenter(this)
@@ -30,27 +30,58 @@ class ProfileUserPresenter(val profileView: ProfileUserContract.View, val appPro
 
     override fun loadFollowList() {
         debugLog("start")
-        var pageing: Paging = Paging(1, 50)
-        val disposable: Disposable = apiProvider.getUserFollowByUserId(mTwitter, 1366386504, -1).subscribe(
-                { list: List<User> ->
+        var pageing : Paging = Paging(1, 50)
+        val disposable : Disposable = apiProvider.getUserFollowByUserId(mTwitter, 1366386504, -1).subscribe(
+                { list : List<User> ->
                     userList = list
                     profileView.showUserList(list)
                 }
-
+                , { e ->
+            profileView.showError(e)
+        }
         )
-
+        mCompositeDisposable.add(disposable)
+        debugLog("end")
     }
 
     override fun loadFollowerList() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        debugLog("start")
+        var pageing : Paging = Paging(1, 50)
+        val disposable : Disposable = apiProvider.getUserFollowerByUserId(mTwitter, 1366386504, -1).subscribe(
+                { list : List<User> ->
+                    userList = list
+                    profileView.showUserList(list)
+                }
+                , { e ->
+            profileView.showError(e)
+        }
+        )
+        mCompositeDisposable.add(disposable)
+        debugLog("end")
     }
 
-    override fun loadMoreList(currentPage: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun loadMoreList(currentPage : Int) {
+        debugLog("start")
+        when (pagerPosition) {
+            2 -> loadMoreFollowList(currentPage)
+            3 -> loadMoreFollowerList(currentPage)
+        }
+        debugLog("end")
+    }
+
+    private fun loadMoreFollowList(currentPage : Int) {
+        debugLog("start")
+        debugLog("end")
+    }
+
+    private fun loadMoreFollowerList(currentPage : Int) {
+        debugLog("start")
+        debugLog("end")
     }
 
     override fun clearDisposable() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        debugLog("start")
+        mCompositeDisposable.clear()
+        debugLog("end")
     }
-
 }

@@ -12,7 +12,7 @@ import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.debugLog
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.item_main.view.*
+import kotlinx.android.synthetic.main.item_tweet.view.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import twitter4j.Status
@@ -33,7 +33,7 @@ class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner
     private var mPicasso: Picasso = appProvider.providePiccaso()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)
+        var view : View = LayoutInflater.from(parent.context).inflate(R.layout.item_tweet, parent, false)
         return ProfileTweetAdapter.ViewHolder(view)
     }
 
@@ -58,14 +58,14 @@ class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner
                     .resize(23, 23)
                     .into(holder.rt_icon)
 
-            holder.main_color_bar.setBackgroundColor(Color.GREEN)
+            holder.tweet_color_bar.setBackgroundColor(Color.GREEN)
         } else {
             initTweet(holder, profileTweetList[position])
 
             //set image icon who retweeted
             holder.rt_icon.visibility = View.INVISIBLE
 
-            holder.main_color_bar.setBackgroundColor(Color.TRANSPARENT)
+            holder.tweet_color_bar.setBackgroundColor(Color.TRANSPARENT)
         }
 
         holder.itemView.setOnClickListener { profileItemListner.onAccountClick() }
@@ -73,24 +73,24 @@ class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner
 
     private fun initTweet(holder: ProfileTweetAdapter.ViewHolder, tweetStatus: Status) {
         //set user name and screen name
-        holder.main_account_name.text = tweetStatus.user.name
+        holder.tweet_account_name.text = tweetStatus.user.name
         var mScreenName: String = SCREEN_NAME_PREFIX + tweetStatus.user.screenName
-        holder.main_screen_name.text = mScreenName
+        holder.tweet_screen_name.text = mScreenName
 
         //set protect icon
         if (tweetStatus.user.isProtected) {
-            holder.main_lock_icon.visibility = ImageView.VISIBLE
+            holder.tweet_lock_icon.visibility = ImageView.VISIBLE
         } else {
-            holder.main_lock_icon.visibility = ImageView.INVISIBLE
+            holder.tweet_lock_icon.visibility = ImageView.INVISIBLE
         }
 
         //set tweet detail
-        holder.main_description.text = tweetStatus.text
+        holder.tweet_description.text = tweetStatus.text
 
         //set via and date
         var doc: Document = Jsoup.parse(HTML_VIA_PREFIX + tweetStatus.source + HTML_VIA_SUFIX)
         var mViaAndDate: String = VIA_PREFIX + doc.getElementsByTag("a").text() + " (" + utilProvider.provideSdf().format(tweetStatus.createdAt) + ")"
-        holder.main_via_and_date.text = mViaAndDate
+        holder.tweet_via_and_date.text = mViaAndDate
 
 
         //set image icon
@@ -99,43 +99,43 @@ class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner
                 .resize(50, 50)
                 .placeholder(R.drawable.ic_loading_image_24dp)
                 .error(R.drawable.ic_loading_image_24dp)
-                .into(holder.main_icon)
+                .into(holder.tweet_icon)
 
 
         //set image
         if (tweetStatus.mediaEntities.isNotEmpty()) {
             debugLog("image load")
             debugLog("image url = " + tweetStatus.mediaEntities[0].mediaURLHttps)
-            holder.main_image1.visibility = ImageView.VISIBLE
+            holder.tweet_image1.visibility = ImageView.VISIBLE
             mPicasso
                     .load(tweetStatus.mediaEntities[0].mediaURLHttps)
                     .placeholder(R.drawable.ic_loading_image_24dp)
                     .error(R.drawable.ic_loading_image_24dp)
-                    .into(holder.main_image1)
+                    .into(holder.tweet_image1)
 
-            holder.main_image1.setOnClickListener {
+            holder.tweet_image1.setOnClickListener {
                 profileItemListner.onImageClick(tweetStatus.mediaEntities[0].mediaURLHttps)
             }
 
 
         } else {
-            holder.main_image1.visibility = ImageView.GONE
+            holder.tweet_image1.visibility = ImageView.GONE
         }
     }
 
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var main_color_bar: View = itemView.main_color_bar
-        var main_icon: ImageView = itemView.main_icon
+        var tweet_color_bar : View = itemView.tweet_color_bar
+        var tweet_icon : ImageView = itemView.tweet_icon
         var rt_icon: ImageView = itemView.rt_icon
-        var main_account_name: TextView = itemView.main_account_name
-        var main_screen_name: TextView = itemView.main_screen_name
-        var main_lock_icon: ImageView = itemView.main_lock_icon
-        var main_via_and_date: TextView = itemView.main_via_and_date
-        var main_description: TextView = itemView.main_description
-        var main_image1: ImageView = itemView.main_image1
-        var main_image2: ImageView = itemView.main_image2
-        var main_image3: ImageView = itemView.main_image3
-        var main_image4: ImageView = itemView.main_image4
+        var tweet_account_name : TextView = itemView.tweet_account_name
+        var tweet_screen_name : TextView = itemView.tweet_screen_name
+        var tweet_lock_icon : ImageView = itemView.tweet_lock_icon
+        var tweet_via_and_date : TextView = itemView.tweet_via_and_date
+        var tweet_description : TextView = itemView.tweet_description
+        var tweet_image1 : ImageView = itemView.tweet_image1
+        var tweet_image3 : ImageView = itemView.tweet_image3
+        var tweet_image2 : ImageView = itemView.tweet_image2
+        var tweet_image4 : ImageView = itemView.tweet_image4
     }
 }

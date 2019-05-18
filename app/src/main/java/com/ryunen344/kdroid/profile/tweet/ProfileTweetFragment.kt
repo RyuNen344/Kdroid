@@ -16,13 +16,12 @@ import com.ryunen344.kdroid.R.layout.fragment_profile_tweet
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
-import com.ryunen344.kdroid.main.EndlessScrollListener
+import com.ryunen344.kdroid.home.EndlessScrollListener
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.profile.ProfileActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.fragment_profile_tweet.*
-import kotlinx.android.synthetic.main.fragment_profile_tweet.view.*
 import org.koin.android.ext.android.inject
 import twitter4j.Status
 
