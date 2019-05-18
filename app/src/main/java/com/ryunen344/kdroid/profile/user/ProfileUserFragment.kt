@@ -1,5 +1,7 @@
 package com.ryunen344.kdroid.profile.user
 
+import android.app.ActivityOptions
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +17,7 @@ import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.home.EndlessScrollListener
+import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.profile.ProfileActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
@@ -34,7 +37,7 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
     lateinit var mLayoutManager: LinearLayoutManager
     lateinit var mRecyclerView: RecyclerView
     var mPagerPosition: Int = 0
-    private var mUserId: Long = 0
+    private var mUserId : Long = 0L
 
     companion object {
         fun newInstance() = ProfileUserFragment()
@@ -60,34 +63,14 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
 
     private val profileUserAdapter = ProfileUserAdapter(ArrayList(0), itemListner, appProvider, utilProvider)
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        debugLog("start")
-        super.onActivityCreated(savedInstanceState)
-        val bundle: Bundle? = arguments
-        if (bundle != null) {
-            mUserId = bundle.getLong(ProfileActivity.INTENT_KEY_USER_ID)
-            debugLog("#########################mUserId is " + mUserId.toString())
-        } else {
-            debugLog("############Bundle is null")
-        }
-
-        debugLog("end")
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         debugLog("start")
         super.onCreate(savedInstanceState)
-        val bundle: Bundle? = arguments
-        if (bundle != null) {
-            mUserId = bundle.getLong(ProfileActivity.INTENT_KEY_USER_ID)
-            debugLog("#########################mUserId is " + mUserId.toString())
-        } else {
-            debugLog("############Bundle is null")
+        ensureNotNull(activity) {
+            mUserId = it.intent.getLongExtra(ProfileActivity.INTENT_KEY_USER_ID, 0)
         }
-
         debugLog("setPresenter")
-        ProfileUserPresenter(this, appProvider, apiProvider, mPagerPosition)
+        ProfileUserPresenter(this, appProvider, apiProvider, mPagerPosition, mUserId)
         debugLog("end")
     }
 
@@ -112,7 +95,6 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
             }
         })
 
-
         //divier set
         val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         mRecyclerView.addItemDecoration(itemDecoration)
@@ -129,14 +111,18 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
         profile_user_list.adapter = profileUserAdapter
         mPresenter.start()
         debugLog("end")
-        debugLog("#################mPagerPosition is " + mPagerPosition.toString())
+    }
+
+    override fun onActivityCreated(savedInstanceState : Bundle?) {
+        debugLog("start")
+        super.onActivityCreated(savedInstanceState)
+        debugLog("end")
     }
 
     override fun onResume() {
         debugLog("start")
         super.onResume()
         debugLog("end")
-
     }
 
     override fun onDestroy() {
@@ -144,22 +130,27 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
         mPresenter.clearDisposable()
     }
 
-
     override fun showUserList(userList: List<User>) {
         profileUserAdapter.profileUserList = userList
         profileUserAdapter.notifyDataSetChanged()
     }
 
     override fun showMediaViewer(mediaUrl: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val intent = Intent(context, MediaViewerActivity::class.java).apply {
+            putExtra(MediaViewerActivity.INTENT_KEY_MEDIA_URL, mediaUrl)
+        }
+        startActivityForResult(intent, MediaViewerActivity.REQUEST_SHOW_MEDIA,
+                ActivityOptions.makeCustomAnimation(context, 0, 0).toBundle())
     }
 
     override fun showTweetDetail() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        debugLog("start")
+        debugLog("end")
     }
 
     override fun showProfile() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        debugLog("start")
+        debugLog("end")
     }
 
     override fun setPresenter(presenter: ProfileUserContract.Presenter) {

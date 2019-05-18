@@ -20,7 +20,6 @@ class ProfileFragment : Fragment(), ProfileContract.View {
     private val utilProvider: UtilProvider by inject()
     private lateinit var mPresenter: ProfileContract.Presenter
     private lateinit var mSectionsPagerAdapter: ProfileSectionsPagerAdapter
-    private var mUserId: Long = 0
 
     companion object {
         fun newInstance() = ProfileFragment()
@@ -50,16 +49,6 @@ class ProfileFragment : Fragment(), ProfileContract.View {
             mPresenter = p
         }
         debugLog("end")
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val bundle: Bundle? = arguments
-        if (bundle != null) {
-            mUserId = bundle.getLong(ProfileActivity.INTENT_KEY_USER_ID)
-            debugLog(mUserId.toString())
-        }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

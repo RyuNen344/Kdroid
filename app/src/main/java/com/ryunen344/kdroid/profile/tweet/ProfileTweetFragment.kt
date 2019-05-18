@@ -28,27 +28,27 @@ import twitter4j.Status
 
 class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
 
-    private val appProvider: AppProvider by inject()
-    private val apiProvider: ApiProvider by inject()
-    private val utilProvider: UtilProvider by inject()
-    private lateinit var mPresenter: ProfileTweetContract.Presenter
-    lateinit var profileTweetListView: LinearLayout
-    lateinit var mLayoutManager: LinearLayoutManager
-    lateinit var mRecyclerView: RecyclerView
-    var mPagerPosition: Int = 0
-    private var mUserId: Long = 0
+    private val appProvider : AppProvider by inject()
+    private val apiProvider : ApiProvider by inject()
+    private val utilProvider : UtilProvider by inject()
+    private lateinit var mPresenter : ProfileTweetContract.Presenter
+    lateinit var profileTweetListView : LinearLayout
+    lateinit var mLayoutManager : LinearLayoutManager
+    lateinit var mRecyclerView : RecyclerView
+    var mPagerPosition : Int = 0
+    private var mUserId : Long = 0L
 
     companion object {
         fun newInstance() = ProfileTweetFragment()
     }
 
-    private var itemListner: ProfileTweetContract.ProfileItemListner = object : ProfileTweetContract.ProfileItemListner {
+    private var itemListner : ProfileTweetContract.ProfileItemListner = object : ProfileTweetContract.ProfileItemListner {
         override fun onAccountClick() {
             debugLog("start")
             debugLog("end")
         }
 
-        override fun onImageClick(mediaUrl: String) {
+        override fun onImageClick(mediaUrl : String) {
             debugLog("start")
             debugLog("end")
         }
@@ -62,40 +62,20 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
 
     private val profileTweetAdapter = ProfileTweetAdapter(ArrayList(0), itemListner, appProvider, utilProvider)
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        debugLog("start")
-        super.onActivityCreated(savedInstanceState)
-        val bundle: Bundle? = arguments
-        if (bundle != null) {
-            mUserId = bundle.getLong(ProfileActivity.INTENT_KEY_USER_ID)
-            debugLog("#########################mUserId is " + mUserId.toString())
-        } else {
-            debugLog("############Bundle is null")
-        }
-
-        debugLog("end")
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState : Bundle?) {
         debugLog("start")
         super.onCreate(savedInstanceState)
-        val bundle: Bundle? = arguments
-        if (bundle != null) {
-            mUserId = bundle.getLong(ProfileActivity.INTENT_KEY_USER_ID)
-            debugLog("#########################mUserId is " + mUserId.toString())
-        } else {
-            debugLog("############Bundle is null")
+        ensureNotNull(activity) {
+            mUserId = it.intent.getLongExtra(ProfileActivity.INTENT_KEY_USER_ID, 0)
         }
-
         debugLog("setPresenter")
-        ProfileTweetPresenter(this, appProvider, apiProvider, mPagerPosition)
+        ProfileTweetPresenter(this, appProvider, apiProvider, mPagerPosition, mUserId)
         debugLog("end")
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        var root: View = inflater.inflate(fragment_profile_tweet, container, false)
+        var root : View = inflater.inflate(fragment_profile_tweet, container, false)
 
         with(root) {
             mLayoutManager = LinearLayoutManager(context)
@@ -108,7 +88,7 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
         }
 
         mRecyclerView.addOnScrollListener(object : EndlessScrollListener(mLayoutManager) {
-            override fun onLoadMore(currentPage: Int) {
+            override fun onLoadMore(currentPage : Int) {
                 debugLog("current page is " + currentPage)
                 mPresenter.loadMoreList(currentPage)
             }
@@ -124,20 +104,24 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
         return root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
         debugLog("start")
+        super.onViewCreated(view, savedInstanceState)
         profile_tweet_list.adapter = profileTweetAdapter
         mPresenter.start()
         debugLog("end")
-        debugLog("#################mPagerPosition is " + mPagerPosition.toString())
+    }
 
+    override fun onActivityCreated(savedInstanceState : Bundle?) {
+        debugLog("start")
+        super.onActivityCreated(savedInstanceState)
+        debugLog("end")
     }
 
     override fun onResume() {
         debugLog("start")
         super.onResume()
         debugLog("end")
-
     }
 
     override fun onDestroy() {
@@ -145,12 +129,12 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
         mPresenter.clearDisposable()
     }
 
-    override fun showTweetList(mainList: List<Status>) {
+    override fun showTweetList(mainList : List<Status>) {
         profileTweetAdapter.profileTweetList = mainList
         profileTweetAdapter.notifyDataSetChanged()
     }
 
-    override fun showMediaViewer(mediaUrl: String) {
+    override fun showMediaViewer(mediaUrl : String) {
         val intent = Intent(context, MediaViewerActivity::class.java).apply {
             putExtra(MediaViewerActivity.INTENT_KEY_MEDIA_URL, mediaUrl)
         }
@@ -159,14 +143,16 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
     }
 
     override fun showTweetDetail() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        debugLog("start")
+        debugLog("end")
     }
 
     override fun showProfile() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        debugLog("start")
+        debugLog("end")
     }
 
-    override fun setPresenter(presenter: ProfileTweetContract.Presenter) {
+    override fun setPresenter(presenter : ProfileTweetContract.Presenter) {
         debugLog("start")
         ensureNotNull(presenter) { p ->
             mPresenter = p
@@ -174,7 +160,7 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
         debugLog("end")
     }
 
-    override fun showError(e: Throwable) {
+    override fun showError(e : Throwable) {
         Snackbar.make(view!!, e.localizedMessage, Snackbar.LENGTH_LONG).show()
     }
 

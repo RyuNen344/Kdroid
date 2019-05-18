@@ -9,7 +9,7 @@ import twitter4j.Paging
 import twitter4j.Twitter
 import twitter4j.User
 
-class ProfileUserPresenter(val profileView : ProfileUserContract.View, val appProvider : AppProvider, val apiProvider : ApiProvider, val pagerPosition : Int) : ProfileUserContract.Presenter {
+class ProfileUserPresenter(val profileView : ProfileUserContract.View, val appProvider : AppProvider, val apiProvider : ApiProvider, val pagerPosition : Int, val userId : Long) : ProfileUserContract.Presenter {
 
     lateinit var userList : List<User>
     var mTwitter : Twitter = appProvider.provideTwitter()
@@ -31,7 +31,7 @@ class ProfileUserPresenter(val profileView : ProfileUserContract.View, val appPr
     override fun loadFollowList() {
         debugLog("start")
         var pageing : Paging = Paging(1, 50)
-        val disposable : Disposable = apiProvider.getUserFollowByUserId(mTwitter, 1366386504, -1).subscribe(
+        val disposable : Disposable = apiProvider.getUserFollowByUserId(mTwitter, userId, -1).subscribe(
                 { list : List<User> ->
                     userList = list
                     profileView.showUserList(list)
@@ -47,7 +47,7 @@ class ProfileUserPresenter(val profileView : ProfileUserContract.View, val appPr
     override fun loadFollowerList() {
         debugLog("start")
         var pageing : Paging = Paging(1, 50)
-        val disposable : Disposable = apiProvider.getUserFollowerByUserId(mTwitter, 1366386504, -1).subscribe(
+        val disposable : Disposable = apiProvider.getUserFollowerByUserId(mTwitter, userId, -1).subscribe(
                 { list : List<User> ->
                     userList = list
                     profileView.showUserList(list)

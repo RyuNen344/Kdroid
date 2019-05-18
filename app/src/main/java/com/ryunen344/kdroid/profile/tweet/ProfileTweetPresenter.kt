@@ -9,7 +9,7 @@ import twitter4j.Paging
 import twitter4j.Status
 import twitter4j.Twitter
 
-class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appProvider: AppProvider, val apiProvider: ApiProvider, val pagerPosition: Int) : ProfileTweetContract.Presenter {
+class ProfileTweetPresenter(val profileView : ProfileTweetContract.View, val appProvider : AppProvider, val apiProvider : ApiProvider, val pagerPosition : Int, val userId : Long) : ProfileTweetContract.Presenter {
 
     lateinit var tweetList: List<Status>
     var twitter: Twitter = appProvider.provideTwitter()
@@ -31,7 +31,7 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
     override fun loadTweetList() {
         debugLog("start")
         var paging: Paging = Paging(1, 50)
-        val disposable: Disposable = apiProvider.getUserTimelineByUserId(twitter, paging, 1366386504).subscribe(
+        val disposable : Disposable = apiProvider.getUserTimelineByUserId(twitter, paging, userId).subscribe(
                 { list: List<Status> ->
                     tweetList = list
                     profileView.showTweetList(tweetList)
@@ -47,7 +47,7 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
     override fun loadFavoriteList() {
         debugLog("start")
         var paging: Paging = Paging(1, 50)
-        val disposable: Disposable = apiProvider.getUserFavoriteByUserId(twitter, paging, 1366386504).subscribe(
+        val disposable : Disposable = apiProvider.getUserFavoriteByUserId(twitter, paging, userId).subscribe(
                 { list: List<Status> ->
                     tweetList = list
                     profileView.showTweetList(tweetList)
@@ -72,7 +72,7 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
     private fun loadMoreTweetList(currentPage: Int) {
         debugLog("start")
         var paging: Paging = Paging(currentPage + 1, 100)
-        val disposable: Disposable = apiProvider.getUserTimelineByUserId(twitter, paging, 1366386504).subscribe(
+        val disposable : Disposable = apiProvider.getUserTimelineByUserId(twitter, paging, userId).subscribe(
                 { list: List<Status> ->
                     tweetList = tweetList + list
                     profileView.showTweetList(tweetList)
@@ -88,7 +88,7 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
     private fun loadMoreFavoriteList(currentPage: Int) {
         debugLog("start")
         var paging: Paging = Paging(currentPage + 1, 100)
-        val disposable: Disposable = apiProvider.getUserFavoriteByUserId(twitter, paging, 1366386504).subscribe(
+        val disposable : Disposable = apiProvider.getUserFavoriteByUserId(twitter, paging, userId).subscribe(
                 { list: List<Status> ->
                     tweetList = tweetList + list
                     profileView.showTweetList(tweetList)
