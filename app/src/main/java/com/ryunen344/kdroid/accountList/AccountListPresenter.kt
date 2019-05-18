@@ -59,7 +59,7 @@ class AccountListPresenter(val accountListView : AccountListContract.View) : Acc
                 if (mUri != null) {
                     accountListView.showCallbak(mReq,mUri)
                 } else {
-                    accountListView.showError(throw NullPointerException())
+                    accountListView.showError(Throwable("uri is null"))
                 }
             }
         }

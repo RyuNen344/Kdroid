@@ -18,8 +18,8 @@ import com.ryunen344.kdroid.home.EndlessScrollListener
 import com.ryunen344.kdroid.profile.ProfileActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
-import kotlinx.android.synthetic.main.fragment_profile_tweet.*
 import kotlinx.android.synthetic.main.fragment_profile_user.*
+import kotlinx.android.synthetic.main.fragment_profile_user.view.*
 import org.koin.android.ext.android.inject
 import twitter4j.User
 
@@ -126,7 +126,7 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         debugLog("start")
         super.onViewCreated(view, savedInstanceState)
-        profile_tweet_list.adapter = profileUserAdapter
+        profile_user_list.adapter = profileUserAdapter
         mPresenter.start()
         debugLog("end")
         debugLog("#################mPagerPosition is " + mPagerPosition.toString())

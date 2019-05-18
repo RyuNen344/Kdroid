@@ -22,6 +22,7 @@ import com.ryunen344.kdroid.profile.ProfileActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.fragment_profile_tweet.*
+import kotlinx.android.synthetic.main.fragment_profile_tweet.view.*
 import org.koin.android.ext.android.inject
 import twitter4j.Status
 

@@ -37,7 +37,7 @@ class ProfileActivity : AppCompatActivity() {
                     .into(profile_banner)
 
             mPicasso
-                    .load(user.biggerProfileImageURLHttps)
+                    .load(user.originalProfileImageURLHttps)
                     .placeholder(R.drawable.ic_loading_image_24dp)
                     .error(R.drawable.ic_loading_image_24dp)
                     .into(profile_icon)
