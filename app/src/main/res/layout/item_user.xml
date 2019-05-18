@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/list_item_padding"
+            android:paddingLeft="@dimen/list_item_padding"
+            android:paddingRight="@dimen/list_item_padding"
+            android:paddingTop="@dimen/list_item_padding"
+            >
+
+        <ImageView
+                android:id="@+id/user_icon"
+                android:src="@android:drawable/sym_def_app_icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:contentDescription="@string/contentDescription_main_icon"/>
+
+        <TextView
+                android:id="@+id/user_account_name"
+                android:layout_toEndOf="@id/user_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat"/>
+
+        <TextView
+                android:id="@+id/user_screen_name"
+                android:layout_toEndOf="@id/user_account_name"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat"/>
+
+        <ImageView
+                android:id="@+id/user_lock_icon"
+                android:layout_toEndOf="@id/user_screen_name"
+                android:layout_above="@+id/user_profile_description"
+                android:layout_width="12sp"
+                android:layout_height="12sp"
+                android:layout_marginBottom="@dimen/list_item_padding"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:visibility="invisible"
+                android:src="@drawable/ic_lock"
+                android:contentDescription="@string/contentDescription_main_lock_icon"/>
+
+        <TextView
+                android:id="@+id/user_profile_description"
+                android:layout_toEndOf="@id/user_icon"
+                android:layout_below="@id/user_screen_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:maxLines="2"/>
+
+    </RelativeLayout>
+
+</FrameLayout>
