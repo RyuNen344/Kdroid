@@ -21,7 +21,7 @@ import com.ryunen344.kdroid.R.layout.fragment_account_list
 import com.ryunen344.kdroid.R.string.consumer_key
 import com.ryunen344.kdroid.R.string.consumer_secret_key
 import com.ryunen344.kdroid.data.Account
-import com.ryunen344.kdroid.home.MainActivity
+import com.ryunen344.kdroid.home.HomeActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.activity_account_lsit.*
@@ -149,8 +149,8 @@ class AccountListFragment : Fragment(), AccountListContract.View {
     }
 
     override fun openAccountTimeLine(account: Account) {
-        val intent = Intent(context, MainActivity::class.java)
-        intent.putExtra("userId", account.userId)
+        val intent = Intent(context, HomeActivity::class.java)
+        intent.putExtra(AccountListActivity.INTENT_KEY_USER_ID, account.userId)
         startActivity(intent)
     }
 

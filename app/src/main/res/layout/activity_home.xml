@@ -6,7 +6,7 @@
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".home.MainActivity">
+        tools:context=".home.HomeActivity">
 
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <FrameLayout
-                android:id="@+id/mainFrame"
+                android:id="@+id/homeFrame"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
@@ -47,7 +47,8 @@
             android:layout_gravity="bottom"
             android:background="?android:attr/windowBackground"
             app:layout_behavior="com.ryunen344.kdroid.behavior.BottomNavigationBehavior"
-            app:menu="@menu/timeline_navigation"/>
+            app:menu="@menu/timeline_navigation"
+            app:layout_scrollFlags="snap"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
@@ -58,6 +59,7 @@
             app:layout_anchor="@id/navigation"
             app:layout_anchorGravity="top|end"
             app:layout_behavior="com.ryunen344.kdroid.behavior.BottomNavigationFABBehavior"
-            app:srcCompat="@android:drawable/ic_dialog_email"/>
+            app:srcCompat="@android:drawable/ic_dialog_email"
+            app:useCompatPadding="true"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

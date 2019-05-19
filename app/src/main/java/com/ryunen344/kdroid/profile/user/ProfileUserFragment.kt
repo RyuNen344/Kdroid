@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R.layout.fragment_profile_user
+import com.ryunen344.kdroid.behavior.EndlessScrollListener
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
-import com.ryunen344.kdroid.home.EndlessScrollListener
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.profile.ProfileActivity
 import com.ryunen344.kdroid.util.debugLog

@@ -3,6 +3,7 @@ package com.ryunen344.kdroid.profile.tweet
 import com.ryunen344.kdroid.BasePresenter
 import com.ryunen344.kdroid.BaseView
 import twitter4j.Status
+import twitter4j.User
 
 interface ProfileTweetContract {
 
@@ -21,7 +22,7 @@ interface ProfileTweetContract {
     }
 
     interface ProfileItemListner {
-        fun onAccountClick()
+        fun onAccountClick(user : User)
         fun onImageClick(mediaUrl: String)
         fun onTweetClick()
     }

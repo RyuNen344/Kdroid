@@ -9,25 +9,27 @@ import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.replaceFragmentInActivity
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_home.*
 import org.koin.android.ext.android.inject
 import twitter4j.conf.ConfigurationBuilder
 
-class MainActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity() {
 
     val appProvider : AppProvider by inject()
     val apiProvider : ApiProvider by inject()
-    lateinit var mPresenter : MainContract.Presenter
-    private var mPicasso : Picasso = appProvider.providePiccaso()
+    lateinit var mPresenter : HomeContract.Presenter
+
+    companion object {
+        const val INTENT_KEY_USER_ID : String = "key_user_id"
+    }
 
     override fun onCreate(savedInstanceState : Bundle?) {
         debugLog("end")
         super.onCreate(savedInstanceState)
         setContentView(activity_home)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(false)
         intent.getLongExtra("userId", 0)
 
         //config twitter instance
@@ -36,12 +38,12 @@ class MainActivity : AppCompatActivity() {
         builder.setOAuthConsumerSecret(getString(consumer_secret_key))
         appProvider.configureTwitter(builder)
 
-        var mainFragment : MainFragment? = supportFragmentManager.findFragmentById(mainFrame.id) as MainFragment?
-                ?: MainFragment.newInstance().also {
-                    replaceFragmentInActivity(supportFragmentManager, it, mainFrame.id)
+        var homeFragment : HomeFragment? = supportFragmentManager.findFragmentById(homeFrame.id) as HomeFragment?
+                ?: HomeFragment.newInstance().also {
+                    replaceFragmentInActivity(supportFragmentManager, it, homeFrame.id)
                 }
 
-        mPresenter = MainPresenter(mainFragment!!, appProvider, apiProvider, intent.getLongExtra("userId", 0))
+        mPresenter = HomePresenter(homeFragment!!, appProvider, apiProvider, intent.extras)
         debugLog("end")
     }
 

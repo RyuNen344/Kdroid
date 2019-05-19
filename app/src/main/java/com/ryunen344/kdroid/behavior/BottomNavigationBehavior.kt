@@ -1,15 +1,25 @@
 package com.ryunen344.kdroid.behavior
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat.*
 import com.google.android.material.snackbar.Snackbar
+import com.ryunen344.kdroid.util.debugLog
 import kotlin.math.max
 import kotlin.math.min
 
 class BottomNavigationBehavior<V : View>(context : Context?, attrs : AttributeSet? = null) : CoordinatorLayout.Behavior<V>(context, attrs) {
+
+    @NestedScrollType
+    private var lastStartedType : Int = 0
+    private var offsetAnimator : ValueAnimator? = null
+    var isSnappingEnabled = false
+
 
     override fun layoutDependsOn(parent : CoordinatorLayout, child : V, dependency : View) : Boolean {
         if (dependency is Snackbar.SnackbarLayout) {
@@ -22,7 +32,14 @@ class BottomNavigationBehavior<V : View>(context : Context?, attrs : AttributeSe
     override fun onStartNestedScroll(
             coordinatorLayout : CoordinatorLayout, child : V, directTargetChild : View, target : View, axes : Int, type : Int
     ) : Boolean {
-        return axes == View.SCROLL_AXIS_VERTICAL
+        if (axes != SCROLL_AXIS_VERTICAL) {
+            debugLog("axes is SCROLL_AXIS_HORIZ")
+            return false
+        }
+
+        lastStartedType = type
+        offsetAnimator?.cancel()
+        return true
     }
 
     override fun onNestedPreScroll(
@@ -30,6 +47,49 @@ class BottomNavigationBehavior<V : View>(context : Context?, attrs : AttributeSe
     ) {
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
         child.translationY = max(0f, min(child.height.toFloat(), child.translationY + dy))
+
+    }
+
+    override fun onStopNestedScroll(coordinatorLayout : CoordinatorLayout, child : V, target : View, type : Int) {
+        if (!isSnappingEnabled) {
+            return
+        }
+
+        // add snap behaviour
+        // Logic here borrowed from AppBarLayout onStopNestedScroll code
+        if (lastStartedType == TYPE_TOUCH || type == TYPE_NON_TOUCH) {
+            // find nearest seam
+            val currTranslation = child.translationY
+            val childHalfHeight = child.height * 0.5f
+
+            // translate down
+            if (currTranslation >= childHalfHeight) {
+                animateBarVisibility(child, isVisible = false)
+            }
+            // translate up
+            else {
+                animateBarVisibility(child, isVisible = true)
+            }
+        }
+    }
+
+    private fun animateBarVisibility(child : View, isVisible : Boolean) {
+        if (offsetAnimator == null) {
+            offsetAnimator = ValueAnimator().apply {
+                interpolator = DecelerateInterpolator()
+                duration = 150L
+            }
+
+            offsetAnimator?.addUpdateListener {
+                child.translationY = it.animatedValue as Float
+            }
+        } else {
+            offsetAnimator?.cancel()
+        }
+
+        val targetTranslation = if (isVisible) 0f else child.height.toFloat()
+        offsetAnimator?.setFloatValues(child.translationY, targetTranslation)
+        offsetAnimator?.start()
     }
 
 

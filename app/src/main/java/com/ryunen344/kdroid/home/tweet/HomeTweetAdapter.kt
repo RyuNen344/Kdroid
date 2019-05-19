@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
+import com.ryunen344.kdroid.profile.tweet.HomeTweetContract
 import com.ryunen344.kdroid.util.debugLog
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_tweet.view.*
@@ -17,9 +18,9 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import twitter4j.Status
 
-class MainAdapter(mainList : List<Status>, val mainItemListner : MainContract.MainItemListner, val appProvider : AppProvider, val utilProvider : UtilProvider) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
+class HomeTweetAdapter(mainList : List<Status>, val tweetItemListner : HomeTweetContract.TweetItemListner, val appProvider : AppProvider, val utilProvider : UtilProvider) : RecyclerView.Adapter<HomeTweetAdapter.ViewHolder>() {
 
-    var mainList : List<Status> = mainList
+    var tweetList : List<Status> = mainList
         set(mainList : List<Status>) {
             field = mainList
             notifyDataSetChanged()
@@ -33,11 +34,11 @@ class MainAdapter(mainList : List<Status>, val mainItemListner : MainContract.Ma
 
     override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : ViewHolder {
         var view : View = LayoutInflater.from(parent.context).inflate(R.layout.item_tweet, parent, false)
-        return MainAdapter.ViewHolder(view)
+        return HomeTweetAdapter.ViewHolder(view)
     }
 
     override fun getItemCount() : Int {
-        return mainList.size
+        return tweetList.size
     }
 
     override fun getItemId(position : Int) : Long {
@@ -48,19 +49,19 @@ class MainAdapter(mainList : List<Status>, val mainItemListner : MainContract.Ma
         debugLog("start")
 
         //set status bar
-        if (mainList[position].isRetweet) {
-            initTweet(holder, mainList[position].retweetedStatus)
+        if (tweetList[position].isRetweet) {
+            initTweet(holder, tweetList[position].retweetedStatus)
 
             //set image icon who retweeted
             holder.rt_icon.visibility = View.VISIBLE
             Picasso.get()
-                    .load(mainList[position].user.biggerProfileImageURLHttps)
+                    .load(tweetList[position].user.biggerProfileImageURLHttps)
                     .resize(23, 23)
                     .into(holder.rt_icon)
 
             holder.tweet_color_bar.setBackgroundColor(Color.GREEN)
         } else {
-            initTweet(holder, mainList[position])
+            initTweet(holder, tweetList[position])
 
             //set image icon who retweeted
             holder.rt_icon.visibility = View.INVISIBLE
@@ -68,7 +69,7 @@ class MainAdapter(mainList : List<Status>, val mainItemListner : MainContract.Ma
             holder.tweet_color_bar.setBackgroundColor(Color.TRANSPARENT)
         }
 
-        //holder.itemView.setOnClickListener { mainItemListner.onAccountClick() }
+        //holder.itemView.setOnClickListener { tweetItemListner.onAccountClick() }
         debugLog("end")
     }
 
@@ -102,7 +103,7 @@ class MainAdapter(mainList : List<Status>, val mainItemListner : MainContract.Ma
                 .error(R.drawable.ic_loading_image_24dp)
                 .into(holder.tweet_icon)
         holder.tweet_icon.setOnClickListener {
-            mainItemListner.onAccountClick(tweetStatus.user)
+            tweetItemListner.onAccountClick(tweetStatus.user)
         }
 
 
@@ -118,7 +119,7 @@ class MainAdapter(mainList : List<Status>, val mainItemListner : MainContract.Ma
                     .into(holder.tweet_image1)
 
             holder.tweet_image1.setOnClickListener {
-                mainItemListner.onImageClick(tweetStatus.mediaEntities[0].mediaURLHttps)
+                tweetItemListner.onImageClick(tweetStatus.mediaEntities[0].mediaURLHttps)
             }
 
 

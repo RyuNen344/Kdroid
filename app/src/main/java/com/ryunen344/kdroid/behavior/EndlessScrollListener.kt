@@ -1,18 +1,20 @@
-package com.ryunen344.kdroid.home
+package com.ryunen344.kdroid.behavior
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class EndlessScrollListener(private val layoutManager : LinearLayoutManager) : RecyclerView.OnScrollListener() {
 
-    private var previousTotal = 0
-    private var loading = true
-    private var currentPage = 1
-    private var visibleThreshold = 0
+    var firstVisibleItem : Int = 0
+    var lastVisibleItem : Int = 0
+    var visibleItemCount : Int = 0
+    var totalItemCount : Int = 0
 
-    private var visibleItemCount : Int = -1
-    private var totalItemCount : Int = -1
-    private var firstVisibleItem : Int = -1
+    private var visibleThreshold : Int = 5
+
+    private var previousTotal : Int = 0
+    private var loading : Boolean = true
+    private var current_page : Int = 1
 
     override fun onScrolled(recyclerView : RecyclerView, dx : Int, dy : Int) {
         super.onScrolled(recyclerView, dx, dy)
@@ -20,6 +22,7 @@ abstract class EndlessScrollListener(private val layoutManager : LinearLayoutMan
         visibleItemCount = recyclerView.childCount
         totalItemCount = layoutManager.itemCount
         firstVisibleItem = layoutManager.findFirstVisibleItemPosition()
+        lastVisibleItem = layoutManager.findLastVisibleItemPosition()
 
         if (loading) {
             if (totalItemCount > previousTotal) {
@@ -28,13 +31,12 @@ abstract class EndlessScrollListener(private val layoutManager : LinearLayoutMan
             }
         }
 
-        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
-            currentPage++
-            onLoadMore(currentPage)
+        if (!loading && (totalItemCount - visibleItemCount) < (firstVisibleItem + visibleThreshold)) {
+            current_page++
+            onLoadMore(current_page)
             loading = true
         }
     }
-
 
     abstract fun onLoadMore(currentPage : Int)
 

@@ -68,7 +68,7 @@ class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner
             holder.tweet_color_bar.setBackgroundColor(Color.TRANSPARENT)
         }
 
-        holder.itemView.setOnClickListener { profileItemListner.onAccountClick() }
+        holder.itemView.setOnClickListener { profileItemListner.onAccountClick(profileTweetList[position].user) }
     }
 
     private fun initTweet(holder: ProfileTweetAdapter.ViewHolder, tweetStatus: Status) {
