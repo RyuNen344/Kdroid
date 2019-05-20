@@ -106,9 +106,13 @@ class HomeTweetAdapter(mainList : List<Status>, val tweetItemListner : HomeTweet
             tweetItemListner.onAccountClick(tweetStatus.user)
         }
 
+        setImage(holder, tweetStatus)
+    }
+
+    private fun setImage(holder : ViewHolder, tweetStatus : Status) {
 
         //set image
-        if (tweetStatus.mediaEntities.isNotEmpty()) {
+        if (tweetStatus.mediaEntities.size >= 1) {
             debugLog("image load")
             debugLog("image url = " + tweetStatus.mediaEntities[0].mediaURLHttps)
             holder.tweet_image1.visibility = ImageView.VISIBLE
@@ -125,6 +129,63 @@ class HomeTweetAdapter(mainList : List<Status>, val tweetItemListner : HomeTweet
 
         } else {
             holder.tweet_image1.visibility = ImageView.GONE
+        }
+
+        if (tweetStatus.mediaEntities.size >= 2) {
+            debugLog("image load")
+            debugLog("image url = " + tweetStatus.mediaEntities[1].mediaURLHttps)
+            holder.tweet_image2.visibility = ImageView.VISIBLE
+            mPicasso
+                    .load(tweetStatus.mediaEntities[1].mediaURLHttps)
+                    .placeholder(R.drawable.ic_loading_image_24dp)
+                    .error(R.drawable.ic_loading_image_24dp)
+                    .into(holder.tweet_image2)
+
+            holder.tweet_image2.setOnClickListener {
+                tweetItemListner.onImageClick(tweetStatus.mediaEntities[1].mediaURLHttps)
+            }
+
+
+        } else {
+            holder.tweet_image2.visibility = ImageView.GONE
+        }
+
+        if (tweetStatus.mediaEntities.size >= 3) {
+            debugLog("image load")
+            debugLog("image url = " + tweetStatus.mediaEntities[2].mediaURLHttps)
+            holder.tweet_image3.visibility = ImageView.VISIBLE
+            mPicasso
+                    .load(tweetStatus.mediaEntities[2].mediaURLHttps)
+                    .placeholder(R.drawable.ic_loading_image_24dp)
+                    .error(R.drawable.ic_loading_image_24dp)
+                    .into(holder.tweet_image3)
+
+            holder.tweet_image3.setOnClickListener {
+                tweetItemListner.onImageClick(tweetStatus.mediaEntities[2].mediaURLHttps)
+            }
+
+
+        } else {
+            holder.tweet_image3.visibility = ImageView.GONE
+        }
+
+        if (tweetStatus.mediaEntities.size >= 4) {
+            debugLog("image load")
+            debugLog("image url = " + tweetStatus.mediaEntities[3].mediaURLHttps)
+            holder.tweet_image4.visibility = ImageView.VISIBLE
+            mPicasso
+                    .load(tweetStatus.mediaEntities[3].mediaURLHttps)
+                    .placeholder(R.drawable.ic_loading_image_24dp)
+                    .error(R.drawable.ic_loading_image_24dp)
+                    .into(holder.tweet_image4)
+
+            holder.tweet_image4.setOnClickListener {
+                tweetItemListner.onImageClick(tweetStatus.mediaEntities[3].mediaURLHttps)
+            }
+
+
+        } else {
+            holder.tweet_image4.visibility = ImageView.GONE
         }
     }
 

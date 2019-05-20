@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -56,6 +57,7 @@
                 android:layout_toEndOf="@id/iconFrame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.AppCompat"/>
 
         <TextView
@@ -64,6 +66,7 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.AppCompat"/>
 
         <ImageView
@@ -95,54 +98,82 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat"/>
 
-        <RelativeLayout
-                android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageFrame"
                 android:layout_toEndOf="@id/iconFrame"
-                android:layout_below="@id/tweet_via_and_date">
-
+                android:layout_below="@id/tweet_via_and_date"
+                android:id="@+id/imageFrame">
 
             <ImageView
                     android:id="@+id/tweet_image1"
                     android:src="@android:drawable/sym_def_app_icon"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="80dp"
                     android:scaleType="centerCrop"
-                    android:visibility="gone"
-                    android:contentDescription="@string/contentDescription_image"/>
+                    android:contentDescription="@string/contentDescription_image"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintVertical_chainStyle="spread"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintEnd_toStartOf="@+id/tweet_image2"
+                    app:layout_constraintBottom_toTopOf="@+id/tweet_image3"
+                    android:visibility="gone"/>
 
             <ImageView
                     android:id="@+id/tweet_image2"
                     android:src="@android:drawable/sym_def_app_icon"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_below="@id/tweet_image1"
+                    android:layout_height="80dp"
                     android:scaleType="centerCrop"
-                    android:visibility="gone"
-                    android:contentDescription="@string/contentDescription_image"/>
+                    android:contentDescription="@string/contentDescription_image"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tweet_image1"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintVertical_chainStyle="spread"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/tweet_image4"
+                    android:visibility="gone"/>
 
             <ImageView
                     android:id="@+id/tweet_image3"
                     android:src="@android:drawable/sym_def_app_icon"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_below="@id/tweet_image2"
+                    android:layout_height="80dp"
                     android:scaleType="centerCrop"
-                    android:visibility="gone"
-                    android:contentDescription="@string/contentDescription_image"/>
+                    android:contentDescription="@string/contentDescription_image"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tweet_image1"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintVertical_chainStyle="spread"
+                    app:layout_constraintVertical_bias="1.0"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintEnd_toStartOf="@+id/tweet_image4"
+                    android:visibility="gone"/>
 
             <ImageView
                     android:id="@+id/tweet_image4"
                     android:src="@android:drawable/sym_def_app_icon"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_below="@id/tweet_image3"
+                    android:layout_height="80dp"
                     android:scaleType="centerCrop"
-                    android:visibility="gone"
-                    android:contentDescription="@string/contentDescription_image"/>
+                    android:contentDescription="@string/contentDescription_image"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintVertical_chainStyle="spread"
+                    app:layout_constraintStart_toEndOf="@+id/tweet_image3"
+                    app:layout_constraintTop_toBottomOf="@+id/tweet_image2"
+                    app:layout_constraintVertical_bias="1.0"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:visibility="gone"/>
 
-        </RelativeLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </RelativeLayout>
 
