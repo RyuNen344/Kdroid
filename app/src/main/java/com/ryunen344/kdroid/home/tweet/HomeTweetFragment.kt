@@ -79,6 +79,7 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
         }
         debugLog("setPresenter")
         HomeTweetPresenter(this, appProvider, apiProvider, mPagerPosition, mUserId)
+        homeTweetAdapter.mUserId = mUserId
         debugLog("end")
     }
 

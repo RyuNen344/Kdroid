@@ -30,6 +30,8 @@ class HomeTweetAdapter(mainList : List<Status>, val tweetItemListner : HomeTweet
     private val HTML_VIA_PREFIX : String = "<html><head></head><body>"
     private val HTML_VIA_SUFIX : String = "</body></html>"
 
+    var mUserId : Long = 0L
+
     private var mPicasso : Picasso = appProvider.providePiccaso()
 
     override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : ViewHolder {
@@ -66,7 +68,17 @@ class HomeTweetAdapter(mainList : List<Status>, val tweetItemListner : HomeTweet
             //set image icon who retweeted
             holder.rt_icon.visibility = View.INVISIBLE
 
-            holder.tweet_color_bar.setBackgroundColor(Color.TRANSPARENT)
+            if (tweetList[position].user.id == mUserId) {
+                holder.tweet_color_bar.setBackgroundColor(Color.RED)
+            } else {
+                holder.tweet_color_bar.setBackgroundColor(Color.TRANSPARENT)
+            }
+
+            Picasso.get()
+                    .load(tweetList[position].user.biggerProfileImageURLHttps)
+                    .resize(23, 23)
+                    .into(holder.rt_icon)
+
         }
 
         //holder.itemView.setOnClickListener { tweetItemListner.onAccountClick() }
