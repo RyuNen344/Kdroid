@@ -21,8 +21,8 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
     var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
 
     init {
-        if (bundle != null) {
-            mUserId = bundle.getLong(HomeActivity.INTENT_KEY_USER_ID, 0)
+        bundle?.let {
+            mUserId = it.getLong(HomeActivity.INTENT_KEY_USER_ID, 0)
         }
         homeView.setPresenter(this)
     }

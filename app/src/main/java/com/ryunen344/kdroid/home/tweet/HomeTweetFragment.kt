@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R.layout.fragment_home_tweet
 import com.ryunen344.kdroid.behavior.EndlessScrollListener
@@ -39,6 +40,7 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
     lateinit var mainListView : LinearLayout
     lateinit var mLayoutManager : LinearLayoutManager
     lateinit var mRecyclerView : RecyclerView
+    lateinit var mSwipeRefreshLayout : SwipeRefreshLayout
     var mPagerPosition : Int = 0
     private var mUserId : Long = 0L
 
@@ -94,6 +96,13 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
                 this.setHasFixedSize(true)
                 this.adapter = homeTweetAdapter
             }
+            mSwipeRefreshLayout = swipe_refresh.apply {
+                setOnRefreshListener {
+                    mPresenter.loadLeastList()
+                    isRefreshing = false
+                }
+            }
+
             mainListView = homeTweetLL
         }
 
@@ -103,6 +112,7 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
                 mPresenter.loadMoreList(currentPage)
             }
         })
+
 
         //divier set
         val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)

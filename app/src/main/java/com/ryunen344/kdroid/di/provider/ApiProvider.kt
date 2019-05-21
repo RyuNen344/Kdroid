@@ -38,6 +38,23 @@ class ApiProvider {
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
+    fun getLeastTimeLine(twitter : Twitter) : Single<List<Status>> {
+        return Single.create(SingleOnSubscribe<List<Status>>
+        { emitter ->
+            try {
+                emitter.onSuccess(twitter.homeTimeline)
+            } catch (t : Throwable) {
+                emitter.onError(t)
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun getLeastMention() {
+
+    }
+
     fun getUserByUserId(twitter: Twitter, userId: Long): Single<User> {
         return Single.create(SingleOnSubscribe<User>
         { emitter ->

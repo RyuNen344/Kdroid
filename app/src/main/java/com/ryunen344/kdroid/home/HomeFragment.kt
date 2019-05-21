@@ -3,8 +3,11 @@ package com.ryunen344.kdroid.home
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_home
@@ -12,7 +15,6 @@ import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.debugLog
-import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.koin.android.ext.android.inject
@@ -51,8 +53,8 @@ class HomeFragment : Fragment(), HomeContract.View {
 
     override fun setPresenter(presenter : HomeContract.Presenter) {
         debugLog("start")
-        ensureNotNull(presenter) { p ->
-            mPresenter = p
+        presenter.let {
+            mPresenter = it
         }
         debugLog("end")
     }
@@ -71,6 +73,29 @@ class HomeFragment : Fragment(), HomeContract.View {
         activity?.fab?.setOnClickListener {
             showAddNewTweet()
         }
+
+        var toggle : ActionBarDrawerToggle = ActionBarDrawerToggle(activity, activity?.drawer_layout, activity?.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        activity?.drawer_layout?.addDrawerListener(toggle)
+        toggle.syncState()
+
+        activity?.nav_view?.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_tool -> {
+                    debugLog()
+                }
+                R.id.nav_gallery -> {
+                    debugLog()
+                }
+                R.id.nav_share -> {
+                    debugLog()
+                }
+                R.id.nav_send -> {
+                    debugLog()
+                }
+            }
+            activity?.drawer_layout?.closeDrawer(GravityCompat.START)
+            true
+        })
 
 
         //configure timeline_navigation bar

@@ -10,7 +10,6 @@ import com.google.android.material.tabs.TabLayout
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.debugLog
-import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.fragment_profile.*
 import org.koin.android.ext.android.inject
 import twitter4j.User
@@ -45,8 +44,8 @@ class ProfileFragment : Fragment(), ProfileContract.View {
 
     override fun setPresenter(presenter: ProfileContract.Presenter) {
         debugLog("start")
-        ensureNotNull(presenter) { p ->
-            mPresenter = p
+        presenter.let {
+            mPresenter = it
         }
         debugLog("end")
     }

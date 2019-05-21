@@ -15,8 +15,9 @@ interface HomeTweetContract {
     }
 
     interface Presenter : BasePresenter {
+        fun loadLeastList()
         fun loadTimelineList()
-        fun loadMentionLsit()
+        fun loadMentionList()
         fun loadMoreList(currentPage : Int)
         fun openMedia(mediaUrl : String)
         fun openTweetDetail()

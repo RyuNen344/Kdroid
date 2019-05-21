@@ -12,7 +12,6 @@ import twitter4j.User
 
 class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val appProvider : AppProvider, val apiProvider : ApiProvider, private val pagerPosition : Int, val userId : Long) : HomeTweetContract.Presenter {
 
-
     lateinit var tweetList : List<Status>
     var twitter : Twitter = appProvider.provideTwitter()
     var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
@@ -25,7 +24,16 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
         debugLog("start")
         when (pagerPosition) {
             0 -> loadTimelineList()
-            1 -> loadMentionLsit()
+            1 -> loadMentionList()
+        }
+        debugLog("end")
+    }
+
+    override fun loadLeastList() {
+        debugLog("start")
+        when (pagerPosition) {
+            0 -> loadLeastTimeLineList()
+            1 -> loadLeastMentionList()
         }
         debugLog("end")
     }
@@ -46,7 +54,7 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
         debugLog("end")
     }
 
-    override fun loadMentionLsit() {
+    override fun loadMentionList() {
         debugLog("start")
         var paging : Paging = Paging(1, 50)
         val disposable : Disposable = apiProvider.getMention(twitter, paging).subscribe(
@@ -93,6 +101,38 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
         val disposable : Disposable = apiProvider.getMention(twitter, paging).subscribe(
                 { list : List<Status> ->
                     tweetList = tweetList + list
+                    homeTweetView.showTweetList(tweetList)
+                }
+                , { e ->
+            homeTweetView.showError(e)
+        }
+        )
+        mCompositeDisposable.add(disposable)
+        debugLog("end")
+    }
+
+    private fun loadLeastTimeLineList() {
+        debugLog("start")
+        var paging : Paging = Paging().sinceId(tweetList.first().id)
+        val disposable : Disposable = apiProvider.getTimeLine(twitter, paging).subscribe(
+                { list : List<Status> ->
+                    tweetList = list + tweetList
+                    homeTweetView.showTweetList(tweetList)
+                }
+                , { e ->
+            homeTweetView.showError(e)
+        }
+        )
+        mCompositeDisposable.add(disposable)
+        debugLog("end")
+    }
+
+    private fun loadLeastMentionList() {
+        debugLog("start")
+        var paging : Paging = Paging().sinceId(tweetList.first().id)
+        val disposable : Disposable = apiProvider.getMention(twitter, paging).subscribe(
+                { list : List<Status> ->
+                    tweetList = list + tweetList
                     homeTweetView.showTweetList(tweetList)
                 }
                 , { e ->
