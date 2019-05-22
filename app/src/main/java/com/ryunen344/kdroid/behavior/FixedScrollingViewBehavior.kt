@@ -11,7 +11,7 @@ import com.google.android.material.appbar.AppBarLayout
 class FixedScrollingViewBehavior(context : Context?, attrs : AttributeSet? = null) : AppBarLayout.ScrollingViewBehavior(context, attrs) {
 
     override fun onMeasureChild(parent : CoordinatorLayout, child : View, parentWidthMeasureSpec : Int, widthUsed : Int, parentHeightMeasureSpec : Int, heightUsed : Int) : Boolean {
-        if (child.layoutParams.height === -1) {
+        if (child.layoutParams.height == -1) {
             val dependencies = parent.getDependencies(child)
             if (dependencies.isEmpty()) {
                 return false
@@ -20,7 +20,7 @@ class FixedScrollingViewBehavior(context : Context?, attrs : AttributeSet? = nul
             val appBar = findFirstAppBarLayout(dependencies)
             if (appBar != null && ViewCompat.isLaidOut(appBar)) {
                 if (ViewCompat.getFitsSystemWindows(appBar)) {
-                    ViewCompat.setFitsSystemWindows(child, true)
+                    child.fitsSystemWindows = true
                 }
 
                 val scrollRange = appBar.totalScrollRange

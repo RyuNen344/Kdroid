@@ -1,4 +1,4 @@
-package com.ryunen344.kdroid.home
+package com.ryunen344.kdroid.home.tweet
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
-import com.ryunen344.kdroid.profile.tweet.HomeTweetContract
 import com.ryunen344.kdroid.util.debugLog
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_tweet.view.*

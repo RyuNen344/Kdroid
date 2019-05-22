@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.ryunen344.kdroid.home.search.HomeSearchFragment
+import com.ryunen344.kdroid.home.tweet.HomeTweetFragment
 
 class HomeSectionsPagerAdapter(fragmentManager : FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 

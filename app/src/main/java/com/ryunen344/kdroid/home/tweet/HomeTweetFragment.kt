@@ -1,4 +1,4 @@
-package com.ryunen344.kdroid.home
+package com.ryunen344.kdroid.home.tweet
 
 import android.app.ActivityOptions
 import android.content.Intent
@@ -18,10 +18,9 @@ import com.ryunen344.kdroid.behavior.EndlessScrollListener
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
+import com.ryunen344.kdroid.home.HomeActivity
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.profile.ProfileActivity
-import com.ryunen344.kdroid.profile.tweet.HomeTweetContract
-import com.ryunen344.kdroid.profile.tweet.HomeTweetPresenter
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import com.ryunen344.kdroid.util.errorLog
@@ -136,8 +135,8 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
         debugLog("end")
     }
 
-    override fun showTweetList(mainList : List<Status>) {
-        homeTweetAdapter.tweetList = mainList
+    override fun showTweetList(tweetList : List<Status>) {
+        homeTweetAdapter.tweetList = tweetList
         homeTweetAdapter.notifyDataSetChanged()
     }
 

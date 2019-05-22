@@ -1,4 +1,4 @@
-package com.ryunen344.kdroid.profile.tweet
+package com.ryunen344.kdroid.home.tweet
 
 import com.ryunen344.kdroid.BasePresenter
 import com.ryunen344.kdroid.BaseView
