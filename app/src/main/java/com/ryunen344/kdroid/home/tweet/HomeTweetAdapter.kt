@@ -17,7 +17,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import twitter4j.Status
 
-class HomeTweetAdapter(mainList: List<Status>, val tweetItemListner: HomeTweetContract.TweetItemListner, val appProvider: AppProvider, val utilProvider: UtilProvider) : RecyclerView.Adapter<HomeTweetAdapter.ViewHolder>() {
+class HomeTweetAdapter(mainList : List<Status>, private val tweetItemListener : HomeTweetContract.TweetItemListener, val appProvider : AppProvider, private val utilProvider : UtilProvider) : RecyclerView.Adapter<HomeTweetAdapter.ViewHolder>() {
 
     var tweetList: List<Status> = mainList
         set(mainList: List<Status>) {
@@ -80,7 +80,7 @@ class HomeTweetAdapter(mainList: List<Status>, val tweetItemListner: HomeTweetCo
 
         }
 
-        //holder.itemView.setOnClickListener { tweetItemListner.onAccountClick() }
+        //holder.itemView.setOnClickListener { tweetItemListener.onAccountClick() }
         debugLog("end")
     }
 
@@ -114,7 +114,7 @@ class HomeTweetAdapter(mainList: List<Status>, val tweetItemListner: HomeTweetCo
                 .error(R.drawable.ic_loading_image_24dp)
                 .into(holder.tweet_icon)
         holder.tweet_icon.setOnClickListener {
-            tweetItemListner.onAccountClick(tweetStatus.user)
+            tweetItemListener.onAccountClick(tweetStatus.user)
         }
 
         initImage(holder, tweetStatus)
@@ -149,7 +149,7 @@ class HomeTweetAdapter(mainList: List<Status>, val tweetItemListner: HomeTweetCo
                 .into(imageView)
 
         imageView.setOnClickListener {
-            tweetItemListner.onImageClick(mediaUrl)
+            tweetItemListener.onImageClick(mediaUrl)
         }
     }
 

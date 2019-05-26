@@ -25,7 +25,7 @@ interface HomeTweetContract {
         fun clearDisposable()
     }
 
-    interface TweetItemListner {
+    interface TweetItemListener {
         fun onAccountClick(user : User)
         fun onImageClick(mediaUrl : String)
         fun onTweetClick()

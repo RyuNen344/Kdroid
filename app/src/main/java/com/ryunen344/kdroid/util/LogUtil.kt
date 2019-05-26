@@ -8,6 +8,10 @@ fun debugLog() {
     debugLog("")
 }
 
+fun debugLog(any : Any) {
+    debugLog(any.toString())
+}
+
 fun debugLog(msg : String) {
     if (!BuildConfig.DEBUG) return
     Log.d(getTag(), msg)

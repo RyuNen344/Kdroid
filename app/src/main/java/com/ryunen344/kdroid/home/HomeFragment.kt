@@ -4,10 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_home
@@ -17,8 +16,10 @@ import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.debugLog
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.nav_home_header.*
 import org.koin.android.ext.android.inject
 import twitter4j.User
+import java.io.File
 
 class HomeFragment : Fragment(), HomeContract.View {
 
@@ -78,28 +79,34 @@ class HomeFragment : Fragment(), HomeContract.View {
         activity?.drawer_layout?.addDrawerListener(toggle)
         toggle.syncState()
 
-        activity?.nav_view?.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
+        activity?.home_nav_view?.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_tool -> {
+                R.id.nav_profile -> {
                     debugLog()
                 }
-                R.id.nav_gallery -> {
+                R.id.nav_reload -> {
                     debugLog()
                 }
-                R.id.nav_share -> {
+                R.id.nav_setting -> {
                     debugLog()
                 }
-                R.id.nav_send -> {
+                R.id.nav_feedback -> {
+                    debugLog()
+                }
+                R.id.nav_help -> {
+                    debugLog()
+                }
+                R.id.nav_about -> {
                     debugLog()
                 }
             }
             activity?.drawer_layout?.closeDrawer(GravityCompat.START)
             true
-        })
+        }
 
 
         //configure timeline_navigation bar
-        activity?.navigation!!.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        activity?.navigation!!.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
                     view_pager_container.currentItem = 0
@@ -112,7 +119,7 @@ class HomeFragment : Fragment(), HomeContract.View {
                 }
             }
             false
-        })
+        }
 
         debugLog("end")
         return root
@@ -130,6 +137,8 @@ class HomeFragment : Fragment(), HomeContract.View {
     override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
         debugLog("start")
         mPresenter.start()
+        //mPresenter.initProfile()
+        mPresenter.checkImageStatus(context?.filesDir)
         debugLog("end")
     }
 
@@ -139,6 +148,31 @@ class HomeFragment : Fragment(), HomeContract.View {
         super.onDestroy()
         debugLog("end")
     }
+
+    override fun showDrawerProfile(userName : String?, screenName : String, profileImage : String?, profileBannerImage : String?) {
+        activity?.let { activity ->
+            profileBannerImage.let {
+                if (!File(context?.filesDir, it).exists()) {
+                    activity.header_profile_banner.setImageURI(File(context?.filesDir, it).toUri())
+                }
+            }
+
+            profileImage.let {
+                if (!File(context?.filesDir, it).exists()) {
+                    activity.header_profile_icon.setImageURI(File(context?.filesDir, it).toUri())
+                }
+            }
+
+            userName.let {
+                activity.header_user_name.text = it
+            }
+
+            screenName.let {
+                activity.header_screen_name.text = it
+            }
+        }
+    }
+
 
     override fun showAddNewTweet() {
         //fixme
@@ -162,6 +196,12 @@ class HomeFragment : Fragment(), HomeContract.View {
     override fun showFailTweet() {
         debugLog("start")
         Snackbar.make(activity?.nestedScrollView!!, "tweet fail", Snackbar.LENGTH_LONG).show()
+        debugLog("end")
+    }
+
+    override fun showSuccessfullyUpdateProfile() {
+        debugLog("start")
+        Snackbar.make(activity?.nestedScrollView!!, "success update profile", Snackbar.LENGTH_LONG).show()
         debugLog("end")
     }
 

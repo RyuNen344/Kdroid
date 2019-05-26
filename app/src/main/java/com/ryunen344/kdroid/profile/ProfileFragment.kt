@@ -8,17 +8,22 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.ryunen344.kdroid.R
+import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.debugLog
+import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import org.koin.android.ext.android.inject
 import twitter4j.User
 
 class ProfileFragment : Fragment(), ProfileContract.View {
 
+    private val appProvider : AppProvider by inject()
     private val utilProvider: UtilProvider by inject()
     private lateinit var mPresenter: ProfileContract.Presenter
     private lateinit var mSectionsPagerAdapter: ProfileSectionsPagerAdapter
+
+    private val mPicasso = appProvider.providePiccaso()
 
     companion object {
         fun newInstance() = ProfileFragment()
@@ -82,11 +87,23 @@ class ProfileFragment : Fragment(), ProfileContract.View {
 
     override fun showUserInfo(user: User) {
         debugLog("start")
+        activity?.let {
+            it.profile_screen_name.text = user.screenName
+            it.profile_description.text = user.description
+            it.profile_place.text = user.name
 
-        debugLog(user.screenName)
-        debugLog(user.name)
-        debugLog(user.description)
+            mPicasso
+                    .load(user.profileBanner1500x500URL)
+                    .placeholder(R.drawable.ic_loading_image_24dp)
+                    .error(R.drawable.ic_loading_image_24dp)
+                    .into(it.profile_banner)
 
+            mPicasso
+                    .load(user.originalProfileImageURLHttps)
+                    .placeholder(R.drawable.ic_loading_image_24dp)
+                    .error(R.drawable.ic_loading_image_24dp)
+                    .into(it.profile_icon)
+        }
         debugLog("start")
     }
 

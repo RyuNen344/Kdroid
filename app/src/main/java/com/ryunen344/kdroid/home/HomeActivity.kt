@@ -32,7 +32,7 @@ class HomeActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(false)
         intent.getLongExtra("userId", 0)
 
-        //config twitter instance
+        //config mTwitter instance
         val builder : ConfigurationBuilder = ConfigurationBuilder()
         builder.setOAuthConsumerKey(getString(consumer_key))
         builder.setOAuthConsumerSecret(getString(consumer_secret_key))

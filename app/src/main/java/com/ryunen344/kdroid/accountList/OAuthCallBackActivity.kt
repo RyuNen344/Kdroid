@@ -52,7 +52,7 @@ class OAuthCallBackActivity : AppCompatActivity() {
                         val accountDao : AccountDao = accountDatabase.accountDao()
 
                         accountDao
-                                .insertAccount(Account(token!!.userId, token?.screenName, token?.token, token?.tokenSecret))
+                                .insertAccount(Account(token!!.userId, token!!.screenName, token!!.token, token!!.tokenSecret))
                                 .subscribeOn(Schedulers.io())
                                 .subscribe({}, { e -> e.printStackTrace() })
                     }

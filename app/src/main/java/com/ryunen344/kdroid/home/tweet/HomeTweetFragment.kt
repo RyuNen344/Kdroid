@@ -48,7 +48,7 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
     }
 
 
-    private var itemListener : HomeTweetContract.TweetItemListner = object : HomeTweetContract.TweetItemListner {
+    private var itemListener : HomeTweetContract.TweetItemListener = object : HomeTweetContract.TweetItemListener {
         override fun onImageClick(mediaUrl : String) {
             debugLog("start")
             mPresenter.openMedia(mediaUrl)

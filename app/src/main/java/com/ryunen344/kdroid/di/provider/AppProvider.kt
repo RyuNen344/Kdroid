@@ -25,7 +25,6 @@ class AppProvider{
                 .client(provideOkhttpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl("http://api.fixer.io")
                 .build()
     }
 

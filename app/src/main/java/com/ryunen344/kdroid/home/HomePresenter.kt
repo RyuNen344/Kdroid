@@ -2,22 +2,31 @@ package com.ryunen344.kdroid.home
 
 import android.app.Activity
 import android.os.Bundle
+import androidx.work.*
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
+import com.ryunen344.kdroid.data.AccountAndAccountDetail
+import com.ryunen344.kdroid.data.AccountDetail
 import com.ryunen344.kdroid.data.dao.AccountDao
 import com.ryunen344.kdroid.data.db.AccountDatabase
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.errorLog
+import com.ryunen344.kdroid.workers.ProfileUpdateWorker
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import twitter4j.Twitter
 import twitter4j.auth.AccessToken
+import java.io.File
 
 class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvider, val apiProvider : ApiProvider, val bundle : Bundle?) : HomeContract.Presenter {
 
-    var twitter : Twitter = appProvider.provideTwitter()
+    var mTwitter : Twitter = appProvider.provideTwitter()
+    private val mAccountDatabase : AccountDatabase? = AccountDatabase.getInstance()
     private var mUserId : Long = 0L
+    private var mAccountAndDetail : AccountAndAccountDetail = AccountAndAccountDetail()
     var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
 
     init {
@@ -39,21 +48,121 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
 
     override fun initTwitter() {
         debugLog("start")
-        AccountDatabase.getInstance()?.let { accountDatabase ->
+        mAccountDatabase?.let { accountDatabase ->
             val accountDao : AccountDao = accountDatabase.accountDao()
 
             accountDao.loadAccountById(mUserId)
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                             {
-                                twitter.oAuthAccessToken = AccessToken(it.token, it.tokenSecret)
-
+                                mTwitter.oAuthAccessToken = AccessToken(it.account.token, it.account.tokenSecret)
+                                mAccountAndDetail = it
+                                initProfile()
                             },
                             { e ->
+                                errorLog(e.localizedMessage, e)
                                 homeView.showError(e)
                             })
         }
         debugLog("end")
+    }
+
+    override fun initProfile() {
+        debugLog("start")
+        val disposable : Disposable = apiProvider.getUserByUserId(mTwitter, mUserId).subscribe(
+                {
+                    var insertUserName : String = it.name
+                    var insertProfileImage : String = it.get400x400ProfileImageURLHttps().split("/".toRegex()).last()
+                    var insertProfileBannerImage : String = it.profileBanner1500x500URL.split("/".toRegex()).last()
+
+                    //compare local profile
+                    if (mAccountAndDetail.accountDetails.isNotEmpty()) {
+                        if (insertUserName != mAccountAndDetail.accountDetails[0].userName ||
+                                insertProfileImage != mAccountAndDetail.accountDetails[0].profileImage ||
+                                insertProfileBannerImage == mAccountAndDetail.accountDetails[0].profileBannerImage) {
+                            mAccountDatabase?.let { accountDatabase ->
+                                val accountDao : AccountDao = accountDatabase.accountDao()
+
+                                accountDao
+                                        .insertAccountDetail(AccountDetail(mUserId, insertUserName, insertProfileImage, insertProfileBannerImage))
+                                        .subscribeOn(Schedulers.io())
+                                        .subscribe {
+                                            homeView.showSuccessfullyUpdateProfile()
+                                        }
+                            }
+                        }
+                    }
+                }
+                , { e ->
+            errorLog(e.localizedMessage, e)
+            homeView.showError(e)
+        }
+        )
+        mCompositeDisposable.add(disposable)
+        debugLog("end")
+    }
+
+    override fun checkImageStatus(internalFileDir : File?) {
+        debugLog("start")
+
+        internalFileDir.let { fileDir ->
+            mAccountDatabase?.let { accountDatabase ->
+                val accountDao : AccountDao = accountDatabase.accountDao()
+
+                //制約を作成
+                val workManager : WorkManager = WorkManager.getInstance()
+                val constraints = Constraints.Builder()
+                        .setRequiresCharging(true)
+                        .setRequiresBatteryNotLow(true)
+                        .setRequiresStorageNotLow(true)
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build()
+
+                accountDao.loadAccountById(mUserId)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(
+                                {
+                                    if (it.accountDetails.isNotEmpty()) {
+                                        if (!File(fileDir, it.accountDetails[0].profileImage?.split("/".toRegex())?.last()).exists()) {
+                                            //work manager request save image
+                                            workManager.beginUniqueWork(
+                                                    ProfileUpdateWorker.WORK_ID_PROFILE_IMAGE,
+                                                    ExistingWorkPolicy.REPLACE,
+                                                    OneTimeWorkRequest.Builder(ProfileUpdateWorker::class.java)
+                                                            .setConstraints(constraints)
+                                                            .setInputData(createInputDataForUrl(it.accountDetails[1].profileImage!!))
+                                                            .build()
+                                            ).enqueue()
+                                        }
+
+                                        if (!File(fileDir, it.accountDetails[0].profileBannerImage?.split("/".toRegex())?.last()).exists()) {
+                                            //work manager request save image
+                                            workManager.beginUniqueWork(
+                                                    ProfileUpdateWorker.WORK_ID_PROFILE_BANNER_IMAGE,
+                                                    ExistingWorkPolicy.REPLACE,
+                                                    OneTimeWorkRequest.Builder(ProfileUpdateWorker::class.java)
+                                                            .setConstraints(constraints)
+                                                            .setInputData(createInputDataForUrl(it.accountDetails[1].profileBannerImage!!))
+                                                            .build()
+                                            ).enqueue()
+                                        }
+                                    }
+
+                                    //homeView.showDrawerProfile(it.accountDetails[0].userName,it.account.screenName,it.accountDetails[0].profileImage,it.accountDetails[0].profileBannerImage)
+                                },
+                                { e ->
+                                    errorLog(e.localizedMessage, e)
+                                    homeView.showError(e)
+                                })
+            }
+        }
+        debugLog("end")
+    }
+
+    private fun createInputDataForUrl(imageUrl : String) : Data {
+        var builder : Data.Builder = Data.Builder()
+        builder.putString(ProfileUpdateWorker.KEY_IMAGE_URL, imageUrl)
+        return builder.build()
     }
 
     override fun addNewTweet() {
