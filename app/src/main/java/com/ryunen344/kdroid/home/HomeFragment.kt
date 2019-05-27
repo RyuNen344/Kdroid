@@ -14,12 +14,14 @@ import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.splitLastThreeWord
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.nav_home_header.*
+import kotlinx.android.synthetic.main.nav_home_header.view.*
 import org.koin.android.ext.android.inject
 import twitter4j.User
 import java.io.File
+
 
 class HomeFragment : Fragment(), HomeContract.View {
 
@@ -82,28 +84,33 @@ class HomeFragment : Fragment(), HomeContract.View {
         activity?.home_nav_view?.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_profile -> {
-                    debugLog()
+                    debugLog("start")
+                    debugLog("end")
                 }
                 R.id.nav_reload -> {
-                    debugLog()
+                    debugLog("start")
+                    debugLog("end")
                 }
                 R.id.nav_setting -> {
-                    debugLog()
+                    debugLog("start")
+                    debugLog("end")
                 }
                 R.id.nav_feedback -> {
-                    debugLog()
+                    debugLog("start")
+                    debugLog("end")
                 }
                 R.id.nav_help -> {
-                    debugLog()
+                    debugLog("start")
+                    debugLog("end")
                 }
                 R.id.nav_about -> {
-                    debugLog()
+                    debugLog("start")
+                    debugLog("end")
                 }
             }
             activity?.drawer_layout?.closeDrawer(GravityCompat.START)
             true
         }
-
 
         //configure timeline_navigation bar
         activity?.navigation!!.setOnNavigationItemSelectedListener { item ->
@@ -150,27 +157,42 @@ class HomeFragment : Fragment(), HomeContract.View {
     }
 
     override fun showDrawerProfile(userName : String?, screenName : String, profileImage : String?, profileBannerImage : String?) {
+
+        activity?.home_nav_view?.header_screen_name?.text = ""
+        activity?.home_nav_view?.header_user_name?.text = ""
+        activity?.home_nav_view?.getHeaderView(0)?.header_screen_name?.text = "HOGEHOGE"
+
         activity?.let { activity ->
             profileBannerImage.let {
-                if (!File(context?.filesDir, it).exists()) {
-                    activity.header_profile_banner.setImageURI(File(context?.filesDir, it).toUri())
+                debugLog(it!!)
+                debugLog(splitLastThreeWord(it))
+                if (File(context?.filesDir, splitLastThreeWord(it)).exists()) {
+                    debugLog("file exists")
+                    activity.home_nav_view?.getHeaderView(0)?.header_profile_banner?.setImageURI(File(context?.filesDir, it).toUri())
                 }
             }
 
             profileImage.let {
-                if (!File(context?.filesDir, it).exists()) {
-                    activity.header_profile_icon.setImageURI(File(context?.filesDir, it).toUri())
+                debugLog(it!!)
+                debugLog(splitLastThreeWord(it))
+                if (File(context?.filesDir, splitLastThreeWord(it)).exists()) {
+                    debugLog("file exists")
+                    activity.home_nav_view?.getHeaderView(0)?.header_profile_icon?.setImageURI(File(context?.filesDir, it).toUri())
                 }
             }
 
             userName.let {
-                activity.header_user_name.text = it
+                debugLog(it!!)
+                activity.home_nav_view?.getHeaderView(0)?.header_user_name?.text = it
             }
 
             screenName.let {
-                activity.header_screen_name.text = it
+                debugLog(it)
+                activity.home_nav_view?.getHeaderView(0)?.header_screen_name?.text = it
             }
         }
+
+
     }
 
 

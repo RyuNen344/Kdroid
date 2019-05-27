@@ -13,6 +13,7 @@ import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.errorLog
+import com.ryunen344.kdroid.util.splitLastThreeWord
 import com.ryunen344.kdroid.workers.ProfileUpdateWorker
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -72,14 +73,14 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
         val disposable : Disposable = apiProvider.getUserByUserId(mTwitter, mUserId).subscribe(
                 {
                     var insertUserName : String = it.name
-                    var insertProfileImage : String = it.get400x400ProfileImageURLHttps().split("/".toRegex()).last()
-                    var insertProfileBannerImage : String = it.profileBanner1500x500URL.split("/".toRegex()).last()
+                    var insertProfileImage : String = it.get400x400ProfileImageURLHttps()
+                    var insertProfileBannerImage : String = it.profileBanner1500x500URL
 
                     //compare local profile
                     if (mAccountAndDetail.accountDetails.isNotEmpty()) {
                         if (insertUserName != mAccountAndDetail.accountDetails[0].userName ||
                                 insertProfileImage != mAccountAndDetail.accountDetails[0].profileImage ||
-                                insertProfileBannerImage == mAccountAndDetail.accountDetails[0].profileBannerImage) {
+                                insertProfileBannerImage != mAccountAndDetail.accountDetails[0].profileBannerImage) {
                             mAccountDatabase?.let { accountDatabase ->
                                 val accountDao : AccountDao = accountDatabase.accountDao()
 
@@ -90,6 +91,18 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                                             homeView.showSuccessfullyUpdateProfile()
                                         }
                             }
+                        }
+
+                    } else {
+                        mAccountDatabase?.let { accountDatabase ->
+                            val accountDao : AccountDao = accountDatabase.accountDao()
+
+                            accountDao
+                                    .insertAccountDetail(AccountDetail(mUserId, insertUserName, insertProfileImage, insertProfileBannerImage))
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe {
+                                        homeView.showSuccessfullyUpdateProfile()
+                                    }
                         }
                     }
                 }
@@ -112,7 +125,6 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                 //制約を作成
                 val workManager : WorkManager = WorkManager.getInstance()
                 val constraints = Constraints.Builder()
-                        .setRequiresCharging(true)
                         .setRequiresBatteryNotLow(true)
                         .setRequiresStorageNotLow(true)
                         .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -123,32 +135,34 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                         .subscribe(
                                 {
                                     if (it.accountDetails.isNotEmpty()) {
-                                        if (!File(fileDir, it.accountDetails[0].profileImage?.split("/".toRegex())?.last()).exists()) {
+                                        if (!File(fileDir, splitLastThreeWord(it.accountDetails[0].profileImage!!)).exists()) {
+                                            debugLog("work request")
                                             //work manager request save image
                                             workManager.beginUniqueWork(
                                                     ProfileUpdateWorker.WORK_ID_PROFILE_IMAGE,
                                                     ExistingWorkPolicy.REPLACE,
-                                                    OneTimeWorkRequest.Builder(ProfileUpdateWorker::class.java)
+                                                    OneTimeWorkRequestBuilder<ProfileUpdateWorker>()
                                                             .setConstraints(constraints)
-                                                            .setInputData(createInputDataForUrl(it.accountDetails[1].profileImage!!))
+                                                            .setInputData(createInputDataForUrl(it.accountDetails[0].profileImage!!))
                                                             .build()
                                             ).enqueue()
                                         }
 
-                                        if (!File(fileDir, it.accountDetails[0].profileBannerImage?.split("/".toRegex())?.last()).exists()) {
+                                        if (!File(fileDir, splitLastThreeWord(it.accountDetails[0].profileBannerImage!!)).exists()) {
+                                            debugLog("work request")
                                             //work manager request save image
                                             workManager.beginUniqueWork(
                                                     ProfileUpdateWorker.WORK_ID_PROFILE_BANNER_IMAGE,
                                                     ExistingWorkPolicy.REPLACE,
-                                                    OneTimeWorkRequest.Builder(ProfileUpdateWorker::class.java)
+                                                    OneTimeWorkRequestBuilder<ProfileUpdateWorker>()
                                                             .setConstraints(constraints)
-                                                            .setInputData(createInputDataForUrl(it.accountDetails[1].profileBannerImage!!))
+                                                            .setInputData(createInputDataForUrl(it.accountDetails[0].profileBannerImage!!))
                                                             .build()
                                             ).enqueue()
                                         }
-                                    }
 
-                                    //homeView.showDrawerProfile(it.accountDetails[0].userName,it.account.screenName,it.accountDetails[0].profileImage,it.accountDetails[0].profileBannerImage)
+                                        homeView.showDrawerProfile(it.accountDetails[0].userName, it.account.screenName, it.accountDetails[0].profileImage, it.accountDetails[0].profileBannerImage)
+                                    }
                                 },
                                 { e ->
                                     errorLog(e.localizedMessage, e)

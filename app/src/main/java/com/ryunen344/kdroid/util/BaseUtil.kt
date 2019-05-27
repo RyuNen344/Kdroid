@@ -42,3 +42,8 @@ fun isExternalStorageReadable(): Boolean {
             setOf(Environment.MEDIA_MOUNTED, Environment.MEDIA_MOUNTED_READ_ONLY)
 }
 
+fun splitLastThreeWord(string : String) : String {
+    val list = string.split("/".toRegex())
+    return list[list.size - 3] + "/" + list[list.size - 2] + "/" + list[list.size - 1]
+}
+

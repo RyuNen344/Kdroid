@@ -1,21 +1,27 @@
 package com.ryunen344.kdroid.workers
 
 import android.content.Context
-import androidx.work.RxWorker
+import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.ryunen344.kdroid.data.api.TwitterSource
-import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.util.debugLog
-import io.reactivex.Single
+import com.ryunen344.kdroid.util.splitLastThreeWord
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File.separator
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 
 
-class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters) : RxWorker(appContext, workerParams) {
+class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters) : Worker(appContext, workerParams) {
 
-    private var mTwitterSource : TwitterSource = AppProvider().provideRetrofit().create(TwitterSource::class.java)
+    private var mTwitterSource : TwitterSource = Retrofit.Builder()
+            .baseUrl("https://s3.amazon.com/profile-picture/path/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .build().create(TwitterSource::class.java)
 
 
     companion object {
@@ -24,7 +30,7 @@ class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters)
         const val KEY_IMAGE_URL : String = "key_image_url"
     }
 
-    override fun createWork() : Single<Result> {
+    override fun doWork() : Result {
         debugLog("start")
         var succeed : Boolean = false
         var dataUrl : String
@@ -33,7 +39,7 @@ class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters)
             dataUrl = it!!
         }
 
-        return mTwitterSource.getImageFromUrl(dataUrl)
+        mTwitterSource.getImageFromUrl(dataUrl)
                 .doOnSuccess {
                     debugLog("writing image file to internal storage")
                     var inputStream : InputStream? = null
@@ -41,7 +47,7 @@ class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters)
 
                     try {
                         inputStream = it.byteStream()
-                        fileOutPutStream = FileOutputStream(applicationContext.filesDir.absolutePath + separator + dataUrl.split("/".toRegex()).last())
+                        fileOutPutStream = FileOutputStream(applicationContext.filesDir.absolutePath + separator + splitLastThreeWord(dataUrl))
 
                         while ((inputStream.read() != -1)) {
                             fileOutPutStream.write(inputStream.read())
@@ -111,5 +117,6 @@ class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters)
 //
 //        debugLog("end")
 //        return if(succeed) Single.just(Result.success())  else Single.just(Result.failure())
+        return Result.success()
     }
 }
