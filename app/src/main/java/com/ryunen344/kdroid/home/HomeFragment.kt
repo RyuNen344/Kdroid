@@ -158,26 +158,24 @@ class HomeFragment : Fragment(), HomeContract.View {
 
     override fun showDrawerProfile(userName : String?, screenName : String, profileImage : String?, profileBannerImage : String?) {
 
-        activity?.home_nav_view?.header_screen_name?.text = ""
-        activity?.home_nav_view?.header_user_name?.text = ""
-        activity?.home_nav_view?.getHeaderView(0)?.header_screen_name?.text = "HOGEHOGE"
-
         activity?.let { activity ->
             profileBannerImage.let {
                 debugLog(it!!)
-                debugLog(splitLastThreeWord(it))
-                if (File(context?.filesDir, splitLastThreeWord(it)).exists()) {
+                if (File(context?.filesDir, it).exists()) {
                     debugLog("file exists")
                     activity.home_nav_view?.getHeaderView(0)?.header_profile_banner?.setImageURI(File(context?.filesDir, it).toUri())
+                } else {
+                    debugLog(File(context?.filesDir, it).absolutePath)
                 }
             }
 
             profileImage.let {
                 debugLog(it!!)
-                debugLog(splitLastThreeWord(it))
-                if (File(context?.filesDir, splitLastThreeWord(it)).exists()) {
+                if (File(context?.filesDir, it).exists()) {
                     debugLog("file exists")
                     activity.home_nav_view?.getHeaderView(0)?.header_profile_icon?.setImageURI(File(context?.filesDir, it).toUri())
+                } else {
+                    debugLog(File(context?.filesDir, splitLastThreeWord(it)).absolutePath)
                 }
             }
 

@@ -135,7 +135,7 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                         .subscribe(
                                 {
                                     if (it.accountDetails.isNotEmpty()) {
-                                        if (!File(fileDir, splitLastThreeWord(it.accountDetails[0].profileImage!!)).exists()) {
+                                        if (!File(fileDir, it.accountDetails[0].profileImage!!.split("/".toRegex()).last()).exists()) {
                                             debugLog("work request")
                                             //work manager request save image
                                             workManager.beginUniqueWork(
@@ -143,12 +143,12 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                                                     ExistingWorkPolicy.REPLACE,
                                                     OneTimeWorkRequestBuilder<ProfileUpdateWorker>()
                                                             .setConstraints(constraints)
-                                                            .setInputData(createInputDataForUrl(it.accountDetails[0].profileImage!!))
+                                                            .setInputData(createInputDataForUrl(it.accountDetails[0].profileImage!!, false))
                                                             .build()
                                             ).enqueue()
                                         }
 
-                                        if (!File(fileDir, splitLastThreeWord(it.accountDetails[0].profileBannerImage!!)).exists()) {
+                                        if (!File(fileDir, splitLastThreeWord(it.accountDetails[0].profileBannerImage!! + ".png")).exists()) {
                                             debugLog("work request")
                                             //work manager request save image
                                             workManager.beginUniqueWork(
@@ -156,12 +156,12 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                                                     ExistingWorkPolicy.REPLACE,
                                                     OneTimeWorkRequestBuilder<ProfileUpdateWorker>()
                                                             .setConstraints(constraints)
-                                                            .setInputData(createInputDataForUrl(it.accountDetails[0].profileBannerImage!!))
+                                                            .setInputData(createInputDataForUrl(it.accountDetails[0].profileBannerImage!!, true))
                                                             .build()
                                             ).enqueue()
                                         }
 
-                                        homeView.showDrawerProfile(it.accountDetails[0].userName, it.account.screenName, it.accountDetails[0].profileImage, it.accountDetails[0].profileBannerImage)
+                                        homeView.showDrawerProfile(it.accountDetails[0].userName, it.account.screenName, it.accountDetails[0].profileImage!!.split("/".toRegex()).last(), splitLastThreeWord(it.accountDetails[0].profileBannerImage!! + ".png"))
                                     }
                                 },
                                 { e ->
@@ -173,9 +173,10 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
         debugLog("end")
     }
 
-    private fun createInputDataForUrl(imageUrl : String) : Data {
+    private fun createInputDataForUrl(imageUrl : String, isBanner : Boolean) : Data {
         var builder : Data.Builder = Data.Builder()
         builder.putString(ProfileUpdateWorker.KEY_IMAGE_URL, imageUrl)
+        builder.putBoolean(ProfileUpdateWorker.KEY_IS_BANNER, isBanner)
         return builder.build()
     }
 

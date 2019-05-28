@@ -44,6 +44,6 @@ fun isExternalStorageReadable(): Boolean {
 
 fun splitLastThreeWord(string : String) : String {
     val list = string.split("/".toRegex())
-    return list[list.size - 3] + "/" + list[list.size - 2] + "/" + list[list.size - 1]
+    return list[list.size - 3] + list[list.size - 2] + list[list.size - 1]
 }
 
