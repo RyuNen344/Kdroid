@@ -14,7 +14,6 @@ import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.debugLog
-import com.ryunen344.kdroid.util.splitLastThreeWord
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.nav_home_header.view.*
@@ -175,7 +174,7 @@ class HomeFragment : Fragment(), HomeContract.View {
                     debugLog("file exists")
                     activity.home_nav_view?.getHeaderView(0)?.header_profile_icon?.setImageURI(File(context?.filesDir, it).toUri())
                 } else {
-                    debugLog(File(context?.filesDir, splitLastThreeWord(it)).absolutePath)
+                    debugLog(File(context?.filesDir, it).absolutePath)
                 }
             }
 
