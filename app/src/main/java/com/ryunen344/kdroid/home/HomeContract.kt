@@ -16,15 +16,15 @@ interface HomeContract {
     }
 
     interface Presenter : BasePresenter {
-        fun initTwitter()
-        fun initProfile()
+        fun initTwitter(absoluteDirPath : String?)
+        fun initProfile(absoluteDirPath : String?)
         fun checkImageStatus(internalFileDir : File?)
         fun addNewTweet()
         fun result(requestCode : Int, resultCode : Int)
         fun clearDisposable()
     }
 
-    interface MainItemListner {
+    interface MainItemListener {
         fun onAccountClick(user : User)
         fun onImageClick(mediaUrl : String)
         fun onTweetClick()

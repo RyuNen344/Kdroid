@@ -12,7 +12,7 @@ import io.reactivex.Single
 interface AccountDao{
 
     @Query("select * from Account")
-    fun findAccountList() : Single<List<Account>>
+    fun findAccountList() : Single<List<AccountAndAccountDetail>>
 
     @Query("SELECT * from Account where userId = :id LIMIT 1")
     fun loadAccountById(id : Long) : Flowable<AccountAndAccountDetail>

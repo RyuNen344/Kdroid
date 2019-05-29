@@ -26,7 +26,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
 <TextView
-        android:id="@+id/account_user_id"
+        android:id="@+id/account_screen_name"
         android:layout_toEndOf="@id/account_icon"
         android:layout_below="@id/account_user_name"
         android:layout_width="match_parent"

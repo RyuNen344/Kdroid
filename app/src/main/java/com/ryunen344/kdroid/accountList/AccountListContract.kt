@@ -4,16 +4,17 @@ import android.net.Uri
 import com.ryunen344.kdroid.BasePresenter
 import com.ryunen344.kdroid.BaseView
 import com.ryunen344.kdroid.data.Account
+import com.ryunen344.kdroid.data.AccountAndAccountDetail
 import twitter4j.auth.OAuthAuthorization
 import twitter4j.auth.RequestToken
 
 interface AccountListContract {
 
     interface View : BaseView<Presenter> {
-        fun showAccountList(accountList : List<Account>)
+        fun showAccountList(accountList : List<AccountAndAccountDetail>)
         fun showNoAccount()
         fun showProgress(show : Boolean)
-        fun showCallbak(req : RequestToken?, uri : Uri?)
+        fun showCallback(req : RequestToken?, uri : Uri?)
         fun openAccountTimeLine(account : Account)
     }
 

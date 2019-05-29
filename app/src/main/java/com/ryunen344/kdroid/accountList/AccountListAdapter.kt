@@ -5,20 +5,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ryunen344.kdroid.R.layout.item_account_list
-import com.ryunen344.kdroid.data.Account
+import com.ryunen344.kdroid.data.AccountAndAccountDetail
 import com.ryunen344.kdroid.util.debugLog
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.item_account_list.view.*
+import java.io.File
 
 
-class AccountListAdapter(accountList: List<Account>, val accountItemListner: AccountListContract.AccountItemListner) : RecyclerView.Adapter<AccountListAdapter.ViewHolder>() {
+class AccountListAdapter(accountList : List<AccountAndAccountDetail>, private val accountItemListener : AccountListContract.AccountItemListner) : RecyclerView.Adapter<AccountListAdapter.ViewHolder>() {
 
     var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
-    var accountList : List<Account> = accountList
-        set(accountList : List<Account>) {
+    var accountList : List<AccountAndAccountDetail> = accountList
+        set(accountList : List<AccountAndAccountDetail>) {
             field = accountList
             notifyDataSetChanged()
         }
@@ -34,17 +36,28 @@ class AccountListAdapter(accountList: List<Account>, val accountItemListner: Acc
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        //fixme
-        //holder.account_icon(accountList[position].)
-        holder.account_user_id.text = accountList[position].userId.toString()
-        holder.account_user_name.text = accountList[position].screenName
+
+        if (accountList[position].accountDetails.isNotEmpty()) {
+            if (File(accountList[position].accountDetails[0].localProfileImage).exists()) {
+                holder.account_icon.setImageURI(File(accountList[position].accountDetails[0].localProfileImage).toUri())
+            }
+
+            accountList[position].accountDetails[0].userName.let {
+                holder.account_screen_name.text = it
+            }
+
+        }
+
+        holder.account_user_name.text = accountList[position].account.screenName
+
         mCompositeDisposable.add(holder.itemView.clicks()
                 //.throttleFirst(3, TimeUnit.SECONDS)
                 .take(1)
                 .subscribe {
-                    accountItemListner.onAccountClick(accountList[position])
+                    accountItemListener.onAccountClick(accountList[position].account)
                     debugLog("subscribe on account click")
                 })
+
     }
 
     override fun getItemId(position : Int) : Long {
@@ -55,7 +68,7 @@ class AccountListAdapter(accountList: List<Account>, val accountItemListner: Acc
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var account_icon: ImageView = itemView.account_icon
         var account_user_name: TextView = itemView.account_user_name
-        var account_user_id: TextView = itemView.account_user_id
+        var account_screen_name : TextView = itemView.account_screen_name
 
     }
 }

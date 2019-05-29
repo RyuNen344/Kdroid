@@ -34,7 +34,7 @@ class HomeFragment : Fragment(), HomeContract.View {
     }
 
 
-    private var itemListener : HomeContract.MainItemListner = object : HomeContract.MainItemListner {
+    private var itemListener : HomeContract.MainItemListener = object : HomeContract.MainItemListener {
         override fun onImageClick(mediaUrl : String) {
             debugLog("start")
             debugLog("end")
@@ -143,8 +143,7 @@ class HomeFragment : Fragment(), HomeContract.View {
     override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
         debugLog("start")
         mPresenter.start()
-        //mPresenter.initProfile()
-        mPresenter.checkImageStatus(context?.filesDir)
+        mPresenter.initTwitter(context?.filesDir?.absolutePath)
         debugLog("end")
     }
 
@@ -160,9 +159,9 @@ class HomeFragment : Fragment(), HomeContract.View {
         activity?.let { activity ->
             profileBannerImage.let {
                 debugLog(it!!)
-                if (File(context?.filesDir, it).exists()) {
+                if (File(it).exists()) {
                     debugLog("file exists")
-                    activity.home_nav_view?.getHeaderView(0)?.header_profile_banner?.setImageURI(File(context?.filesDir, it).toUri())
+                    activity.home_nav_view?.getHeaderView(0)?.header_profile_banner?.setImageURI(File(it).toUri())
                 } else {
                     debugLog(File(context?.filesDir, it).absolutePath)
                 }
@@ -170,9 +169,9 @@ class HomeFragment : Fragment(), HomeContract.View {
 
             profileImage.let {
                 debugLog(it!!)
-                if (File(context?.filesDir, it).exists()) {
+                if (File(it).exists()) {
                     debugLog("file exists")
-                    activity.home_nav_view?.getHeaderView(0)?.header_profile_icon?.setImageURI(File(context?.filesDir, it).toUri())
+                    activity.home_nav_view?.getHeaderView(0)?.header_profile_icon?.setImageURI(File(it).toUri())
                 } else {
                     debugLog(File(context?.filesDir, it).absolutePath)
                 }
@@ -221,6 +220,7 @@ class HomeFragment : Fragment(), HomeContract.View {
     override fun showSuccessfullyUpdateProfile() {
         debugLog("start")
         Snackbar.make(activity?.nestedScrollView!!, "success update profile", Snackbar.LENGTH_LONG).show()
+        mPresenter.checkImageStatus(context?.filesDir)
         debugLog("end")
     }
 
