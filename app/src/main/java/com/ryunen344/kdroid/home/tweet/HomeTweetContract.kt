@@ -8,10 +8,11 @@ import twitter4j.User
 interface HomeTweetContract {
 
     interface View : BaseView<Presenter> {
-        fun showTweetList(tweetList : List<Status>)
+        fun showTweetList(tweetList : MutableList<Status>)
         fun showMediaViewer(mediaUrl : String)
         fun showTweetDetail()
         fun showProfile(user : User)
+        fun notifyStatusChange(position : Int, tweet : Status)
     }
 
     interface Presenter : BasePresenter {
@@ -22,6 +23,7 @@ interface HomeTweetContract {
         fun openMedia(mediaUrl : String)
         fun openTweetDetail()
         fun openProfile(user : User)
+        fun changeFavorite(position : Int, tweet : Status)
         fun clearDisposable()
     }
 
@@ -29,5 +31,6 @@ interface HomeTweetContract {
         fun onAccountClick(user : User)
         fun onImageClick(mediaUrl : String)
         fun onTweetClick()
+        fun onTweetLongClick(position : Int, tweet : Status)
     }
 }

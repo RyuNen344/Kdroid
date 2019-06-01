@@ -34,7 +34,7 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
 
     val appProvider : AppProvider by inject()
     val apiProvider : ApiProvider by inject()
-    val utilProvider : UtilProvider by inject()
+    private val utilProvider : UtilProvider by inject()
     lateinit var mPresenter : HomeTweetContract.Presenter
     lateinit var mainListView : LinearLayout
     lateinit var mLayoutManager : LinearLayoutManager
@@ -49,9 +49,17 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
 
 
     private var itemListener : HomeTweetContract.TweetItemListener = object : HomeTweetContract.TweetItemListener {
+
         override fun onImageClick(mediaUrl : String) {
             debugLog("start")
             mPresenter.openMedia(mediaUrl)
+            debugLog("end")
+        }
+
+        override fun onAccountClick(user : User) {
+            //fixme
+            debugLog("start")
+            mPresenter.openProfile(user)
             debugLog("end")
         }
 
@@ -62,12 +70,12 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
             debugLog("end")
         }
 
-        override fun onAccountClick(user : User) {
-            //fixme
+        override fun onTweetLongClick(position : Int, tweet : Status) {
             debugLog("start")
-            mPresenter.openProfile(user)
+            mPresenter.changeFavorite(position, tweet)
             debugLog("end")
         }
+
     }
 
     private val homeTweetAdapter = HomeTweetAdapter(ArrayList(0), itemListener, appProvider, utilProvider)
@@ -135,7 +143,7 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
         debugLog("end")
     }
 
-    override fun showTweetList(tweetList : List<Status>) {
+    override fun showTweetList(tweetList : MutableList<Status>) {
         homeTweetAdapter.tweetList = tweetList
         homeTweetAdapter.notifyDataSetChanged()
     }
@@ -154,6 +162,12 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
             putExtra(ProfileActivity.INTENT_KEY_USER_ID, user.id)
         }
         startActivity(intent)
+        debugLog("end")
+    }
+
+    override fun notifyStatusChange(position : Int, tweet : Status) {
+        debugLog("start")
+        homeTweetAdapter.notifyStatusChange(position, tweet)
         debugLog("end")
     }
 

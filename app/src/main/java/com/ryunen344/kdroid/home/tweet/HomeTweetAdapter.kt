@@ -17,36 +17,36 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import twitter4j.Status
 
-class HomeTweetAdapter(mainList : List<Status>, private val tweetItemListener : HomeTweetContract.TweetItemListener, val appProvider : AppProvider, private val utilProvider : UtilProvider) : RecyclerView.Adapter<HomeTweetAdapter.ViewHolder>() {
+class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemListener : HomeTweetContract.TweetItemListener, val appProvider : AppProvider, private val utilProvider : UtilProvider) : RecyclerView.Adapter<HomeTweetAdapter.ViewHolder>() {
 
-    var tweetList: List<Status> = mainList
-        set(mainList: List<Status>) {
+    var tweetList : MutableList<Status> = mainList
+        set(mainList : MutableList<Status>) {
             field = mainList
             notifyDataSetChanged()
         }
-    private val SCREEN_NAME_PREFIX: String = "@"
-    private val VIA_PREFIX: String = "via "
-    private val HTML_VIA_PREFIX: String = "<html><head></head><body>"
-    private val HTML_VIA_SUFIX: String = "</body></html>"
+    private val SCREEN_NAME_PREFIX : String = "@"
+    private val VIA_PREFIX : String = "via "
+    private val HTML_VIA_PREFIX : String = "<html><head></head><body>"
+    private val HTML_VIA_SUFIX : String = "</body></html>"
 
-    var mUserId: Long = 0L
+    var mUserId : Long = 0L
 
-    private var mPicasso: Picasso = appProvider.providePiccaso()
+    private var mPicasso : Picasso = appProvider.providePiccaso()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_tweet, parent, false)
+    override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : ViewHolder {
+        var view : View = LayoutInflater.from(parent.context).inflate(R.layout.item_tweet, parent, false)
         return HomeTweetAdapter.ViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
+    override fun getItemCount() : Int {
         return tweetList.size
     }
 
-    override fun getItemId(position: Int): Long {
+    override fun getItemId(position : Int) : Long {
         return position.toLong()
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder : ViewHolder, position : Int) {
         debugLog("start")
 
         //set status bar
@@ -80,14 +80,22 @@ class HomeTweetAdapter(mainList : List<Status>, private val tweetItemListener : 
 
         }
 
-        //holder.itemView.setOnClickListener { tweetItemListener.onAccountClick() }
+
+        holder.itemView.setOnClickListener {
+            tweetItemListener.onTweetClick()
+        }
+
+        holder.itemView.setOnLongClickListener {
+            tweetItemListener.onTweetLongClick(position, tweetList[position])
+            true
+        }
         debugLog("end")
     }
 
-    private fun initTweet(holder: ViewHolder, tweetStatus: Status) {
+    private fun initTweet(holder : ViewHolder, tweetStatus : Status) {
         //set user name and screen name
         holder.tweet_account_name.text = tweetStatus.user.name
-        var mScreenName: String = SCREEN_NAME_PREFIX + tweetStatus.user.screenName
+        var mScreenName : String = SCREEN_NAME_PREFIX + tweetStatus.user.screenName
         holder.tweet_screen_name.text = mScreenName
 
         //set protect icon
@@ -97,12 +105,18 @@ class HomeTweetAdapter(mainList : List<Status>, private val tweetItemListener : 
             holder.tweet_lock_icon.visibility = ImageView.INVISIBLE
         }
 
+        if (tweetStatus.isFavorited) {
+            holder.tweet_fav_icon.visibility = ImageView.VISIBLE
+        } else {
+            holder.tweet_fav_icon.visibility = ImageView.INVISIBLE
+        }
+
         //set tweet detail
         holder.tweet_description.text = tweetStatus.text
 
         //set via and date
-        var doc: Document = Jsoup.parse(HTML_VIA_PREFIX + tweetStatus.source + HTML_VIA_SUFIX)
-        var mViaAndDate: String = VIA_PREFIX + doc.getElementsByTag("a").text() + " (" + utilProvider.provideSdf().format(tweetStatus.createdAt) + ")"
+        var doc : Document = Jsoup.parse(HTML_VIA_PREFIX + tweetStatus.source + HTML_VIA_SUFIX)
+        var mViaAndDate : String = VIA_PREFIX + doc.getElementsByTag("a").text() + " (" + utilProvider.provideSdf().format(tweetStatus.createdAt) + ")"
         holder.tweet_via_and_date.text = mViaAndDate
 
 
@@ -120,7 +134,14 @@ class HomeTweetAdapter(mainList : List<Status>, private val tweetItemListener : 
         initImage(holder, tweetStatus)
     }
 
-    private fun initImage(holder: ViewHolder, tweetStatus: Status) {
+    fun notifyStatusChange(position : Int, tweet : Status) {
+        debugLog("start")
+        tweetList[position] = tweet
+        notifyItemChanged(position)
+        debugLog("end")
+    }
+
+    private fun initImage(holder : ViewHolder, tweetStatus : Status) {
 
         //set visible
         for (i in 0 until 4) {
@@ -136,7 +157,7 @@ class HomeTweetAdapter(mainList : List<Status>, private val tweetItemListener : 
 
     }
 
-    private fun setImage(imageView: ImageView, mediaUrl: String) {
+    private fun setImage(imageView : ImageView, mediaUrl : String) {
 
         //set image
         debugLog("image load")
@@ -153,15 +174,17 @@ class HomeTweetAdapter(mainList : List<Status>, private val tweetItemListener : 
         }
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var tweet_color_bar: View = itemView.tweet_color_bar
-        var tweet_icon: ImageView = itemView.tweet_icon
-        var rt_icon: ImageView = itemView.rt_icon
-        var tweet_account_name: TextView = itemView.tweet_account_name
-        var tweet_screen_name: TextView = itemView.tweet_screen_name
-        var tweet_lock_icon: ImageView = itemView.tweet_lock_icon
-        var tweet_via_and_date: TextView = itemView.tweet_via_and_date
-        var tweet_description: TextView = itemView.tweet_description
-        var imageList: List<ImageView> = listOf<ImageView>(itemView.tweet_image1, itemView.tweet_image2, itemView.tweet_image3, itemView.tweet_image4)
+    class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+        var tweet_color_bar : View = itemView.tweet_color_bar
+        var tweet_icon : ImageView = itemView.tweet_icon
+        var rt_icon : ImageView = itemView.rt_icon
+        var tweet_account_name : TextView = itemView.tweet_account_name
+        var tweet_screen_name : TextView = itemView.tweet_screen_name
+        var tweet_lock_icon : ImageView = itemView.tweet_lock_icon
+        var tweet_fav_icon : ImageView = itemView.tweet_fav_icon
+        var tweet_via_and_date : TextView = itemView.tweet_via_and_date
+        var tweet_description : TextView = itemView.tweet_description
+        var tweet_context_menu : ImageView = itemView.tweet_context_menu
+        var imageList : List<ImageView> = listOf<ImageView>(itemView.tweet_image1, itemView.tweet_image2, itemView.tweet_image3, itemView.tweet_image4)
     }
 }

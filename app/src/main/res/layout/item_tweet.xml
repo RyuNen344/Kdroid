@@ -77,17 +77,40 @@
                 android:layout_height="12sp"
                 android:layout_marginBottom="@dimen/list_item_padding"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:visibility="invisible"
+                android:visibility="gone"
                 android:src="@drawable/ic_lock"
+                android:contentDescription="@string/contentDescription_main_lock_icon"/>
+
+        <ImageView
+                android:id="@+id/tweet_fav_icon"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_width="12sp"
+                android:layout_height="12sp"
+                android:layout_marginBottom="6dp"
+                android:visibility="visible"
+                android:src="@drawable/ic_fav_star"
                 android:contentDescription="@string/contentDescription_main_lock_icon"/>
 
         <TextView
                 android:id="@+id/tweet_description"
                 android:layout_toEndOf="@id/iconFrame"
+                android:layout_toStartOf="@id/tweet_context_menu"
                 android:layout_below="@id/tweet_screen_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+        <ImageView
+                android:id="@+id/tweet_context_menu"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/tweet_fav_icon"
+                android:layout_width="12sp"
+                android:layout_height="12sp"
+                android:layout_marginBottom="6dp"
+                android:visibility="visible"
+                android:src="@drawable/ic_lock"
+                android:contentDescription="@string/contentDescription_main_lock_icon"/>
 
         <TextView
                 android:id="@+id/tweet_via_and_date"
