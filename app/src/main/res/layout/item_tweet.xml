@@ -90,6 +90,7 @@
                 android:layout_marginBottom="6dp"
                 android:visibility="visible"
                 android:src="@drawable/ic_fav_star"
+                android:tint="#ffd700"
                 android:contentDescription="@string/contentDescription_main_lock_icon"/>
 
         <TextView
@@ -105,11 +106,11 @@
                 android:id="@+id/tweet_context_menu"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/tweet_fav_icon"
-                android:layout_width="12sp"
-                android:layout_height="12sp"
+                android:layout_width="24sp"
+                android:layout_height="24sp"
                 android:layout_marginBottom="6dp"
                 android:visibility="visible"
-                android:src="@drawable/ic_lock"
+                android:src="@drawable/ic_context"
                 android:contentDescription="@string/contentDescription_main_lock_icon"/>
 
         <TextView
