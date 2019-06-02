@@ -197,7 +197,7 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
                                 homeTweetView.showError(it)
                             })
                 else
-                    apiProvider.destroyRetweet(twitter, tweet.id).subscribe(
+                    apiProvider.destroyRetweet(twitter, tweet.retweetedStatus.id).subscribe(
                             {
                                 homeTweetView.notifyStatusChange(position, it)
                             },
