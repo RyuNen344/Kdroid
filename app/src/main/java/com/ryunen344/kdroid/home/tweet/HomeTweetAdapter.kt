@@ -1,6 +1,7 @@
 package com.ryunen344.kdroid.home.tweet
 
 import android.graphics.Color
+import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,7 +82,8 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
         }
 
         holder.tweet_context_menu.setOnClickListener {
-            tweetItemListener.onContextMenuClick(position, tweetList[position])
+            //tweetItemListener.onContextMenuClick(position, tweetList[position])
+            holder.tweet_retweet_icon.showContextMenu()
         }
 
         holder.itemView.setOnClickListener {
@@ -185,7 +187,8 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
         }
     }
 
-    class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener {
+
         var tweet_color_bar : View = itemView.tweet_color_bar
         var tweet_icon : ImageView = itemView.tweet_icon
         var rt_icon : ImageView = itemView.rt_icon
@@ -198,5 +201,18 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
         var tweet_description : TextView = itemView.tweet_description
         var tweet_context_menu : ImageView = itemView.tweet_context_menu
         var imageList : List<ImageView> = listOf<ImageView>(itemView.tweet_image1, itemView.tweet_image2, itemView.tweet_image3, itemView.tweet_image4)
+
+        init {
+            debugLog()
+            tweet_context_menu.setOnCreateContextMenuListener(this)
+        }
+
+        override fun onCreateContextMenu(menu : ContextMenu?, v : View?, menuInfo : ContextMenu.ContextMenuInfo?) {
+
+            menu?.add(this.adapterPosition, 1, 1, "hoge1")
+            menu?.add(this.adapterPosition, 2, 2, "hoge2")
+            menu?.add(this.adapterPosition, 3, 3, "hoge3")
+            menu?.add(this.adapterPosition, 4, 4, "hoge4")
+        }
     }
 }
