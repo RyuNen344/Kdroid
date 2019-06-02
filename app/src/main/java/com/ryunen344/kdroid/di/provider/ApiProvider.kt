@@ -62,6 +62,30 @@ class ApiProvider {
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
+    fun createRetweet(twitter : Twitter, tweetId : Long) : Single<Status> {
+        return Single.create(SingleOnSubscribe<Status> { emitter ->
+            try {
+                emitter.onSuccess(twitter.retweetStatus(tweetId))
+            } catch (t : Throwable) {
+                emitter.onError(t)
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun destroyRetweet(twitter : Twitter, tweetId : Long) : Single<Status> {
+        return Single.create(SingleOnSubscribe<Status> { emitter ->
+            try {
+                emitter.onSuccess(twitter.destroyStatus(tweetId))
+            } catch (t : Throwable) {
+                emitter.onError(t)
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
     fun getLeastTimeLine(twitter : Twitter) : Single<MutableList<Status>> {
         return Single.create(SingleOnSubscribe<MutableList<Status>>
         { emitter ->

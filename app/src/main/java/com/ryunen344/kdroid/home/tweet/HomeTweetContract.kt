@@ -12,6 +12,7 @@ interface HomeTweetContract {
         fun showMediaViewer(mediaUrl : String)
         fun showTweetDetail()
         fun showProfile(user : User)
+        fun showContextMenu(position : Int, tweet : Status)
         fun notifyStatusChange(position : Int, tweet : Status)
     }
 
@@ -24,6 +25,7 @@ interface HomeTweetContract {
         fun openTweetDetail()
         fun openProfile(user : User)
         fun changeFavorite(position : Int, tweet : Status)
+        fun changeRetweet(position : Int, tweet : Status)
         fun clearDisposable()
     }
 
@@ -32,5 +34,6 @@ interface HomeTweetContract {
         fun onImageClick(mediaUrl : String)
         fun onTweetClick()
         fun onTweetLongClick(position : Int, tweet : Status)
+        fun onContextMenuClick(position : Int, tweet : Status)
     }
 }

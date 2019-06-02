@@ -80,6 +80,9 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
 
         }
 
+        holder.tweet_context_menu.setOnClickListener {
+            tweetItemListener.onContextMenuClick(position, tweetList[position])
+        }
 
         holder.itemView.setOnClickListener {
             tweetItemListener.onTweetClick()
@@ -105,10 +108,18 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
             holder.tweet_lock_icon.visibility = ImageView.INVISIBLE
         }
 
+        //set fav icon
         if (tweetStatus.isFavorited) {
             holder.tweet_fav_icon.visibility = ImageView.VISIBLE
         } else {
             holder.tweet_fav_icon.visibility = ImageView.INVISIBLE
+        }
+
+        //set rt icon
+        if (tweetStatus.isRetweetedByMe) {
+            holder.tweet_retweet_icon.visibility = ImageView.VISIBLE
+        } else {
+            holder.tweet_retweet_icon.visibility = ImageView.INVISIBLE
         }
 
         //set tweet detail
@@ -182,6 +193,7 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
         var tweet_screen_name : TextView = itemView.tweet_screen_name
         var tweet_lock_icon : ImageView = itemView.tweet_lock_icon
         var tweet_fav_icon : ImageView = itemView.tweet_fav_icon
+        var tweet_retweet_icon : ImageView = itemView.tweet_retweet_icon
         var tweet_via_and_date : TextView = itemView.tweet_via_and_date
         var tweet_description : TextView = itemView.tweet_description
         var tweet_context_menu : ImageView = itemView.tweet_context_menu

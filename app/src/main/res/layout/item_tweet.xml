@@ -82,6 +82,18 @@
                 android:contentDescription="@string/contentDescription_main_lock_icon"/>
 
         <ImageView
+                android:id="@+id/tweet_retweet_icon"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@id/tweet_fav_icon"
+                android:layout_width="12sp"
+                android:layout_height="12sp"
+                android:layout_marginBottom="6dp"
+                android:visibility="visible"
+                android:src="@drawable/ic_retweet"
+                android:tint="#37FF00"
+                android:contentDescription="@string/contentDescription_main_lock_icon"/>
+
+        <ImageView
                 android:id="@+id/tweet_fav_icon"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"

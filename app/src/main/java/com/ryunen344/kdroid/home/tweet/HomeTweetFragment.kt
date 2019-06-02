@@ -76,6 +76,12 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
             debugLog("end")
         }
 
+        override fun onContextMenuClick(position : Int, tweet : Status) {
+            debugLog("start")
+            showContextMenu(position, tweet)
+            debugLog("end")
+        }
+
     }
 
     private val homeTweetAdapter = HomeTweetAdapter(ArrayList(0), itemListener, appProvider, utilProvider)
@@ -121,7 +127,7 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
         })
 
 
-        //divier set
+        //divider set
         val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         mRecyclerView.addItemDecoration(itemDecoration)
 
@@ -164,6 +170,13 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
         startActivity(intent)
         debugLog("end")
     }
+
+    override fun showContextMenu(position : Int, tweet : Status) {
+        debugLog("start")
+        homeTweetAdapter.notifyStatusChange(position, tweet)
+        debugLog("end")
+    }
+
 
     override fun notifyStatusChange(position : Int, tweet : Status) {
         debugLog("start")
