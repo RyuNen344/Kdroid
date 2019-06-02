@@ -9,3 +9,5 @@
 /captures
 .externalNativeBuild
 schemas/
+.idea/caches/
+gradle/wrapper/gradle-wrapper.jar
