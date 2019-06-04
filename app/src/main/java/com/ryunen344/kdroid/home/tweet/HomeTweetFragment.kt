@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R.layout.fragment_home_tweet
@@ -29,6 +30,7 @@ import kotlinx.android.synthetic.main.fragment_home_tweet.view.*
 import org.koin.android.ext.android.inject
 import twitter4j.Status
 import twitter4j.User
+
 
 class HomeTweetFragment : Fragment(), HomeTweetContract.View {
 
@@ -119,6 +121,8 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
             mainListView = homeTweetLL
         }
 
+        //disable change set animation
+        (mRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         mRecyclerView.addOnScrollListener(object : EndlessScrollListener(mLayoutManager) {
             override fun onLoadMore(currentPage : Int) {
                 debugLog("current page is " + currentPage)
