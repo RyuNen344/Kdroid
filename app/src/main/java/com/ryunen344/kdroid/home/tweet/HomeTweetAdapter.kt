@@ -1,6 +1,8 @@
 package com.ryunen344.kdroid.home.tweet
 
 import android.graphics.Color
+import android.text.util.Linkify
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +18,7 @@ import kotlinx.android.synthetic.main.item_tweet.view.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import twitter4j.Status
+import java.util.regex.Pattern
 
 class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemListener : HomeTweetContract.TweetItemListener, val appProvider : AppProvider, private val utilProvider : UtilProvider) : RecyclerView.Adapter<HomeTweetAdapter.ViewHolder>() {
 
@@ -28,6 +31,8 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
     private val VIA_PREFIX : String = "via "
     private val HTML_VIA_PREFIX : String = "<html><head></head><body>"
     private val HTML_VIA_SUFIX : String = "</body></html>"
+    private val SCREEN_NAME_PATTERN = Pattern.compile("@([A-Za-z0-9_-]+)")
+    private val HASH_TAG_PATTERN = Pattern.compile("#([A-Za-z0-9_-]+)")
     var position : Int = -1
 
     var mUserId : Long = 0L
@@ -125,6 +130,21 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
 
         //set tweet detail
         holder.tweet_description.text = tweetStatus.text
+        Linkify.addLinks(holder.tweet_description, SCREEN_NAME_PATTERN, tweetStatus.text, null, Linkify.TransformFilter { match, url ->
+            debugLog("transform filter screen name")
+            debugLog(match)
+            debugLog(url)
+            match.group(1)
+        })
+
+        Linkify.addLinks(holder.tweet_description, HASH_TAG_PATTERN, tweetStatus.text, null, Linkify.TransformFilter { match, url ->
+            debugLog("transform filter hash tag")
+            debugLog(match)
+            debugLog(url)
+            match.group(1)
+        })
+
+        Linkify.addLinks(holder.tweet_description, Patterns.WEB_URL, tweetStatus.text)
 
         //set via and date
         var doc : Document = Jsoup.parse(HTML_VIA_PREFIX + tweetStatus.source + HTML_VIA_SUFIX)
