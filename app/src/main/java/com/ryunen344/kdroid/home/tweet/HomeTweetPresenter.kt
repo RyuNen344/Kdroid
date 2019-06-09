@@ -187,23 +187,28 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
 
     override fun changeRetweet(position : Int, tweet : Status) {
         debugLog("start")
+
         val disposable : Disposable =
-                if (!tweet.isRetweetedByMe)
+                if (!tweet.isRetweetedByMe) {
                     apiProvider.createRetweet(twitter, tweet.id).subscribe(
                             {
+                                debugLog("create RT")
+                                homeTweetView.notifyStatusChange(position, it.retweetedStatus)
+                            },
+                            {
+                                homeTweetView.showError(it)
+                            })
+                } else {
+                    apiProvider.destroyRetweet(twitter, tweet.currentUserRetweetId).subscribe(
+                            {
+                                debugLog("destroy RT")
                                 homeTweetView.notifyStatusChange(position, it)
                             },
                             {
                                 homeTweetView.showError(it)
                             })
-                else
-                    apiProvider.destroyRetweet(twitter, tweet.retweetedStatus.id).subscribe(
-                            {
-                                homeTweetView.notifyStatusChange(position, it)
-                            },
-                            {
-                                homeTweetView.showError(it)
-                            })
+                }
+
 
         mCompositeDisposable.add(disposable)
         debugLog("end")

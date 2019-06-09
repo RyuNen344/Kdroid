@@ -3,9 +3,7 @@ package com.ryunen344.kdroid.home.tweet
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -14,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_home_tweet
 import com.ryunen344.kdroid.behavior.EndlessScrollListener
 import com.ryunen344.kdroid.di.provider.ApiProvider
@@ -110,6 +109,7 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
                 this.layoutManager = mLayoutManager
                 this.setHasFixedSize(true)
                 this.adapter = homeTweetAdapter
+                registerForContextMenu(this)
             }
             mSwipeRefreshLayout = swipe_refresh.apply {
                 setOnRefreshListener {
@@ -177,7 +177,7 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
 
     override fun showContextMenu(position : Int, tweet : Status) {
         debugLog("start")
-        homeTweetAdapter.notifyStatusChange(position, tweet)
+        mRecyclerView.showContextMenu()
         debugLog("end")
     }
 
@@ -206,6 +206,37 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
             mPresenter = p
         }
         debugLog("end")
+    }
+
+
+    override fun onCreateContextMenu(menu : ContextMenu, v : View, menuInfo : ContextMenu.ContextMenuInfo?) {
+        debugLog("start")
+        super.onCreateContextMenu(menu, v, menuInfo)
+        activity?.menuInflater?.inflate(R.menu.timeline_navigation, menu)
+        debugLog("end")
+    }
+
+    override fun onContextItemSelected(item : MenuItem) : Boolean {
+        val position = homeTweetAdapter.position
+
+        debugLog(" adapter position is " + position)
+        if (position < 0) return false
+        when (item.itemId) {
+            R.id.navigation_home -> {
+                debugLog("0 clicked navigation_home")
+                mPresenter.changeRetweet(position, homeTweetAdapter.tweetList[position])
+                debugLog()
+            }
+            R.id.navigation_mention -> {
+                debugLog("0 clicked navigation_mention")
+                debugLog()
+            }
+            R.id.navigation_search -> {
+                debugLog("0 clicked navigation_search")
+                debugLog()
+            }
+        }
+        return super.onContextItemSelected(item)
     }
 
 

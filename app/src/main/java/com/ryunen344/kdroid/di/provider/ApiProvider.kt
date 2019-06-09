@@ -77,7 +77,7 @@ class ApiProvider {
     fun destroyRetweet(twitter : Twitter, tweetId : Long) : Single<Status> {
         return Single.create(SingleOnSubscribe<Status> { emitter ->
             try {
-                emitter.onSuccess(twitter.destroyStatus(tweetId))
+                emitter.onSuccess(twitter.unRetweetStatus(tweetId))
             } catch (t : Throwable) {
                 emitter.onError(t)
             }

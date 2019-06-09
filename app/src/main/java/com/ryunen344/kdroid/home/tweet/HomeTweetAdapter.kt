@@ -1,7 +1,6 @@
 package com.ryunen344.kdroid.home.tweet
 
 import android.graphics.Color
-import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +28,7 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
     private val VIA_PREFIX : String = "via "
     private val HTML_VIA_PREFIX : String = "<html><head></head><body>"
     private val HTML_VIA_SUFIX : String = "</body></html>"
+    var position : Int = -1
 
     var mUserId : Long = 0L
 
@@ -51,17 +51,17 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
         debugLog("start")
 
         //set status bar
-        if (tweetList[position].isRetweet) {
+        if (tweetList[position].isRetweet && !tweetList[position].isRetweetedByMe) {
             initTweet(holder, tweetList[position].retweetedStatus)
 
             //set image icon who retweeted
             holder.rt_icon.visibility = View.VISIBLE
-            Picasso.get()
-                    .load(tweetList[position].user.biggerProfileImageURLHttps)
+            mPicasso.load(tweetList[position].user.biggerProfileImageURLHttps)
                     .resize(23, 23)
                     .into(holder.rt_icon)
 
             holder.tweet_color_bar.setBackgroundColor(Color.GREEN)
+
         } else {
             initTweet(holder, tweetList[position])
 
@@ -74,16 +74,15 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
                 holder.tweet_color_bar.setBackgroundColor(Color.TRANSPARENT)
             }
 
-            Picasso.get()
-                    .load(tweetList[position].user.biggerProfileImageURLHttps)
+            mPicasso.load(tweetList[position].user.biggerProfileImageURLHttps)
                     .resize(23, 23)
                     .into(holder.rt_icon)
 
         }
 
         holder.tweet_context_menu.setOnClickListener {
-            //tweetItemListener.onContextMenuClick(position, tweetList[position])
-            holder.tweet_retweet_icon.showContextMenu()
+            this.position = position
+            tweetItemListener.onContextMenuClick(position, tweetList[position])
         }
 
         holder.itemView.setOnClickListener {
@@ -134,8 +133,7 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
 
 
         //set image icon
-        mPicasso
-                .load(tweetStatus.user.biggerProfileImageURLHttps)
+        mPicasso.load(tweetStatus.user.biggerProfileImageURLHttps)
                 .resize(50, 50)
                 .placeholder(R.drawable.ic_loading_image_24dp)
                 .error(R.drawable.ic_loading_image_24dp)
@@ -176,8 +174,7 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
         debugLog("image load")
         debugLog("image url = " + mediaUrl)
         imageView.visibility = ImageView.VISIBLE
-        mPicasso
-                .load(mediaUrl)
+        mPicasso.load(mediaUrl)
                 .placeholder(R.drawable.ic_loading_image_24dp)
                 .error(R.drawable.ic_loading_image_24dp)
                 .into(imageView)
@@ -187,7 +184,7 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
         }
     }
 
-    class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener {
+    class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         var tweet_color_bar : View = itemView.tweet_color_bar
         var tweet_icon : ImageView = itemView.tweet_icon
@@ -201,18 +198,5 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
         var tweet_description : TextView = itemView.tweet_description
         var tweet_context_menu : ImageView = itemView.tweet_context_menu
         var imageList : List<ImageView> = listOf<ImageView>(itemView.tweet_image1, itemView.tweet_image2, itemView.tweet_image3, itemView.tweet_image4)
-
-        init {
-            debugLog()
-            tweet_context_menu.setOnCreateContextMenuListener(this)
-        }
-
-        override fun onCreateContextMenu(menu : ContextMenu?, v : View?, menuInfo : ContextMenu.ContextMenuInfo?) {
-
-            menu?.add(this.adapterPosition, 1, 1, "hoge1")
-            menu?.add(this.adapterPosition, 2, 2, "hoge2")
-            menu?.add(this.adapterPosition, 3, 3, "hoge3")
-            menu?.add(this.adapterPosition, 4, 4, "hoge4")
-        }
     }
 }
