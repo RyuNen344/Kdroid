@@ -1,2 +1,3 @@
 # Kdroid
-kotlinでandroidアプリ
+シンプルで使いやすいTwitterクライアント作成中
+初秋リリース予定
