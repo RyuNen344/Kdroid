@@ -1,8 +1,10 @@
 package com.ryunen344.kdroid.home.tweet
 
 import android.graphics.Color
-import android.text.util.Linkify
-import android.util.Patterns
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +21,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import twitter4j.Status
 import java.util.regex.Pattern
+
 
 class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemListener : HomeTweetContract.TweetItemListener, val appProvider : AppProvider, private val utilProvider : UtilProvider) : RecyclerView.Adapter<HomeTweetAdapter.ViewHolder>() {
 
@@ -130,21 +133,8 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
 
         //set tweet detail
         holder.tweet_description.text = tweetStatus.text
-        Linkify.addLinks(holder.tweet_description, SCREEN_NAME_PATTERN, tweetStatus.text, null, Linkify.TransformFilter { match, url ->
-            debugLog("transform filter screen name")
-            debugLog(match)
-            debugLog(url)
-            match.group(1)
-        })
-
-        Linkify.addLinks(holder.tweet_description, HASH_TAG_PATTERN, tweetStatus.text, null, Linkify.TransformFilter { match, url ->
-            debugLog("transform filter hash tag")
-            debugLog(match)
-            debugLog(url)
-            match.group(1)
-        })
-
-        Linkify.addLinks(holder.tweet_description, Patterns.WEB_URL, tweetStatus.text)
+        tweetStatus.inReplyToUserId
+        initDescription(holder.tweet_description, tweetStatus)
 
         //set via and date
         var doc : Document = Jsoup.parse(HTML_VIA_PREFIX + tweetStatus.source + HTML_VIA_SUFIX)
@@ -165,12 +155,51 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
         initImage(holder, tweetStatus)
     }
 
-    fun notifyStatusChange(position : Int, tweet : Status) {
-        debugLog("start")
-        tweetList[position] = tweet
-        notifyItemChanged(position)
-        debugLog("end")
+    private fun initDescription(textView : TextView, tweetStatus : Status) {
+
+        var spannableString = SpannableString(tweetStatus.text)
+        val replyMatcher = SCREEN_NAME_PATTERN.matcher(tweetStatus.text)
+        val hashTagMatcher = HASH_TAG_PATTERN.matcher(tweetStatus.text)
+
+        while (replyMatcher.find()) {
+            var start = replyMatcher.start()
+            var end = replyMatcher.end()
+
+            spannableString.setSpan(object : ClickableSpan() {
+                override fun onClick(textView : View) {
+                    debugLog("start")
+//                    val url = entry.getValue()
+//                    val uri = Uri.parse(url)
+//                    val intent = Intent(Intent.ACTION_VIEW, uri)
+//                    tweetItemListener.onAccountClick()
+                    debugLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! onclick きいてるで！！！＠ついーと！！")
+                    debugLog("end")
+                }
+            }, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        }
+
+        while (hashTagMatcher.find()) {
+            var start = hashTagMatcher.start()
+            var end = hashTagMatcher.end()
+
+            spannableString.setSpan(object : ClickableSpan() {
+                override fun onClick(textView : View) {
+                    debugLog("start")
+//                    val url = entry.getValue()
+//                    val uri = Uri.parse(url)
+//                    val intent = Intent(Intent.ACTION_VIEW, uri)
+//                    tweetItemListener.onAccountClick()
+                    debugLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! onclick きいてるで！！！ハッシュタグ！！")
+                    debugLog("end")
+                }
+            }, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        }
+
+        textView.text = spannableString
+        textView.movementMethod = LinkMovementMethod.getInstance()
+
     }
+
 
     private fun initImage(holder : ViewHolder, tweetStatus : Status) {
 
@@ -202,6 +231,13 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
         imageView.setOnClickListener {
             tweetItemListener.onImageClick(mediaUrl)
         }
+    }
+
+    fun notifyStatusChange(position : Int, tweet : Status) {
+        debugLog("start")
+        tweetList[position] = tweet
+        notifyItemChanged(position)
+        debugLog("end")
     }
 
     class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
