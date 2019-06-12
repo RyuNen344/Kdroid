@@ -35,7 +35,7 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
     private val HTML_VIA_PREFIX : String = "<html><head></head><body>"
     private val HTML_VIA_SUFIX : String = "</body></html>"
     private val SCREEN_NAME_PATTERN = Pattern.compile("@([A-Za-z0-9_-]+)")
-    private val HASH_TAG_PATTERN = Pattern.compile("#([A-Za-z0-9_-]+)")
+    private val HASH_TAG_PATTERN = Pattern.compile("#([A-Za-z0-9_-亜-熙ぁ-んァ-ヶ]+)")
     var position : Int = -1
 
     var mUserId : Long = 0L
