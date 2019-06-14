@@ -69,7 +69,9 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
         super.onCreate(savedInstanceState)
         ensureNotNull(activity) {
             mUserId = it.intent.getLongExtra(ProfileActivity.INTENT_KEY_USER_ID, 0)
-            mScreenName = it.intent.getStringExtra(ProfileActivity.INTENT_KEY_SCREEN_NAME)
+            ensureNotNull(it.intent.getStringExtra(ProfileActivity.INTENT_KEY_SCREEN_NAME)) {
+                mScreenName = it
+            }
         }
         debugLog("setPresenter")
         ProfileUserPresenter(this, appProvider, apiProvider, mPagerPosition, mUserId, mScreenName)
