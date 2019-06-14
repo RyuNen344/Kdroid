@@ -8,22 +8,34 @@ import twitter4j.User
 interface ProfileTweetContract {
 
     interface View : BaseView<Presenter> {
-        fun showTweetList(mainList: List<Status>)
+        fun showTweetList(tweetList: MutableList<Status>)
         fun showMediaViewer(mediaUrl: String)
         fun showTweetDetail()
-        fun showProfile()
+        fun showProfile(user: User)
+        fun showProfile(screenName: String)
+        fun showContextMenu(position: Int, tweet: Status)
+        fun notifyStatusChange(position: Int, tweet: Status)
     }
 
     interface Presenter : BasePresenter {
         fun loadTweetList()
         fun loadFavoriteList()
         fun loadMoreList(currentPage: Int)
+        fun openMedia(mediaUrl: String)
+        fun openTweetDetail()
+        fun openProfile(user: User)
+        fun openProfile(screenName: String)
+        fun changeFavorite(position: Int, tweet: Status)
+        fun changeRetweet(position: Int, tweet: Status)
         fun clearDisposable()
     }
 
-    interface ProfileItemListner {
-        fun onAccountClick(user : User)
+    interface ProfileItemListener {
+        fun onAccountClick(user: User)
+        fun onAccountClick(screenName: String)
         fun onImageClick(mediaUrl: String)
         fun onTweetClick()
+        fun onTweetLongClick(position: Int, tweet: Status)
+        fun onContextMenuClick(position: Int, tweet: Status)
     }
 }

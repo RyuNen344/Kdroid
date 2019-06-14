@@ -37,7 +37,8 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
     lateinit var mLayoutManager: LinearLayoutManager
     lateinit var mRecyclerView: RecyclerView
     var mPagerPosition: Int = 0
-    private var mUserId : Long = 0L
+    private var mUserId: Long = 0L
+    private var mScreenName: String = ""
 
     companion object {
         fun newInstance() = ProfileUserFragment()
@@ -68,9 +69,10 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
         super.onCreate(savedInstanceState)
         ensureNotNull(activity) {
             mUserId = it.intent.getLongExtra(ProfileActivity.INTENT_KEY_USER_ID, 0)
+            mScreenName = it.intent.getStringExtra(ProfileActivity.INTENT_KEY_SCREEN_NAME)
         }
         debugLog("setPresenter")
-        ProfileUserPresenter(this, appProvider, apiProvider, mPagerPosition, mUserId)
+        ProfileUserPresenter(this, appProvider, apiProvider, mPagerPosition, mUserId, mScreenName)
         debugLog("end")
     }
 
@@ -113,7 +115,7 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
         debugLog("end")
     }
 
-    override fun onActivityCreated(savedInstanceState : Bundle?) {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
         debugLog("start")
         super.onActivityCreated(savedInstanceState)
         debugLog("end")

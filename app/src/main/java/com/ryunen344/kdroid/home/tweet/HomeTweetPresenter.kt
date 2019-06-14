@@ -74,7 +74,7 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
         debugLog("start")
         when (pagerPosition) {
             0 -> loadMoreTimelineList(currentPage)
-            1 -> loadMoreMentionLsit(currentPage)
+            1 -> loadMoreMentionList(currentPage)
         }
         debugLog("end")
     }
@@ -95,7 +95,7 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
         debugLog("end")
     }
 
-    private fun loadMoreMentionLsit(currentPage : Int) {
+    private fun loadMoreMentionList(currentPage: Int) {
         debugLog("start")
         var paging : Paging = Paging(currentPage + 1, 50)
         val disposable : Disposable = apiProvider.getMention(twitter, paging).subscribe(
@@ -158,6 +158,12 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
     override fun openProfile(user : User) {
         debugLog("start")
         homeTweetView.showProfile(user)
+        debugLog("end")
+    }
+
+    override fun openProfile(screenName: String) {
+        debugLog("start")
+        homeTweetView.showProfile(screenName)
         debugLog("end")
     }
 

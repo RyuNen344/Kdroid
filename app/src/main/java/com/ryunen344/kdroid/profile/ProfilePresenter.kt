@@ -8,32 +8,48 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import twitter4j.Twitter
 
-class ProfilePresenter(val profileView : ProfileContract.View, val appProvider : AppProvider, private val apiProvider : ApiProvider, val bundle : Bundle?, private val infoListener : ProfileContract.ProfileInfoListener) : ProfileContract.Presenter {
+class ProfilePresenter(val profileView: ProfileContract.View, val appProvider: AppProvider, private val apiProvider: ApiProvider, val bundle: Bundle?, private val infoListener: ProfileContract.ProfileInfoListener) : ProfileContract.Presenter {
 
-    private var mTwitter : Twitter = appProvider.provideTwitter()
-    private var mUserId : Long = 0L
+    private var mTwitter: Twitter = appProvider.provideTwitter()
+    private var mUserId: Long = 0L
+    private var mScreenName: String = ""
     var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
     init {
         bundle?.let {
             mUserId = it.getLong(ProfileActivity.INTENT_KEY_USER_ID, 0)
+            mScreenName = it.getString(ProfileActivity.INTENT_KEY_SCREEN_NAME)
         }
         profileView.setPresenter(this)
     }
 
     override fun start() {
         debugLog("start")
-        if (mUserId != 0L) {
-            loadProfile(mUserId)
-        } else {
-            profileView.showError(Throwable("user id not found"))
+        when {
+            mUserId != 0L -> loadProfile(mUserId)
+            mScreenName.isNotEmpty() -> loadProfile(mScreenName)
+            else -> profileView.showError(Throwable("user id not found"))
         }
         debugLog("end")
     }
 
     override fun loadProfile(userId: Long) {
         debugLog("start")
-        val disposable : Disposable = apiProvider.getUserByUserId(mTwitter, userId).subscribe(
+        val disposable: Disposable = apiProvider.getUserByUserId(mTwitter, userId).subscribe(
+                {
+                    infoListener.showUserInfo(it)
+                }
+                , { e ->
+            profileView.showError(e)
+        }
+        )
+        mCompositeDisposable.add(disposable)
+        debugLog("end")
+    }
+
+    override fun loadProfile(screenName: String) {
+        debugLog("start")
+        val disposable: Disposable = apiProvider.getUserByScreenName(mTwitter, screenName).subscribe(
                 {
                     infoListener.showUserInfo(it)
                 }

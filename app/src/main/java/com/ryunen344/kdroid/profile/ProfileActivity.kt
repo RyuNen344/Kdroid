@@ -48,6 +48,7 @@ class ProfileActivity : AppCompatActivity() {
 
     companion object {
         const val INTENT_KEY_USER_ID : String = "key_user_id"
+        const val INTENT_KEY_SCREEN_NAME: String = "key_screen_name"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
