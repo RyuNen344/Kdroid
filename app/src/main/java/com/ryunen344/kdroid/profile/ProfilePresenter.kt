@@ -16,9 +16,11 @@ class ProfilePresenter(val profileView: ProfileContract.View, val appProvider: A
     var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
     init {
-        bundle?.let {
+        bundle?.let { it ->
             mUserId = it.getLong(ProfileActivity.INTENT_KEY_USER_ID, 0)
-            mScreenName = it.getString(ProfileActivity.INTENT_KEY_SCREEN_NAME)
+            it.getString(ProfileActivity.INTENT_KEY_SCREEN_NAME).let { screenName ->
+                mScreenName = screenName!!
+            }
         }
         profileView.setPresenter(this)
     }
