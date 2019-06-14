@@ -55,7 +55,7 @@ fun SharedPreferences.nullableLong(key: String? = null): ReadWriteProperty<Any, 
 /**
  * String Read Write Delegate
  */
-fun SharedPreferences.string(defaultValue: String = "", key: String? = null): ReadWriteProperty<Any, String> =
+fun SharedPreferences.string(defaultValue: String = "", key: String? = null): ReadWriteProperty<Any, String?> =
         delegate(defaultValue, key, SharedPreferences::getString, SharedPreferences.Editor::putString)
 
 /**
@@ -64,7 +64,7 @@ fun SharedPreferences.string(defaultValue: String = "", key: String? = null): Re
 fun SharedPreferences.nullableString(key: String? = null): ReadWriteProperty<Any, String?> =
         nullableDelegate("", key, SharedPreferences::getString, SharedPreferences.Editor::putString)
 
-private inline fun <T : Any> SharedPreferences.delegate(
+private inline fun <T : Any?> SharedPreferences.delegate(
         defaultValue: T, key: String?,
         crossinline getter: SharedPreferences.(key: String, defaultValue: T) -> T,
         crossinline setter: SharedPreferences.Editor.(key: String, value: T) -> SharedPreferences.Editor
@@ -74,7 +74,7 @@ private inline fun <T : Any> SharedPreferences.delegate(
             edit().setter(key ?: property.name, value).apply()
 }
 
-private inline fun <T : Any> SharedPreferences.nullableDelegate(
+private inline fun <T : Any?> SharedPreferences.nullableDelegate(
         dummy: T, key: String?,
         crossinline getter: SharedPreferences.(key: String, defaultValue: T) -> T,
         crossinline setter: SharedPreferences.Editor.(key: String, value: T) -> SharedPreferences.Editor

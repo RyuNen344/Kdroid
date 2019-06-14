@@ -13,6 +13,7 @@ interface ProfileContract {
 
     interface Presenter : BasePresenter {
         fun loadProfile(userId: Long)
+        fun loadProfile(screenName: String)
         fun clearDisposable()
     }
 

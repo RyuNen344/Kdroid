@@ -7,6 +7,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_home
@@ -16,6 +17,7 @@ import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.debugLog
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.nav_home_header.view.*
 import org.koin.android.ext.android.inject
 import twitter4j.User
@@ -24,18 +26,19 @@ import java.io.File
 
 class HomeFragment : Fragment(), HomeContract.View {
 
-    val appProvider : AppProvider by inject()
-    val utilProvider : UtilProvider by inject()
-    lateinit var mPresenter : HomeContract.Presenter
-    private lateinit var mSectionsPagerAdapter : HomeSectionsPagerAdapter
+    val appProvider: AppProvider by inject()
+    val utilProvider: UtilProvider by inject()
+    lateinit var mPresenter: HomeContract.Presenter
+    var prevMenuItem: MenuItem? = null
+    private lateinit var mSectionsPagerAdapter: HomeSectionsPagerAdapter
 
     companion object {
         fun newInstance() = HomeFragment()
     }
 
 
-    private var itemListener : HomeContract.MainItemListener = object : HomeContract.MainItemListener {
-        override fun onImageClick(mediaUrl : String) {
+    private var itemListener: HomeContract.MainItemListener = object : HomeContract.MainItemListener {
+        override fun onImageClick(mediaUrl: String) {
             debugLog("start")
             debugLog("end")
         }
@@ -46,14 +49,14 @@ class HomeFragment : Fragment(), HomeContract.View {
             debugLog("end")
         }
 
-        override fun onAccountClick(user : User) {
+        override fun onAccountClick(user: User) {
             //fixme
             debugLog("start")
             debugLog("end")
         }
     }
 
-    override fun setPresenter(presenter : HomeContract.Presenter) {
+    override fun setPresenter(presenter: HomeContract.Presenter) {
         debugLog("start")
         presenter.let {
             mPresenter = it
@@ -61,9 +64,9 @@ class HomeFragment : Fragment(), HomeContract.View {
         debugLog("end")
     }
 
-    override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         debugLog("start")
-        var root : View = inflater.inflate(fragment_home, container, false)
+        var root: View = inflater.inflate(fragment_home, container, false)
         setHasOptionsMenu(true)
 
         //configure float action button
@@ -76,7 +79,7 @@ class HomeFragment : Fragment(), HomeContract.View {
             showAddNewTweet()
         }
 
-        var toggle : ActionBarDrawerToggle = ActionBarDrawerToggle(activity, activity?.drawer_layout, activity?.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        var toggle: ActionBarDrawerToggle = ActionBarDrawerToggle(activity, activity?.drawer_layout, activity?.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         activity?.drawer_layout?.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -127,11 +130,35 @@ class HomeFragment : Fragment(), HomeContract.View {
             false
         }
 
+        root.view_pager_container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+
+                if (prevMenuItem != null) {
+                    prevMenuItem?.setChecked(false)
+                } else {
+                    activity?.navigation!!.menu.getItem(0).isChecked = false
+                }
+
+                activity?.navigation!!.menu.getItem(position).isChecked = true
+                prevMenuItem = activity?.navigation!!.menu.getItem(position)
+
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+        })
+
         debugLog("end")
         return root
     }
 
-    override fun onActivityCreated(savedInstanceState : Bundle?) {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
         debugLog("start")
         super.onActivityCreated(savedInstanceState)
         mSectionsPagerAdapter = HomeSectionsPagerAdapter(fragmentManager!!)
@@ -140,7 +167,7 @@ class HomeFragment : Fragment(), HomeContract.View {
         debugLog("end")
     }
 
-    override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         debugLog("start")
         mPresenter.start()
         mPresenter.initTwitter(context?.filesDir?.absolutePath)
@@ -154,7 +181,7 @@ class HomeFragment : Fragment(), HomeContract.View {
         debugLog("end")
     }
 
-    override fun showDrawerProfile(userName : String?, screenName : String, profileImage : String?, profileBannerImage : String?) {
+    override fun showDrawerProfile(userName: String?, screenName: String, profileImage: String?, profileBannerImage: String?) {
 
         activity?.let { activity ->
             profileBannerImage.let {
@@ -198,7 +225,7 @@ class HomeFragment : Fragment(), HomeContract.View {
         startActivityForResult(intent, AddTweetReplyActivity.REQUEST_ADD_TWEET)
     }
 
-    override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         debugLog("start")
         mPresenter.result(requestCode, resultCode)
         debugLog("end")
@@ -224,14 +251,14 @@ class HomeFragment : Fragment(), HomeContract.View {
         debugLog("end")
     }
 
-    override fun showError(e : Throwable) {
+    override fun showError(e: Throwable) {
         debugLog("start")
         Snackbar.make(activity?.nestedScrollView!!, e.localizedMessage, Snackbar.LENGTH_LONG).show()
         debugLog("end")
     }
 
 
-    override fun onCreateOptionsMenu(menu : Menu, inflater : MenuInflater) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         debugLog("start")
         inflater.inflate(R.menu.timeline_navigation, menu)
         debugLog("end")

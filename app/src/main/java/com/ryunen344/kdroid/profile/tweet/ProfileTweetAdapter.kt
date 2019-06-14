@@ -1,6 +1,10 @@
 package com.ryunen344.kdroid.profile.tweet
 
 import android.graphics.Color
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,11 +20,12 @@ import kotlinx.android.synthetic.main.item_tweet.view.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import twitter4j.Status
+import java.util.regex.Pattern
 
-class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner: ProfileTweetContract.ProfileItemListner, val appProvider: AppProvider, val utilProvider: UtilProvider) : RecyclerView.Adapter<ProfileTweetAdapter.ViewHolder>() {
+class ProfileTweetAdapter(profileTweetList: MutableList<Status>, val profileItemListener: ProfileTweetContract.ProfileItemListener, val appProvider: AppProvider, val utilProvider: UtilProvider) : RecyclerView.Adapter<ProfileTweetAdapter.ViewHolder>() {
 
-    var profileTweetList: List<Status> = profileTweetList
-        set(profileTweetList: List<Status>) {
+    var profileTweetList: MutableList<Status> = profileTweetList
+        set(profileTweetList: MutableList<Status>) {
             field = profileTweetList
             notifyDataSetChanged()
         }
@@ -29,6 +34,11 @@ class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner
     private val VIA_PREFIX: String = "via "
     private val HTML_VIA_PREFIX: String = "<html><head></head><body>"
     private val HTML_VIA_SUFIX: String = "</body></html>"
+    private val SCREEN_NAME_PATTERN = Pattern.compile("@([A-Za-z0-9_-]+)")
+    private val HASH_TAG_PATTERN = Pattern.compile("#([A-Za-z0-9_-]+)")
+
+    var position: Int = -1
+    var mUserId: Long = 0L
 
     private var mPicasso: Picasso = appProvider.providePiccaso()
 
@@ -46,29 +56,52 @@ class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        debugLog("start")
 
         //set status bar
-        if (profileTweetList[position].isRetweet) {
+        if (profileTweetList[position].isRetweet && !profileTweetList[position].isRetweetedByMe) {
             initTweet(holder, profileTweetList[position].retweetedStatus)
 
             //set image icon who retweeted
             holder.rt_icon.visibility = View.VISIBLE
-            Picasso.get()
-                    .load(profileTweetList[position].user.biggerProfileImageURLHttps)
+            mPicasso.load(profileTweetList[position].user.biggerProfileImageURLHttps)
                     .resize(23, 23)
                     .into(holder.rt_icon)
 
             holder.tweet_color_bar.setBackgroundColor(Color.GREEN)
+
         } else {
             initTweet(holder, profileTweetList[position])
 
             //set image icon who retweeted
             holder.rt_icon.visibility = View.INVISIBLE
 
-            holder.tweet_color_bar.setBackgroundColor(Color.TRANSPARENT)
+            if (profileTweetList[position].user.id == mUserId) {
+                holder.tweet_color_bar.setBackgroundColor(Color.GRAY)
+            } else {
+                holder.tweet_color_bar.setBackgroundColor(Color.TRANSPARENT)
+            }
+
+            mPicasso.load(profileTweetList[position].user.biggerProfileImageURLHttps)
+                    .resize(23, 23)
+                    .into(holder.rt_icon)
+
         }
 
-        holder.itemView.setOnClickListener { profileItemListner.onAccountClick(profileTweetList[position].user) }
+        holder.tweet_context_menu.setOnClickListener {
+            this.position = position
+            profileItemListener.onContextMenuClick(position, profileTweetList[position])
+        }
+
+        holder.itemView.setOnClickListener {
+            profileItemListener.onTweetClick()
+        }
+
+        holder.itemView.setOnLongClickListener {
+            profileItemListener.onTweetLongClick(position, profileTweetList[position])
+            true
+        }
+        debugLog("end")
     }
 
     private fun initTweet(holder: ProfileTweetAdapter.ViewHolder, tweetStatus: Status) {
@@ -84,8 +117,24 @@ class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner
             holder.tweet_lock_icon.visibility = ImageView.INVISIBLE
         }
 
+        //set fav icon
+        if (tweetStatus.isFavorited) {
+            holder.tweet_fav_icon.visibility = ImageView.VISIBLE
+        } else {
+            holder.tweet_fav_icon.visibility = ImageView.INVISIBLE
+        }
+
+        //set rt icon
+        if (tweetStatus.isRetweetedByMe) {
+            holder.tweet_retweet_icon.visibility = ImageView.VISIBLE
+        } else {
+            holder.tweet_retweet_icon.visibility = ImageView.INVISIBLE
+        }
+
         //set tweet detail
         holder.tweet_description.text = tweetStatus.text
+        tweetStatus.inReplyToUserId
+        initDescription(holder.tweet_description, tweetStatus)
 
         //set via and date
         var doc: Document = Jsoup.parse(HTML_VIA_PREFIX + tweetStatus.source + HTML_VIA_SUFIX)
@@ -94,33 +143,93 @@ class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner
 
 
         //set image icon
-        mPicasso
-                .load(tweetStatus.user.biggerProfileImageURLHttps)
+        mPicasso.load(tweetStatus.user.biggerProfileImageURLHttps)
                 .resize(50, 50)
                 .placeholder(R.drawable.ic_loading_image_24dp)
                 .error(R.drawable.ic_loading_image_24dp)
                 .into(holder.tweet_icon)
+        holder.tweet_icon.setOnClickListener {
+            profileItemListener.onAccountClick(tweetStatus.user)
+        }
 
+        initImage(holder, tweetStatus)
+    }
+
+    private fun initDescription(textView: TextView, tweetStatus: Status) {
+
+        var spannableString = SpannableString(tweetStatus.text)
+        val replyMatcher = SCREEN_NAME_PATTERN.matcher(tweetStatus.text)
+        val hashTagMatcher = HASH_TAG_PATTERN.matcher(tweetStatus.text)
+
+        while (replyMatcher.find()) {
+            var start = replyMatcher.start()
+            var end = replyMatcher.end()
+
+            spannableString.setSpan(object : ClickableSpan() {
+                override fun onClick(textView: View) {
+                    debugLog("start")
+                    debugLog(spannableString.substring(start + 1, end))
+                    profileItemListener.onAccountClick(spannableString.substring(start + 1, end))
+                    debugLog("end")
+                }
+            }, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        }
+
+        while (hashTagMatcher.find()) {
+            var start = hashTagMatcher.start()
+            var end = hashTagMatcher.end()
+
+            spannableString.setSpan(object : ClickableSpan() {
+                override fun onClick(textView: View) {
+                    debugLog("start")
+                    debugLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! onclick きいてるで！！！ハッシュタグ！！")
+                    debugLog("end")
+                }
+            }, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        }
+
+        textView.text = spannableString
+        textView.movementMethod = LinkMovementMethod.getInstance()
+
+    }
+
+    private fun initImage(holder: ViewHolder, tweetStatus: Status) {
+
+        //set visible
+        for (i in 0 until 4) {
+            holder.imageList[i].visibility = View.GONE
+        }
+
+        if (tweetStatus.mediaEntities.isNotEmpty()) {
+            for (i in 0 until tweetStatus.mediaEntities.size) {
+                setImage(holder.imageList[i], tweetStatus.mediaEntities[i].mediaURLHttps)
+            }
+        }
+
+
+    }
+
+    private fun setImage(imageView: ImageView, mediaUrl: String) {
 
         //set image
-        if (tweetStatus.mediaEntities.isNotEmpty()) {
-            debugLog("image load")
-            debugLog("image url = " + tweetStatus.mediaEntities[0].mediaURLHttps)
-            holder.tweet_image1.visibility = ImageView.VISIBLE
-            mPicasso
-                    .load(tweetStatus.mediaEntities[0].mediaURLHttps)
-                    .placeholder(R.drawable.ic_loading_image_24dp)
-                    .error(R.drawable.ic_loading_image_24dp)
-                    .into(holder.tweet_image1)
+        debugLog("image load")
+        debugLog("image url = " + mediaUrl)
+        imageView.visibility = ImageView.VISIBLE
+        mPicasso.load(mediaUrl)
+                .placeholder(R.drawable.ic_loading_image_24dp)
+                .error(R.drawable.ic_loading_image_24dp)
+                .into(imageView)
 
-            holder.tweet_image1.setOnClickListener {
-                profileItemListner.onImageClick(tweetStatus.mediaEntities[0].mediaURLHttps)
-            }
-
-
-        } else {
-            holder.tweet_image1.visibility = ImageView.GONE
+        imageView.setOnClickListener {
+            profileItemListener.onImageClick(mediaUrl)
         }
+    }
+
+    fun notifyStatusChange(position: Int, tweet: Status) {
+        debugLog("start")
+        profileTweetList[position] = tweet
+        notifyItemChanged(position)
+        debugLog("end")
     }
 
 
@@ -131,11 +240,11 @@ class ProfileTweetAdapter(profileTweetList: List<Status>, val profileItemListner
         var tweet_account_name : TextView = itemView.tweet_account_name
         var tweet_screen_name : TextView = itemView.tweet_screen_name
         var tweet_lock_icon : ImageView = itemView.tweet_lock_icon
+        var tweet_fav_icon: ImageView = itemView.tweet_fav_icon
+        var tweet_retweet_icon: ImageView = itemView.tweet_retweet_icon
         var tweet_via_and_date : TextView = itemView.tweet_via_and_date
         var tweet_description : TextView = itemView.tweet_description
-        var tweet_image1 : ImageView = itemView.tweet_image1
-        var tweet_image3 : ImageView = itemView.tweet_image3
-        var tweet_image2 : ImageView = itemView.tweet_image2
-        var tweet_image4 : ImageView = itemView.tweet_image4
+        var tweet_context_menu: ImageView = itemView.tweet_context_menu
+        var imageList: List<ImageView> = listOf<ImageView>(itemView.tweet_image1, itemView.tweet_image2, itemView.tweet_image3, itemView.tweet_image4)
     }
 }

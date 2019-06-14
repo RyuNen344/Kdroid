@@ -30,7 +30,6 @@ import org.koin.android.ext.android.inject
 import twitter4j.Status
 import twitter4j.User
 
-
 class HomeTweetFragment : Fragment(), HomeTweetContract.View {
 
     val appProvider : AppProvider by inject()
@@ -61,6 +60,12 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
             //fixme
             debugLog("start")
             mPresenter.openProfile(user)
+            debugLog("end")
+        }
+
+        override fun onAccountClick(screenName: String) {
+            debugLog("start")
+            mPresenter.openProfile(screenName)
             debugLog("end")
         }
 
@@ -109,7 +114,6 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
                 this.layoutManager = mLayoutManager
                 this.setHasFixedSize(true)
                 this.adapter = homeTweetAdapter
-                registerForContextMenu(this)
             }
             mSwipeRefreshLayout = swipe_refresh.apply {
                 setOnRefreshListener {
@@ -117,7 +121,7 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
                     isRefreshing = false
                 }
             }
-
+            registerForContextMenu(this)
             mainListView = homeTweetLL
         }
 
@@ -170,6 +174,15 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
         debugLog("start")
         val intent = Intent(context, ProfileActivity::class.java).apply {
             putExtra(ProfileActivity.INTENT_KEY_USER_ID, user.id)
+        }
+        startActivity(intent)
+        debugLog("end")
+    }
+
+    override fun showProfile(screenName: String) {
+        debugLog("start")
+        val intent = Intent(context, ProfileActivity::class.java).apply {
+            putExtra(ProfileActivity.INTENT_KEY_SCREEN_NAME, screenName)
         }
         startActivity(intent)
         debugLog("end")

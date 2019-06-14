@@ -30,14 +30,15 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
             field = mainList
             notifyDataSetChanged()
         }
+
     private val SCREEN_NAME_PREFIX : String = "@"
     private val VIA_PREFIX : String = "via "
     private val HTML_VIA_PREFIX : String = "<html><head></head><body>"
     private val HTML_VIA_SUFIX : String = "</body></html>"
     private val SCREEN_NAME_PATTERN = Pattern.compile("@([A-Za-z0-9_-]+)")
-    private val HASH_TAG_PATTERN = Pattern.compile("#([A-Za-z0-9_-亜-熙ぁ-んァ-ヶ]+)")
-    var position : Int = -1
+    private val HASH_TAG_PATTERN = Pattern.compile("#([A-Za-z0-9_-]+)")
 
+    var position : Int = -1
     var mUserId : Long = 0L
 
     private var mPicasso : Picasso = appProvider.providePiccaso()
@@ -168,11 +169,8 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(textView : View) {
                     debugLog("start")
-//                    val url = entry.getValue()
-//                    val uri = Uri.parse(url)
-//                    val intent = Intent(Intent.ACTION_VIEW, uri)
-//                    tweetItemListener.onAccountClick()
-                    debugLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! onclick きいてるで！！！＠ついーと！！")
+                    debugLog(spannableString.substring(start + 1, end))
+                    tweetItemListener.onAccountClick(spannableString.substring(start + 1, end))
                     debugLog("end")
                 }
             }, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -185,10 +183,6 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(textView : View) {
                     debugLog("start")
-//                    val url = entry.getValue()
-//                    val uri = Uri.parse(url)
-//                    val intent = Intent(Intent.ACTION_VIEW, uri)
-//                    tweetItemListener.onAccountClick()
                     debugLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! onclick きいてるで！！！ハッシュタグ！！")
                     debugLog("end")
                 }
