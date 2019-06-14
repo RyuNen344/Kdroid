@@ -2,9 +2,9 @@ package com.ryunen344.kdroid.mediaViewer
 
 import android.os.Bundle
 import android.view.*
-import android.widget.ImageView
 import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
+import com.github.chrisbanes.photoview.PhotoView
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_media_viewer
 import com.ryunen344.kdroid.di.provider.AppProvider
@@ -19,7 +19,7 @@ class MediaViewerFragment : Fragment(), MediaViewerContract.View {
 
     val appProvider: AppProvider by inject()
     lateinit var mPresenter: MediaViewerContract.Presenter
-    lateinit var mImageViewer: ImageView
+    lateinit var mImageViewer: PhotoView
     private var mPicasso: Picasso = appProvider.providePiccaso()
 
     private lateinit var mScaleGestureDetector: ScaleGestureDetector
@@ -73,47 +73,48 @@ class MediaViewerFragment : Fragment(), MediaViewerContract.View {
         with(root) {
             mImageViewer = imageViewer
         }
+        mImageViewer.isZoomable = true
 
-        mImageViewer.setOnTouchListener { v, event ->
-            onTouchEvent(event)
-        }
+//        mImageViewer.setOnTouchListener { v, event ->
+//            onTouchEvent(event)
+//        }
 
-        mScaleGestureDetector = ScaleGestureDetector(context, ScaleListener())
-        mPanGestureDetector = GestureDetectorCompat(context, PanListener())
+//        mScaleGestureDetector = ScaleGestureDetector(context, ScaleListener())
+//        mPanGestureDetector = GestureDetectorCompat(context, PanListener())
 
-        val viewTreeObserver = mImageViewer.viewTreeObserver
-        if (viewTreeObserver.isAlive) {
-            viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    mImageViewer.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                    val imageAspectRatio = mImageViewer.drawable.intrinsicHeight.toFloat() / mImageViewer.drawable.intrinsicWidth.toFloat()
-                    val viewAspectRatio = mImageViewer.height.toFloat() / mImageViewer.width.toFloat()
-
-                    mImageWidth = if (imageAspectRatio < viewAspectRatio) {
-                        // landscape image
-                        mImageViewer.width.toFloat()
-                    } else {
-                        // Portrait image
-                        mImageViewer.height.toFloat() / imageAspectRatio
-                    }
-
-                    mImageHeight = if (imageAspectRatio < viewAspectRatio) {
-                        // landscape image
-                        mImageViewer.width.toFloat() * imageAspectRatio
-                    } else {
-                        // Portrait image
-                        mImageViewer.height.toFloat()
-                    }
-
-                    mDefaultImageWidth = mImageWidth
-                    mDefaultImageHeight = mImageHeight
-
-                    mViewPortWidth = mImageViewer.width.toFloat()
-                    mViewPortHeight = mImageViewer.height.toFloat()
-                }
-            })
-        }
+//        val viewTreeObserver = mImageViewer.viewTreeObserver
+//        if (viewTreeObserver.isAlive) {
+//            viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+//                override fun onGlobalLayout() {
+//                    mImageViewer.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//
+//                    val imageAspectRatio = mImageViewer.drawable.intrinsicHeight.toFloat() / mImageViewer.drawable.intrinsicWidth.toFloat()
+//                    val viewAspectRatio = mImageViewer.height.toFloat() / mImageViewer.width.toFloat()
+//
+//                    mImageWidth = if (imageAspectRatio < viewAspectRatio) {
+//                        // landscape image
+//                        mImageViewer.width.toFloat()
+//                    } else {
+//                        // Portrait image
+//                        mImageViewer.height.toFloat() / imageAspectRatio
+//                    }
+//
+//                    mImageHeight = if (imageAspectRatio < viewAspectRatio) {
+//                        // landscape image
+//                        mImageViewer.width.toFloat() * imageAspectRatio
+//                    } else {
+//                        // Portrait image
+//                        mImageViewer.height.toFloat()
+//                    }
+//
+//                    mDefaultImageWidth = mImageWidth
+//                    mDefaultImageHeight = mImageHeight
+//
+//                    mViewPortWidth = mImageViewer.width.toFloat()
+//                    mViewPortHeight = mImageViewer.height.toFloat()
+//                }
+//            })
+//        }
 
         debugLog("end")
         return root

@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.ensureNotNull
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import twitter4j.Twitter
@@ -18,8 +19,8 @@ class ProfilePresenter(val profileView: ProfileContract.View, val appProvider: A
     init {
         bundle?.let { it ->
             mUserId = it.getLong(ProfileActivity.INTENT_KEY_USER_ID, 0)
-            it.getString(ProfileActivity.INTENT_KEY_SCREEN_NAME).let { screenName ->
-                mScreenName = screenName!!
+            ensureNotNull(it.getString(ProfileActivity.INTENT_KEY_SCREEN_NAME)) {
+                mScreenName = it
             }
         }
         profileView.setPresenter(this)
