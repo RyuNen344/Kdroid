@@ -95,7 +95,7 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
         }
 
         holder.itemView.setOnClickListener {
-            tweetItemListener.onTweetClick()
+            tweetItemListener.onTweetClick(tweetList[position])
         }
 
         holder.itemView.setOnLongClickListener {

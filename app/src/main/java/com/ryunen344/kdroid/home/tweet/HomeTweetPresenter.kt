@@ -149,9 +149,9 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
         debugLog("end")
     }
 
-    override fun openTweetDetail() {
+    override fun openTweetDetail(tweet : Status) {
         debugLog("start")
-        homeTweetView.showTweetDetail()
+        homeTweetView.showTweetDetail(tweet)
         debugLog("end")
     }
 

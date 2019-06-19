@@ -21,6 +21,7 @@ import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.home.HomeActivity
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.profile.ProfileActivity
+import com.ryunen344.kdroid.tweetDetail.TweetDetailActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull
 import com.ryunen344.kdroid.util.errorLog
@@ -69,10 +70,10 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
             debugLog("end")
         }
 
-        override fun onTweetClick() {
+        override fun onTweetClick(tweet : Status) {
             //fixme
             debugLog("start")
-            mPresenter.openTweetDetail()
+            mPresenter.openTweetDetail(tweet)
             debugLog("end")
         }
 
@@ -201,8 +202,12 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
         debugLog("end")
     }
 
-    override fun showTweetDetail() {
+    override fun showTweetDetail(tweet : Status) {
         debugLog("start")
+        val intent = Intent(context, TweetDetailActivity::class.java).apply {
+            putExtra(TweetDetailActivity.INTENT_KEY_TWEET_ID, tweet.id)
+        }
+        startActivity(intent)
         debugLog("end")
     }
 
