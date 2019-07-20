@@ -26,7 +26,7 @@ class MyApplication : Application() {
             androidLogger(Level.DEBUG)
             androidContext(this@MyApplication)
             androidFileProperties()
-            modules(AppModule, UtilModule, ApiModule)
+            modules(listOf(AppModule, UtilModule, ApiModule))
         }
 
         debugLog("end")

@@ -5,9 +5,10 @@ import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.util.debugLog
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import twitter4j.Twitter
 
-class TweetDetailPresenter(val tweetDetailView : TweetDetailContract.View, val appProvider : AppProvider, private val apiProvider : ApiProvider, val bundle : Bundle?) : TweetDetailContract.Presenter {
+class TweetDetailPresenter(private val tweetDetailView : TweetDetailContract.View, val appProvider : AppProvider, private val apiProvider : ApiProvider, val bundle : Bundle?) : TweetDetailContract.Presenter {
 
     private var mTwitter : Twitter = appProvider.provideTwitter()
     private var mTweetId : Long = 0L
@@ -21,7 +22,9 @@ class TweetDetailPresenter(val tweetDetailView : TweetDetailContract.View, val a
     }
 
     override fun start() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        debugLog("start")
+        loadTweetDetail()
+        debugLog("end")
     }
 
     override fun clearDisposable() {
@@ -29,4 +32,22 @@ class TweetDetailPresenter(val tweetDetailView : TweetDetailContract.View, val a
         mCompositeDisposable.clear()
         debugLog("end")
     }
+
+    override fun loadTweetDetail() {
+        debugLog("start")
+        val disposable : Disposable =
+                apiProvider.getTweetByTweetId(mTwitter, mTweetId).subscribe(
+                        { status ->
+                            debugLog(status)
+                            tweetDetailView.showTweetDetail(status)
+
+                        }
+                        , { e ->
+                    tweetDetailView.showError(e)
+                }
+                )
+        mCompositeDisposable.add(disposable)
+        debugLog("end")
+    }
+
 }

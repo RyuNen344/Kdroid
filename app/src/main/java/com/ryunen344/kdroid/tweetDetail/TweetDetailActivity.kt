@@ -26,7 +26,7 @@ class TweetDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState : Bundle?) {
         debugLog("start")
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
+        setContentView(R.layout.activity_tweet_detail)
         setSupportActionBar(toolbar)
         supportActionBar?.title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

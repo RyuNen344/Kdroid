@@ -5,11 +5,12 @@ import com.ryunen344.kdroid.BuildConfig
 import java.util.regex.Pattern
 
 fun debugLog() {
-    debugLog("")
+    Log.d(getTag(), "")
 }
 
 fun debugLog(any : Any) {
-    debugLog(any.toString())
+    if (!BuildConfig.DEBUG) return
+    Log.d(getTag(), any.toString())
 }
 
 fun debugLog(msg : String) {

@@ -102,6 +102,15 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
             tweetItemListener.onTweetLongClick(position, tweetList[position])
             true
         }
+
+        holder.tweet_description.setOnClickListener {
+            tweetItemListener.onTweetClick(tweetList[position])
+        }
+
+        holder.tweet_description.setOnLongClickListener {
+            tweetItemListener.onTweetLongClick(position, tweetList[position])
+            true
+        }
         debugLog("end")
     }
 
@@ -133,8 +142,8 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
         }
 
         //set tweet detail
-        holder.tweet_description.text = tweetStatus.text
-        tweetStatus.inReplyToUserId
+        //holder.tweet_description.text = tweetStatus.text
+        //tweetStatus.inReplyToUserId
         initDescription(holder.tweet_description, tweetStatus)
 
         //set via and date
