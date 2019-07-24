@@ -9,7 +9,7 @@ import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ryunen344.kdroid.R.layout.item_account_list
-import com.ryunen344.kdroid.data.AccountAndAccountDetail
+import com.ryunen344.kdroid.domain.entity.AccountAndAccountDetail
 import com.ryunen344.kdroid.util.debugLog
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.item_account_list.view.*

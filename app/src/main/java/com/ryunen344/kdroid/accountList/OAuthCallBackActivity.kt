@@ -6,9 +6,9 @@ import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.ryunen344.kdroid.R.layout.activity_oauth_callback
-import com.ryunen344.kdroid.data.Account
-import com.ryunen344.kdroid.data.dao.AccountDao
-import com.ryunen344.kdroid.data.db.AccountDatabase
+import com.ryunen344.kdroid.domain.database.AccountDatabase
+import com.ryunen344.kdroid.domain.entity.Account
+import com.ryunen344.kdroid.domain.repository.AccountDao
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_oauth_callback.*
 import twitter4j.TwitterException

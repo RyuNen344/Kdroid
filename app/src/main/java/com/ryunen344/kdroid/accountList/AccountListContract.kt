@@ -3,8 +3,8 @@ package com.ryunen344.kdroid.accountList
 import android.net.Uri
 import com.ryunen344.kdroid.BasePresenter
 import com.ryunen344.kdroid.BaseView
-import com.ryunen344.kdroid.data.Account
-import com.ryunen344.kdroid.data.AccountAndAccountDetail
+import com.ryunen344.kdroid.domain.entity.Account
+import com.ryunen344.kdroid.domain.entity.AccountAndAccountDetail
 import twitter4j.auth.OAuthAuthorization
 import twitter4j.auth.RequestToken
 

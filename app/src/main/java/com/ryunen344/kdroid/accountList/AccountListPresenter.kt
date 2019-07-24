@@ -2,8 +2,8 @@ package com.ryunen344.kdroid.accountList
 
 import android.net.Uri
 import android.os.Handler
-import com.ryunen344.kdroid.data.dao.AccountDao
-import com.ryunen344.kdroid.data.db.AccountDatabase
+import com.ryunen344.kdroid.domain.database.AccountDatabase
+import com.ryunen344.kdroid.domain.repository.AccountDao
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import twitter4j.TwitterException

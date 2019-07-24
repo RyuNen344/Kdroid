@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.ryunen344.kdroid.data.api.TwitterSource
+import com.ryunen344.kdroid.domain.repository.TwitterSource
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.errorLog
 import io.reactivex.schedulers.Schedulers

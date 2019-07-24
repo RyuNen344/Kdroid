@@ -1,4 +1,4 @@
-package com.ryunen344.kdroid.data
+package com.ryunen344.kdroid.domain.entity
 
 import androidx.room.Embedded
 import androidx.room.Relation

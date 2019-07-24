@@ -1,10 +1,10 @@
 package com.ryunen344.kdroid
 
 import android.app.Application
-import com.ryunen344.kdroid.data.db.AccountDatabase
 import com.ryunen344.kdroid.di.module.ApiModule
 import com.ryunen344.kdroid.di.module.AppModule
 import com.ryunen344.kdroid.di.module.UtilModule
+import com.ryunen344.kdroid.domain.database.AccountDatabase
 import com.ryunen344.kdroid.util.debugLog
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties

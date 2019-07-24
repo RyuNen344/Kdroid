@@ -20,8 +20,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R.layout.fragment_account_list
 import com.ryunen344.kdroid.R.string.consumer_key
 import com.ryunen344.kdroid.R.string.consumer_secret_key
-import com.ryunen344.kdroid.data.Account
-import com.ryunen344.kdroid.data.AccountAndAccountDetail
+import com.ryunen344.kdroid.domain.entity.Account
+import com.ryunen344.kdroid.domain.entity.AccountAndAccountDetail
 import com.ryunen344.kdroid.home.HomeActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.ensureNotNull

@@ -1,4 +1,4 @@
-package com.ryunen344.kdroid.data.api
+package com.ryunen344.kdroid.domain.repository
 
 import io.reactivex.Single
 import okhttp3.ResponseBody

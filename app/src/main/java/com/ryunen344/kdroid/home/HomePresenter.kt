@@ -2,14 +2,19 @@ package com.ryunen344.kdroid.home
 
 import android.app.Activity
 import android.os.Bundle
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
-import com.ryunen344.kdroid.data.AccountAndAccountDetail
-import com.ryunen344.kdroid.data.AccountDetail
-import com.ryunen344.kdroid.data.dao.AccountDao
-import com.ryunen344.kdroid.data.db.AccountDatabase
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
+import com.ryunen344.kdroid.domain.database.AccountDatabase
+import com.ryunen344.kdroid.domain.entity.AccountAndAccountDetail
+import com.ryunen344.kdroid.domain.entity.AccountDetail
+import com.ryunen344.kdroid.domain.repository.AccountDao
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.util.debugLog
 import com.ryunen344.kdroid.util.errorLog
