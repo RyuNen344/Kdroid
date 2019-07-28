@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_user.view.*
 import twitter4j.User
@@ -40,7 +40,7 @@ class ProfileUserAdapter(profileUserList: List<User>, val profileItemListner: Pr
     }
 
     override fun onBindViewHolder(holder : ViewHolder, position : Int) {
-        debugLog("start")
+        LogUtil.d()
         //set image icon
         mPicasso
                 .load(profileUserList[position].biggerProfileImageURLHttps)
@@ -61,7 +61,6 @@ class ProfileUserAdapter(profileUserList: List<User>, val profileItemListner: Pr
         holder.user_screen_name.text = screenName
         holder.user_description.text = profileUserList[position].description
 
-        debugLog("end")
     }
 
 

@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.ryunen344.kdroid.R.layout.activity_media_viewer
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.replaceFragmentInActivity
 import kotlinx.android.synthetic.main.activity_media_viewer.*
 import org.koin.android.ext.android.inject
@@ -21,7 +21,7 @@ class MediaViewerActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onCreate(savedInstanceState)
         setContentView(activity_media_viewer)
 
@@ -36,7 +36,6 @@ class MediaViewerActivity : AppCompatActivity() {
                 }
 
         mPresenter = MediaViewerPresenter(mediaViewerFragment!!, appProvider, intent.getStringExtra(INTENT_KEY_MEDIA_URL))
-        debugLog("end")
     }
 
     override fun finish() {

@@ -7,7 +7,7 @@ import com.ryunen344.kdroid.R.string.consumer_key
 import com.ryunen344.kdroid.R.string.consumer_secret_key
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.replaceFragmentInActivity
 import kotlinx.android.synthetic.main.activity_home.*
 import org.koin.android.ext.android.inject
@@ -24,7 +24,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState : Bundle?) {
-        debugLog("end")
+        LogUtil.d()
         super.onCreate(savedInstanceState)
         setContentView(activity_home)
         setSupportActionBar(toolbar)
@@ -44,7 +44,6 @@ class HomeActivity : AppCompatActivity() {
                 }
 
         mPresenter = HomePresenter(homeFragment!!, appProvider, apiProvider, intent.extras)
-        debugLog("end")
     }
 
 }

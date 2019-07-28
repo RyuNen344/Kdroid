@@ -5,8 +5,7 @@ import android.content.Context.MODE_PRIVATE
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.ryunen344.kdroid.domain.repository.TwitterSource
-import com.ryunen344.kdroid.util.debugLog
-import com.ryunen344.kdroid.util.errorLog
+import com.ryunen344.kdroid.util.LogUtil
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -30,7 +29,7 @@ class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters)
     }
 
     override fun doWork() : Result {
-        debugLog("start")
+        LogUtil.d()
         var localFileName : String
         var dataUrl : String
         var isSuccess : Boolean = false
@@ -38,12 +37,12 @@ class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters)
         inputData.getString(KEY_LOCAL_IMAGE_URL).let {
             localFileName = it!!
         }
-        debugLog(localFileName)
+        LogUtil.d(localFileName)
 
         inputData.getString(KEY_ONLINE_IMAGE_URL).let {
             dataUrl = it!!
         }
-        debugLog(dataUrl)
+        LogUtil.d(dataUrl)
 
         mTwitterSource.getImageFromUrl(dataUrl)
                 .subscribeOn(Schedulers.io())
@@ -56,7 +55,7 @@ class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters)
                             isSuccess = true
                         },
                         {
-                            errorLog("fail to save", it)
+                            LogUtil.e("fail to save", it)
                         }
                 )
 

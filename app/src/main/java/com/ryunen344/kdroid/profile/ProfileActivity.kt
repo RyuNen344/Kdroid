@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.replaceFragmentInActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_profile.*
@@ -25,7 +25,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private var infoListener: ProfileContract.ProfileInfoListener = object : ProfileContract.ProfileInfoListener {
         override fun showUserInfo(user: User) {
-            debugLog("start")
+            LogUtil.d()
             profile_screen_name.text = user.screenName
             profile_description.text = user.description
             profile_place.text = user.name
@@ -41,8 +41,6 @@ class ProfileActivity : AppCompatActivity() {
                     .placeholder(R.drawable.ic_loading_image_24dp)
                     .error(R.drawable.ic_loading_image_24dp)
                     .into(profile_icon)
-
-            debugLog("start")
         }
     }
 
@@ -52,7 +50,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         setSupportActionBar(toolbar)
@@ -66,29 +64,25 @@ class ProfileActivity : AppCompatActivity() {
                 }
 
         mPresenter = ProfilePresenter(profileFragment!!, appProvider, apiProvider, intent.extras, infoListener)
-        debugLog("end")
-
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        debugLog("start")
+        LogUtil.d()
 
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_profile, menu)
-        debugLog("end")
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        debugLog("start")
+        LogUtil.d()
         when (item.itemId) {
             android.R.id.home -> {
-                debugLog("back button pressed")
+                LogUtil.d("back button pressed")
                 finish()
             }
         }
-        debugLog("end")
         return super.onOptionsItemSelected(item)
     }
 

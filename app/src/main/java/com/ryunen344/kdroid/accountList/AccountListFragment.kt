@@ -23,7 +23,7 @@ import com.ryunen344.kdroid.R.string.consumer_secret_key
 import com.ryunen344.kdroid.domain.entity.Account
 import com.ryunen344.kdroid.domain.entity.AccountAndAccountDetail
 import com.ryunen344.kdroid.home.HomeActivity
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.activity_account_lsit.*
 import kotlinx.android.synthetic.main.fragment_account_list.*
@@ -54,7 +54,7 @@ class AccountListFragment : Fragment(), AccountListContract.View {
     private var itemListener: AccountListContract.AccountItemListner = object : AccountListContract.AccountItemListner {
         override fun onAccountClick(clickedAccount: Account) {
             //fixme
-            debugLog("open timeline")
+            LogUtil.d("open timeline")
             openAccountTimeLine(clickedAccount)
         }
     }
@@ -102,7 +102,7 @@ class AccountListFragment : Fragment(), AccountListContract.View {
     }
 
     override fun showAccountList(accountList : List<AccountAndAccountDetail>) {
-        debugLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + accountList.size)
+        LogUtil.d("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + accountList.size)
         accountListAdapter.accountList = accountList
         accountListView.visibility = View.VISIBLE
         noAccountListView.visibility = View.GONE

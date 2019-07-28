@@ -16,8 +16,7 @@ import com.ryunen344.kdroid.domain.entity.AccountAndAccountDetail
 import com.ryunen344.kdroid.domain.entity.AccountDetail
 import com.ryunen344.kdroid.domain.repository.AccountDao
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
-import com.ryunen344.kdroid.util.debugLog
-import com.ryunen344.kdroid.util.errorLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.splitLastThreeWord
 import com.ryunen344.kdroid.workers.ProfileUpdateWorker
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -45,15 +44,14 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
     }
 
     override fun start() {
-        debugLog("start")
+        LogUtil.d()
         if (mUserId == 0L) {
             homeView.showError(Throwable("user id not found"))
         }
-        debugLog("end")
     }
 
     override fun initTwitter(absoluteDirPath : String?) {
-        debugLog("start")
+        LogUtil.d()
         mAccountDatabase?.let { accountDatabase ->
             val accountDao : AccountDao = accountDatabase.accountDao()
 
@@ -67,15 +65,14 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                                 homeView.showDrawerProfile(it.accountDetails[0].userName, it.account.screenName, it.accountDetails[0].localProfileImage, it.accountDetails[0].localProfileBannerImage)
                             },
                             { e ->
-                                errorLog(e.localizedMessage, e)
+                                LogUtil.e(e)
                                 homeView.showError(e)
                             })
         }
-        debugLog("end")
     }
 
     override fun initProfile(absoluteDirPath : String?) {
-        debugLog("start")
+        LogUtil.d()
         val disposable : Disposable = apiProvider.getUserByUserId(mTwitter, mUserId).subscribe(
                 {
                     var insertUserName : String = it.name
@@ -114,16 +111,15 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                     }
                 }
                 , { e ->
-            errorLog(e.localizedMessage, e)
+            LogUtil.e(e)
             homeView.showError(e)
         }
         )
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun checkImageStatus(internalFileDir : File?) {
-        debugLog("start")
+        LogUtil.d()
 
         mAccountDatabase?.let { accountDatabase ->
             val accountDao : AccountDao = accountDatabase.accountDao()
@@ -142,9 +138,9 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                     .subscribe(
                             {
                                 if (it.accountDetails.isNotEmpty()) {
-                                    debugLog(File(it.accountDetails[0].localProfileImage).exists())
+                                    LogUtil.d(File(it.accountDetails[0].localProfileImage).exists())
                                     if (!File(it.accountDetails[0].localProfileImage).exists()) {
-                                        debugLog("work request")
+                                        LogUtil.d("work request")
                                         //work manager request save image
                                         workManager.beginUniqueWork(
                                                 ProfileUpdateWorker.WORK_ID_PROFILE_IMAGE,
@@ -155,9 +151,9 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                                                         .build()
                                         ).enqueue()
                                     }
-                                    debugLog(File(it.accountDetails[0].localProfileBannerImage).exists())
+                                    LogUtil.d(File(it.accountDetails[0].localProfileBannerImage).exists())
                                     if (!File(it.accountDetails[0].localProfileBannerImage).exists()) {
-                                        debugLog("work request")
+                                        LogUtil.d("work request")
                                         //work manager request save image
                                         workManager.beginUniqueWork(
                                                 ProfileUpdateWorker.WORK_ID_PROFILE_BANNER_IMAGE,
@@ -172,12 +168,11 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                                 }
                             },
                             { e ->
-                                errorLog(e.localizedMessage, e)
+                                LogUtil.e(e)
                                 homeView.showError(e)
                             })
 
         }
-        debugLog("end")
     }
 
     private fun createInputDataForUrl(localImageUrl : String, onlineImageUrl : String) : Data {
@@ -192,7 +187,7 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
     }
 
     override fun result(requestCode : Int, resultCode : Int) {
-        debugLog("start")
+        LogUtil.d()
         when (requestCode) {
             AddTweetReplyActivity.REQUEST_ADD_TWEET -> {
                 when (resultCode) {
@@ -201,10 +196,9 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                 }
             }
             MediaViewerActivity.REQUEST_SHOW_MEDIA -> {
-                debugLog("media finish()")
+                LogUtil.d("media finish()")
             }
         }
-        debugLog("end")
     }
 
     override fun clearDisposable() {

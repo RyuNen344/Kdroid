@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.activity_add_tweet_reply.*
 import kotlinx.android.synthetic.main.fragment_add_tweet_reply.*
@@ -25,11 +25,10 @@ class AddTweetReplyFragment : Fragment(), AddTweetReplyContract.View {
     }
 
     override fun setPresenter(presenter : AddTweetReplyContract.Presenter) {
-        debugLog("start")
+        LogUtil.d()
         ensureNotNull(presenter) { p ->
             mPresenter = p
         }
-        debugLog("end")
     }
 
     override fun onActivityCreated(savedInstanceState : Bundle?) {
@@ -42,13 +41,12 @@ class AddTweetReplyFragment : Fragment(), AddTweetReplyContract.View {
     }
 
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
-        debugLog("start")
+        LogUtil.d()
         var root : View = inflater.inflate(R.layout.fragment_add_tweet_reply, container, false)
         with(root) {
             mTweetDescription = this.add_tweet_reply_description
         }
         setHasOptionsMenu(true)
-        debugLog("end")
         return root
     }
 
@@ -59,10 +57,8 @@ class AddTweetReplyFragment : Fragment(), AddTweetReplyContract.View {
 
     override fun showError(e : Throwable) {
         //fixme
-        debugLog("start")
-        debugLog(e.message.toString())
+        LogUtil.d(e)
         Snackbar.make(add_tweet_reply_description, e.message.toString(), Snackbar.LENGTH_LONG).show()
-        debugLog("end")
     }
 
 

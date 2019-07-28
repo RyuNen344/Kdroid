@@ -3,7 +3,11 @@ package com.ryunen344.kdroid.home.tweet
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.ContextMenu
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -22,9 +26,8 @@ import com.ryunen344.kdroid.home.HomeActivity
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.profile.ProfileActivity
 import com.ryunen344.kdroid.tweetDetail.TweetDetailActivity
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.ensureNotNull
-import com.ryunen344.kdroid.util.errorLog
 import kotlinx.android.synthetic.main.fragment_home_tweet.*
 import kotlinx.android.synthetic.main.fragment_home_tweet.view.*
 import org.koin.android.ext.android.inject
@@ -52,41 +55,35 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
     private var itemListener : HomeTweetContract.TweetItemListener = object : HomeTweetContract.TweetItemListener {
 
         override fun onImageClick(mediaUrl : String) {
-            debugLog("start")
+            LogUtil.d()
             mPresenter.openMedia(mediaUrl)
-            debugLog("end")
         }
 
         override fun onAccountClick(user : User) {
             //fixme
-            debugLog("start")
+            LogUtil.d()
             mPresenter.openProfile(user)
-            debugLog("end")
         }
 
         override fun onAccountClick(screenName: String) {
-            debugLog("start")
+            LogUtil.d()
             mPresenter.openProfile(screenName)
-            debugLog("end")
         }
 
         override fun onTweetClick(tweet : Status) {
             //fixme
-            debugLog("start")
+            LogUtil.d()
             mPresenter.openTweetDetail(tweet)
-            debugLog("end")
         }
 
         override fun onTweetLongClick(position : Int, tweet : Status) {
-            debugLog("start")
+            LogUtil.d()
             mPresenter.changeFavorite(position, tweet)
-            debugLog("end")
         }
 
         override fun onContextMenuClick(position : Int, tweet : Status) {
-            debugLog("start")
+            LogUtil.d()
             showContextMenu(position, tweet)
-            debugLog("end")
         }
 
     }
@@ -94,15 +91,14 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
     private val homeTweetAdapter = HomeTweetAdapter(ArrayList(0), itemListener, appProvider, utilProvider)
 
     override fun onCreate(savedInstanceState : Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onCreate(savedInstanceState)
         ensureNotNull(activity) {
             mUserId = it.intent.getLongExtra(HomeActivity.INTENT_KEY_USER_ID, 0)
         }
-        debugLog("setPresenter")
+        LogUtil.d("setPresenter")
         HomeTweetPresenter(this, appProvider, apiProvider, mPagerPosition, mUserId)
         homeTweetAdapter.mUserId = mUserId
-        debugLog("end")
     }
 
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
@@ -130,7 +126,7 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
         (mRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         mRecyclerView.addOnScrollListener(object : EndlessScrollListener(mLayoutManager) {
             override fun onLoadMore(currentPage : Int) {
-                debugLog("current page is " + currentPage)
+                LogUtil.d("current page is " + currentPage)
                 mPresenter.loadMoreList(currentPage)
             }
         })
@@ -144,18 +140,16 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
     }
 
     override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onViewCreated(view, savedInstanceState)
         home_tweet_list.adapter = homeTweetAdapter
         mPresenter.start()
-        debugLog("end")
     }
 
     override fun onDestroy() {
-        debugLog("start")
+        LogUtil.d()
         mPresenter.clearDisposable()
         super.onDestroy()
-        debugLog("end")
     }
 
     override fun showTweetList(tweetList : MutableList<Status>) {
@@ -172,86 +166,75 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
     }
 
     override fun showProfile(user : User) {
-        debugLog("start")
+        LogUtil.d()
         val intent = Intent(context, ProfileActivity::class.java).apply {
             putExtra(ProfileActivity.INTENT_KEY_USER_ID, user.id)
         }
         startActivity(intent)
-        debugLog("end")
     }
 
     override fun showProfile(screenName: String) {
-        debugLog("start")
+        LogUtil.d()
         val intent = Intent(context, ProfileActivity::class.java).apply {
             putExtra(ProfileActivity.INTENT_KEY_SCREEN_NAME, screenName)
         }
         startActivity(intent)
-        debugLog("end")
     }
 
     override fun showContextMenu(position : Int, tweet : Status) {
-        debugLog("start")
+        LogUtil.d()
         mRecyclerView.showContextMenu()
-        debugLog("end")
     }
 
 
     override fun notifyStatusChange(position : Int, tweet : Status) {
-        debugLog("start")
+        LogUtil.d()
         homeTweetAdapter.notifyStatusChange(position, tweet)
-        debugLog("end")
     }
 
     override fun showTweetDetail(tweet : Status) {
-        debugLog("start")
+        LogUtil.d()
         val intent = Intent(context, TweetDetailActivity::class.java).apply {
             putExtra(TweetDetailActivity.INTENT_KEY_TWEET_ID, tweet.id)
         }
         startActivity(intent)
-        debugLog("end")
     }
 
     override fun showError(e : Throwable) {
-        debugLog("start")
-        errorLog(e.localizedMessage)
+        LogUtil.d()
+        LogUtil.e(e)
         Snackbar.make(view!!, e.localizedMessage, Snackbar.LENGTH_LONG).show()
-        debugLog("end")
     }
 
     override fun setPresenter(presenter : HomeTweetContract.Presenter) {
-        debugLog("start")
+        LogUtil.d()
         ensureNotNull(presenter) { p ->
             mPresenter = p
         }
-        debugLog("end")
     }
 
 
     override fun onCreateContextMenu(menu : ContextMenu, v : View, menuInfo : ContextMenu.ContextMenuInfo?) {
-        debugLog("start")
+        LogUtil.d()
         super.onCreateContextMenu(menu, v, menuInfo)
         activity?.menuInflater?.inflate(R.menu.timeline_navigation, menu)
-        debugLog("end")
     }
 
     override fun onContextItemSelected(item : MenuItem) : Boolean {
         val position = homeTweetAdapter.position
 
-        debugLog(" adapter position is " + position)
+        LogUtil.d(" adapter position is " + position)
         if (position < 0) return false
         when (item.itemId) {
             R.id.navigation_home -> {
-                debugLog("0 clicked navigation_home")
+                LogUtil.d("0 clicked navigation_home")
                 mPresenter.changeRetweet(position, homeTweetAdapter.tweetList[position])
-                debugLog()
             }
             R.id.navigation_mention -> {
-                debugLog("0 clicked navigation_mention")
-                debugLog()
+                LogUtil.d("0 clicked navigation_mention")
             }
             R.id.navigation_search -> {
-                debugLog("0 clicked navigation_search")
-                debugLog()
+                LogUtil.d("0 clicked navigation_search")
             }
         }
         return super.onContextItemSelected(item)

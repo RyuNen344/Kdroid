@@ -12,11 +12,10 @@ import android.provider.MediaStore
 import androidx.core.net.toUri
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import java.io.File
-import kotlin.annotation.Target as Target1
 
 
 class MediaViewerPresenter(var mediaViewerView: MediaViewerContract.View, var appProvider: AppProvider, val mediaUrl: String) : MediaViewerContract.Presenter {
@@ -28,19 +27,17 @@ class MediaViewerPresenter(var mediaViewerView: MediaViewerContract.View, var ap
     private var mPicasso: Picasso = appProvider.providePiccaso()
 
     override fun start() {
-        debugLog("start")
+        LogUtil.d()
         mediaViewerView.showImage(mediaUrl)
-        debugLog("end")
     }
 
     override fun saveImage(context: Context) {
-        debugLog("start")
+        LogUtil.d()
         mPicasso
                 .load(mediaUrl)
                 .placeholder(R.drawable.ic_loading_image_24dp)
                 .error(R.drawable.ic_loading_image_24dp)
                 .into(getTarget(context, mediaUrl.split("/".toRegex()).last()))
-        debugLog("end")
     }
 
     override fun reloadImage() {
@@ -61,7 +58,7 @@ class MediaViewerPresenter(var mediaViewerView: MediaViewerContract.View, var ap
 
             override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
                 val file = File(getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), url)
-                debugLog("filePath = " + file.absolutePath)
+                LogUtil.d("filePath = " + file.absolutePath)
 
                 val contentValues: ContentValues = ContentValues()
                 contentValues.put(MediaStore.Images.ImageColumns.MIME_TYPE, context.contentResolver.getType(url.toUri()))
@@ -73,9 +70,9 @@ class MediaViewerPresenter(var mediaViewerView: MediaViewerContract.View, var ap
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, context.contentResolver.openOutputStream(file.toUri()))
 
                     context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-                    debugLog("compress run")
+                    LogUtil.d("compress run")
                 } else {
-                    debugLog("compress not run")
+                    LogUtil.d("compress not run")
                 }
 
 
@@ -103,11 +100,11 @@ class MediaViewerPresenter(var mediaViewerView: MediaViewerContract.View, var ap
             }
 
             override fun onPrepareLoad(placeHolderDrawable: Drawable) {
-                debugLog("onPrepareLoad")
+                LogUtil.d()
             }
 
             override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                debugLog("onBitmapFailed")
+                LogUtil.d()
             }
         }
     }

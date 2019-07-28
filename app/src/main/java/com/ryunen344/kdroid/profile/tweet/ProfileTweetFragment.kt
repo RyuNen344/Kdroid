@@ -21,7 +21,7 @@ import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.profile.ProfileActivity
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.fragment_profile_tweet.*
 import kotlinx.android.synthetic.main.fragment_profile_tweet.view.*
@@ -48,41 +48,35 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
 
     private var itemListener: ProfileTweetContract.ProfileItemListener = object : ProfileTweetContract.ProfileItemListener {
         override fun onImageClick(mediaUrl: String) {
-            debugLog("start")
+            LogUtil.d()
             mPresenter.openMedia(mediaUrl)
-            debugLog("end")
         }
 
         override fun onAccountClick(user : User) {
             //fixme
-            debugLog("start")
+            LogUtil.d()
             mPresenter.openProfile(user)
-            debugLog("end")
         }
 
         override fun onAccountClick(screenName: String) {
-            debugLog("start")
+            LogUtil.d()
             mPresenter.openProfile(screenName)
-            debugLog("end")
         }
 
         override fun onTweetClick() {
             //fixme
-            debugLog("start")
+            LogUtil.d()
             mPresenter.openTweetDetail()
-            debugLog("end")
         }
 
         override fun onTweetLongClick(position: Int, tweet: Status) {
-            debugLog("start")
+            LogUtil.d()
             mPresenter.changeFavorite(position, tweet)
-            debugLog("end")
         }
 
         override fun onContextMenuClick(position: Int, tweet: Status) {
-            debugLog("start")
+            LogUtil.d()
             showContextMenu(position, tweet)
-            debugLog("end")
         }
 
     }
@@ -90,7 +84,7 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
     private val profileTweetAdapter = ProfileTweetAdapter(ArrayList(0), itemListener, appProvider, utilProvider)
 
     override fun onCreate(savedInstanceState : Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onCreate(savedInstanceState)
         ensureNotNull(activity) {
             mUserId = it.intent.getLongExtra(ProfileActivity.INTENT_KEY_USER_ID, 0)
@@ -98,9 +92,8 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
                 mScreenName = it
             }
         }
-        debugLog("setPresenter")
+        LogUtil.d("setPresenter")
         ProfileTweetPresenter(this, appProvider, apiProvider, mPagerPosition, mUserId, mScreenName)
-        debugLog("end")
     }
 
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
@@ -119,7 +112,7 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
 
         mRecyclerView.addOnScrollListener(object : EndlessScrollListener(mLayoutManager) {
             override fun onLoadMore(currentPage : Int) {
-                debugLog("current page is " + currentPage)
+                LogUtil.d("current page is " + currentPage)
                 mPresenter.loadMoreList(currentPage)
             }
         })
@@ -135,30 +128,26 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
     }
 
     override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onViewCreated(view, savedInstanceState)
         profile_tweet_list.adapter = profileTweetAdapter
         mPresenter.start()
-        debugLog("end")
     }
 
     override fun onActivityCreated(savedInstanceState : Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onActivityCreated(savedInstanceState)
-        debugLog("end")
     }
 
     override fun onResume() {
-        debugLog("start")
+        LogUtil.d()
         super.onResume()
-        debugLog("end")
     }
 
     override fun onDestroy() {
-        debugLog("start")
+        LogUtil.d()
         mPresenter.clearDisposable()
         super.onDestroy()
-        debugLog("end")
     }
 
     override fun showTweetList(tweetList: MutableList<Status>) {
@@ -175,53 +164,46 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
     }
 
     override fun showTweetDetail() {
-        debugLog("start")
-        debugLog("end")
+        LogUtil.d()
     }
 
     override fun showProfile(user: User) {
-        debugLog("start")
+        LogUtil.d()
         val intent = Intent(context, ProfileActivity::class.java).apply {
             putExtra(ProfileActivity.INTENT_KEY_USER_ID, user.id)
         }
         startActivity(intent)
-        debugLog("end")
     }
 
     override fun showProfile(screenName: String) {
-        debugLog("start")
+        LogUtil.d()
         val intent = Intent(context, ProfileActivity::class.java).apply {
             putExtra(ProfileActivity.INTENT_KEY_SCREEN_NAME, screenName)
         }
         startActivity(intent)
-        debugLog("end")
     }
 
     override fun showContextMenu(position: Int, tweet: Status) {
-        debugLog("start")
+        LogUtil.d()
         mRecyclerView.showContextMenu()
-        debugLog("end")
     }
 
     override fun notifyStatusChange(position: Int, tweet: Status) {
-        debugLog("start")
+        LogUtil.d()
         profileTweetAdapter.notifyStatusChange(position, tweet)
-        debugLog("end")
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
-        debugLog("start")
+        LogUtil.d()
         super.onCreateContextMenu(menu, v, menuInfo)
         activity?.menuInflater?.inflate(R.menu.timeline_navigation, menu)
-        debugLog("end")
     }
 
     override fun setPresenter(presenter : ProfileTweetContract.Presenter) {
-        debugLog("start")
+        LogUtil.d()
         ensureNotNull(presenter) { p ->
             mPresenter = p
         }
-        debugLog("end")
     }
 
     override fun showError(e : Throwable) {

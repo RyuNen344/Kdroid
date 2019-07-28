@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_tweet.view.*
 import org.jsoup.Jsoup
@@ -56,7 +56,7 @@ class ProfileTweetAdapter(profileTweetList: MutableList<Status>, val profileItem
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        debugLog("start")
+        LogUtil.d()
 
         //set status bar
         if (profileTweetList[position].isRetweet && !profileTweetList[position].isRetweetedByMe) {
@@ -101,7 +101,6 @@ class ProfileTweetAdapter(profileTweetList: MutableList<Status>, val profileItem
             profileItemListener.onTweetLongClick(position, profileTweetList[position])
             true
         }
-        debugLog("end")
     }
 
     private fun initTweet(holder: ProfileTweetAdapter.ViewHolder, tweetStatus: Status) {
@@ -167,10 +166,9 @@ class ProfileTweetAdapter(profileTweetList: MutableList<Status>, val profileItem
 
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(textView: View) {
-                    debugLog("start")
-                    debugLog(spannableString.substring(start + 1, end))
+                    LogUtil.d()
+                    LogUtil.d(spannableString.substring(start + 1, end))
                     profileItemListener.onAccountClick(spannableString.substring(start + 1, end))
-                    debugLog("end")
                 }
             }, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         }
@@ -181,9 +179,8 @@ class ProfileTweetAdapter(profileTweetList: MutableList<Status>, val profileItem
 
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(textView: View) {
-                    debugLog("start")
-                    debugLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! onclick きいてるで！！！ハッシュタグ！！")
-                    debugLog("end")
+                    LogUtil.d()
+                    LogUtil.d("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! onclick きいてるで！！！ハッシュタグ！！")
                 }
             }, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         }
@@ -212,8 +209,8 @@ class ProfileTweetAdapter(profileTweetList: MutableList<Status>, val profileItem
     private fun setImage(imageView: ImageView, mediaUrl: String) {
 
         //set image
-        debugLog("image load")
-        debugLog("image url = " + mediaUrl)
+        LogUtil.d()
+        LogUtil.d("image url = " + mediaUrl)
         imageView.visibility = ImageView.VISIBLE
         mPicasso.load(mediaUrl)
                 .placeholder(R.drawable.ic_loading_image_24dp)
@@ -226,10 +223,9 @@ class ProfileTweetAdapter(profileTweetList: MutableList<Status>, val profileItem
     }
 
     fun notifyStatusChange(position: Int, tweet: Status) {
-        debugLog("start")
+        LogUtil.d()
         profileTweetList[position] = tweet
         notifyItemChanged(position)
-        debugLog("end")
     }
 
 

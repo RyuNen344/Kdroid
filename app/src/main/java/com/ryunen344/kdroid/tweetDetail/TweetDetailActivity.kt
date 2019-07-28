@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.replaceFragmentInActivity
 import kotlinx.android.synthetic.main.activity_profile.toolbar
 import kotlinx.android.synthetic.main.activity_tweet_detail.*
@@ -24,7 +24,7 @@ class TweetDetailActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState : Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tweet_detail)
         setSupportActionBar(toolbar)
@@ -38,27 +38,24 @@ class TweetDetailActivity : AppCompatActivity() {
                 }
 
         mPresenter = TweetDetailPresenter(tweetDetailFragment!!, appProvider, apiProvider, intent.extras)
-        debugLog("end")
     }
 
     override fun onCreateOptionsMenu(menu : Menu) : Boolean {
-        debugLog("start")
+        LogUtil.d()
 
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_profile, menu)
-        debugLog("end")
         return true
     }
 
     override fun onOptionsItemSelected(item : MenuItem) : Boolean {
-        debugLog("start")
+        LogUtil.d()
         when (item.itemId) {
             android.R.id.home -> {
-                debugLog("back button pressed")
+                LogUtil.d("back button pressed")
                 finish()
             }
         }
-        debugLog("end")
         return super.onOptionsItemSelected(item)
     }
 

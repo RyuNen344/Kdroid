@@ -2,7 +2,7 @@ package com.ryunen344.kdroid.profile.user
 
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import twitter4j.Paging
@@ -20,16 +20,15 @@ class ProfileUserPresenter(val profileView: ProfileUserContract.View, val appPro
     }
 
     override fun start() {
-        debugLog("start")
+        LogUtil.d()
         when (pagerPosition) {
             2 -> loadFollowList()
             3 -> loadFollowerList()
         }
-        debugLog("end")
     }
 
     override fun loadFollowList() {
-        debugLog("start")
+        LogUtil.d()
         var pageing: Paging = Paging(1, 50)
         val disposable: Disposable =
                 when (userId) {
@@ -57,11 +56,10 @@ class ProfileUserPresenter(val profileView: ProfileUserContract.View, val appPro
                     }
                 }
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun loadFollowerList() {
-        debugLog("start")
+        LogUtil.d()
         var pageing: Paging = Paging(1, 50)
         val disposable: Disposable =
                 when (userId) {
@@ -90,31 +88,26 @@ class ProfileUserPresenter(val profileView: ProfileUserContract.View, val appPro
 
                 }
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun loadMoreList(currentPage: Int) {
-        debugLog("start")
+        LogUtil.d()
         when (pagerPosition) {
             2 -> loadMoreFollowList(currentPage)
             3 -> loadMoreFollowerList(currentPage)
         }
-        debugLog("end")
     }
 
     private fun loadMoreFollowList(currentPage: Int) {
-        debugLog("start")
-        debugLog("end")
+        LogUtil.d()
     }
 
     private fun loadMoreFollowerList(currentPage: Int) {
-        debugLog("start")
-        debugLog("end")
+        LogUtil.d()
     }
 
     override fun clearDisposable() {
-        debugLog("start")
+        LogUtil.d()
         mCompositeDisposable.clear()
-        debugLog("end")
     }
 }

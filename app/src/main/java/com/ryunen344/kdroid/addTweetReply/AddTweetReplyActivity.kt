@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.ryunen344.kdroid.R.layout.activity_add_tweet_reply
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.replaceFragmentInActivity
 import kotlinx.android.synthetic.main.activity_add_tweet_reply.*
 import org.koin.android.ext.android.inject
@@ -19,7 +19,7 @@ class AddTweetReplyActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState : Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onCreate(savedInstanceState)
         setContentView(activity_add_tweet_reply)
         //setSupportActionBar(toolbar_add_tweet_reply)
@@ -32,7 +32,6 @@ class AddTweetReplyActivity : AppCompatActivity() {
                 }
 
         mPresenter = AddTweetReplyPresenter(addTweetReplyFragment!!, appProvider)
-        debugLog("end")
     }
 
     override fun onSupportNavigateUp() : Boolean {

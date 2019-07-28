@@ -10,7 +10,7 @@ import com.google.android.material.tabs.TabLayout
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import org.koin.android.ext.android.inject
@@ -31,53 +31,46 @@ class ProfileFragment : Fragment(), ProfileContract.View {
 
     private var itemListner: ProfileContract.ProfileItemListener = object : ProfileContract.ProfileItemListener {
         override fun onAccountClick() {
-            debugLog("start")
-            debugLog("end")
+            LogUtil.d()
         }
 
         override fun onImageClick(mediaUrl: String) {
-            debugLog("start")
-            debugLog("end")
+            LogUtil.d()
         }
 
         override fun onTweetClick() {
-            debugLog("start")
-            debugLog("end")
+            LogUtil.d()
         }
 
     }
 
     override fun setPresenter(presenter: ProfileContract.Presenter) {
-        debugLog("start")
+        LogUtil.d()
         presenter.let {
             mPresenter = it
         }
-        debugLog("end")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        debugLog("start")
-        debugLog(container.toString())
+        LogUtil.d()
+        LogUtil.d(container.toString())
         val root = inflater.inflate(R.layout.fragment_profile, container, false)
-        debugLog("end")
         return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onActivityCreated(savedInstanceState)
         mSectionsPagerAdapter = ProfileSectionsPagerAdapter(fragmentManager!!)
         view_pager_container.adapter = mSectionsPagerAdapter
         view_pager_container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(profileTabs))
         profileTabs.setupWithViewPager(view_pager_container)
         profileTabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(view_pager_container))
-        debugLog("end")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         mPresenter.start()
-        debugLog("end")
     }
 
     override fun onDestroy() {
@@ -86,7 +79,7 @@ class ProfileFragment : Fragment(), ProfileContract.View {
     }
 
     override fun showUserInfo(user: User) {
-        debugLog("start")
+        LogUtil.d()
         activity?.let {
             it.profile_screen_name.text = user.screenName
             it.profile_description.text = user.description
@@ -104,14 +97,12 @@ class ProfileFragment : Fragment(), ProfileContract.View {
                     .error(R.drawable.ic_loading_image_24dp)
                     .into(it.profile_icon)
         }
-        debugLog("start")
     }
 
 
     override fun showError(e: Throwable) {
-        debugLog("start")
+        LogUtil.d()
         Snackbar.make(view!!, e.localizedMessage, Snackbar.LENGTH_LONG).show()
-        debugLog("end")
     }
 
 }

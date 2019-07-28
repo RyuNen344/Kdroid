@@ -1,8 +1,7 @@
 package com.ryunen344.kdroid.addTweetReply
 
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.debugLog
-import com.ryunen344.kdroid.util.errorLog
+import com.ryunen344.kdroid.util.LogUtil
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -21,8 +20,8 @@ class AddTweetReplyPresenter(var addTweetReplyView : AddTweetReplyContract.View,
     }
 
     override fun sendTweet(tweetDescription : String) {
-        debugLog("start")
-        debugLog(tweetDescription)
+        LogUtil.d()
+        LogUtil.d(tweetDescription)
 
         tweetDescription.let {
             Completable.create {
@@ -36,13 +35,11 @@ class AddTweetReplyPresenter(var addTweetReplyView : AddTweetReplyContract.View,
                             },
                             {
                                 addTweetReplyView.showError(it)
-                                errorLog(it.printStackTrace().toString())
+                                LogUtil.e(it)
                             })
         }.run {
-            errorLog(tweetDescription)
+            LogUtil.d(tweetDescription)
         }
-
-        debugLog("end")
 
     }
 

@@ -2,7 +2,7 @@ package com.ryunen344.kdroid.home.tweet
 
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import twitter4j.Paging
@@ -21,25 +21,23 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
     }
 
     override fun start() {
-        debugLog("start")
+        LogUtil.d()
         when (pagerPosition) {
             0 -> loadTimelineList()
             1 -> loadMentionList()
         }
-        debugLog("end")
     }
 
     override fun loadLeastList() {
-        debugLog("start")
+        LogUtil.d()
         when (pagerPosition) {
             0 -> loadLeastTimeLineList()
             1 -> loadLeastMentionList()
         }
-        debugLog("end")
     }
 
     override fun loadTimelineList() {
-        debugLog("start")
+        LogUtil.d()
         var paging : Paging = Paging(1, 50)
         val disposable : Disposable = apiProvider.getTimeLine(twitter, paging).subscribe(
                 { list : MutableList<Status> ->
@@ -51,11 +49,10 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
         }
         )
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun loadMentionList() {
-        debugLog("start")
+        LogUtil.d()
         var paging : Paging = Paging(1, 50)
         val disposable : Disposable = apiProvider.getMention(twitter, paging).subscribe(
                 { list : MutableList<Status> ->
@@ -67,20 +64,18 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
         }
         )
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun loadMoreList(currentPage : Int) {
-        debugLog("start")
+        LogUtil.d()
         when (pagerPosition) {
             0 -> loadMoreTimelineList(currentPage)
             1 -> loadMoreMentionList(currentPage)
         }
-        debugLog("end")
     }
 
     private fun loadMoreTimelineList(currentPage : Int) {
-        debugLog("start")
+        LogUtil.d()
         var paging : Paging = Paging(currentPage + 1, 50)
         val disposable : Disposable = apiProvider.getTimeLine(twitter, paging).subscribe(
                 { list : MutableList<Status> ->
@@ -92,11 +87,10 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
         }
         )
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     private fun loadMoreMentionList(currentPage: Int) {
-        debugLog("start")
+        LogUtil.d()
         var paging : Paging = Paging(currentPage + 1, 50)
         val disposable : Disposable = apiProvider.getMention(twitter, paging).subscribe(
                 { list : MutableList<Status> ->
@@ -108,11 +102,10 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
         }
         )
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     private fun loadLeastTimeLineList() {
-        debugLog("start")
+        LogUtil.d()
         var paging : Paging = Paging().sinceId(tweetList.first().id)
         val disposable : Disposable = apiProvider.getTimeLine(twitter, paging).subscribe(
                 { list : MutableList<Status> ->
@@ -124,11 +117,10 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
         }
         )
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     private fun loadLeastMentionList() {
-        debugLog("start")
+        LogUtil.d()
         var paging : Paging = Paging().sinceId(tweetList.first().id)
         val disposable : Disposable = apiProvider.getMention(twitter, paging).subscribe(
                 { list : MutableList<Status> ->
@@ -140,35 +132,30 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
         }
         )
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun openMedia(mediaUrl : String) {
-        debugLog("start")
+        LogUtil.d()
         homeTweetView.showMediaViewer(mediaUrl)
-        debugLog("end")
     }
 
     override fun openTweetDetail(tweet : Status) {
-        debugLog("start")
+        LogUtil.d()
         homeTweetView.showTweetDetail(tweet)
-        debugLog("end")
     }
 
     override fun openProfile(user : User) {
-        debugLog("start")
+        LogUtil.d()
         homeTweetView.showProfile(user)
-        debugLog("end")
     }
 
     override fun openProfile(screenName: String) {
-        debugLog("start")
+        LogUtil.d()
         homeTweetView.showProfile(screenName)
-        debugLog("end")
     }
 
     override fun changeFavorite(position : Int, tweet : Status) {
-        debugLog("start")
+        LogUtil.d()
         val disposable : Disposable =
                 if (!tweet.isFavorited)
                     apiProvider.createFavorite(twitter, tweet.id).subscribe(
@@ -188,17 +175,16 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
                             })
 
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun changeRetweet(position : Int, tweet : Status) {
-        debugLog("start")
+        LogUtil.d()
 
         val disposable : Disposable =
                 if (!tweet.isRetweetedByMe) {
                     apiProvider.createRetweet(twitter, tweet.id).subscribe(
                             {
-                                debugLog("create RT")
+                                LogUtil.d("create RT")
                                 homeTweetView.notifyStatusChange(position, it.retweetedStatus)
                             },
                             {
@@ -207,7 +193,7 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
                 } else {
                     apiProvider.destroyRetweet(twitter, tweet.currentUserRetweetId).subscribe(
                             {
-                                debugLog("destroy RT")
+                                LogUtil.d("destroy RT")
                                 homeTweetView.notifyStatusChange(position, it)
                             },
                             {
@@ -217,12 +203,10 @@ class HomeTweetPresenter(private val homeTweetView : HomeTweetContract.View, val
 
 
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun clearDisposable() {
-        debugLog("start")
+        LogUtil.d()
         mCompositeDisposable.clear()
-        debugLog("end")
     }
 }

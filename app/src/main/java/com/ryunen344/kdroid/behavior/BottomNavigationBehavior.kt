@@ -7,9 +7,12 @@ import android.view.Gravity
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.ViewCompat.*
+import androidx.core.view.ViewCompat.NestedScrollType
+import androidx.core.view.ViewCompat.SCROLL_AXIS_VERTICAL
+import androidx.core.view.ViewCompat.TYPE_NON_TOUCH
+import androidx.core.view.ViewCompat.TYPE_TOUCH
 import com.google.android.material.snackbar.Snackbar
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import kotlin.math.max
 import kotlin.math.min
 
@@ -33,7 +36,7 @@ class BottomNavigationBehavior<V : View>(context : Context?, attrs : AttributeSe
             coordinatorLayout : CoordinatorLayout, child : V, directTargetChild : View, target : View, axes : Int, type : Int
     ) : Boolean {
         if (axes != SCROLL_AXIS_VERTICAL) {
-            debugLog("axes is SCROLL_AXIS_HORIZ")
+            LogUtil.d("axes is SCROLL_AXIS_HORIZ")
             return false
         }
 

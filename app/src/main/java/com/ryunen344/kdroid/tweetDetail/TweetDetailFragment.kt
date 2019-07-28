@@ -13,7 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import kotlinx.android.synthetic.main.fragment_tweet_detail.view.*
 import org.koin.android.ext.android.inject
 import twitter4j.Status
@@ -38,41 +38,35 @@ class TweetDetailFragment : Fragment(), TweetDetailContract.View {
     private var itemListener : TweetDetailContract.TweetItemListener = object : TweetDetailContract.TweetItemListener {
 
         override fun onImageClick(mediaUrl : String) {
-            debugLog("start")
+            LogUtil.d()
             //mPresenter.openMedia(mediaUrl)
-            debugLog("end")
         }
 
         override fun onAccountClick(user : User) {
             //fixme
-            debugLog("start")
+            LogUtil.d()
             //mPresenter.openProfile(user)
-            debugLog("end")
         }
 
         override fun onAccountClick(screenName : String) {
-            debugLog("start")
+            LogUtil.d()
             //mPresenter.openProfile(screenName)
-            debugLog("end")
         }
 
         override fun onTweetClick(tweet : Status) {
             //fixme
-            debugLog("start")
+            LogUtil.d()
             //mPresenter.openTweetDetail(tweet)
-            debugLog("end")
         }
 
         override fun onTweetLongClick(position : Int, tweet : Status) {
-            debugLog("start")
+            LogUtil.d()
             //mPresenter.changeFavorite(position, tweet)
-            debugLog("end")
         }
 
         override fun onContextMenuClick(position : Int, tweet : Status) {
-            debugLog("start")
+            LogUtil.d()
             //showContextMenu(position, tweet)
-            debugLog("end")
         }
 
     }
@@ -80,15 +74,14 @@ class TweetDetailFragment : Fragment(), TweetDetailContract.View {
     private val tweetDetailAdapter = TweetDetailAdapter(ArrayList(0), itemListener, appProvider, utilProvider)
 
     override fun setPresenter(presenter : TweetDetailContract.Presenter) {
-        debugLog("start")
+        LogUtil.d()
         presenter.let {
             mPresenter = it
         }
-        debugLog("end")
     }
 
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
-        debugLog("start")
+        LogUtil.d()
         super.onCreateView(inflater, container, savedInstanceState)
         val root = inflater.inflate(R.layout.fragment_tweet_detail, container, false)
 
@@ -108,27 +101,23 @@ class TweetDetailFragment : Fragment(), TweetDetailContract.View {
             registerForContextMenu(this)
             mainListView = tweetDetailLL
         }
-        debugLog("end")
         return root
     }
 
     override fun onActivityCreated(savedInstanceState : Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onActivityCreated(savedInstanceState)
-        debugLog("end")
     }
 
     override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         mPresenter.start()
-        debugLog("end")
     }
 
     override fun showTweetDetail(status : Status) {
-        debugLog("start")
+        LogUtil.d()
         tweetDetailAdapter.tweetList = listOf<Status>(status) as MutableList<Status>
         tweetDetailAdapter.notifyDataSetChanged()
-        debugLog("end")
     }
 
     override fun onDestroy() {
@@ -137,9 +126,8 @@ class TweetDetailFragment : Fragment(), TweetDetailContract.View {
     }
 
     override fun showError(e : Throwable) {
-        debugLog("start")
+        LogUtil.d()
         Snackbar.make(view!!, e.localizedMessage, Snackbar.LENGTH_LONG).show()
-        debugLog("end")
     }
 
 }

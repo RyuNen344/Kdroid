@@ -2,7 +2,12 @@ package com.ryunen344.kdroid.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
@@ -14,7 +19,7 @@ import com.ryunen344.kdroid.R.layout.fragment_home
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
@@ -39,33 +44,29 @@ class HomeFragment : Fragment(), HomeContract.View {
 
     private var itemListener: HomeContract.MainItemListener = object : HomeContract.MainItemListener {
         override fun onImageClick(mediaUrl: String) {
-            debugLog("start")
-            debugLog("end")
+            LogUtil.d()
         }
 
         override fun onTweetClick() {
             //fixme
-            debugLog("start")
-            debugLog("end")
+            LogUtil.d()
         }
 
         override fun onAccountClick(user: User) {
             //fixme
-            debugLog("start")
-            debugLog("end")
+            LogUtil.d()
         }
     }
 
     override fun setPresenter(presenter: HomeContract.Presenter) {
-        debugLog("start")
+        LogUtil.d()
         presenter.let {
             mPresenter = it
         }
-        debugLog("end")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        debugLog("start")
+        LogUtil.d()
         var root: View = inflater.inflate(fragment_home, container, false)
         setHasOptionsMenu(true)
 
@@ -86,28 +87,22 @@ class HomeFragment : Fragment(), HomeContract.View {
         activity?.home_nav_view?.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_profile -> {
-                    debugLog("start")
-                    debugLog("end")
+                    LogUtil.d()
                 }
                 R.id.nav_reload -> {
-                    debugLog("start")
-                    debugLog("end")
+                    LogUtil.d()
                 }
                 R.id.nav_setting -> {
-                    debugLog("start")
-                    debugLog("end")
+                    LogUtil.d()
                 }
                 R.id.nav_feedback -> {
-                    debugLog("start")
-                    debugLog("end")
+                    LogUtil.d()
                 }
                 R.id.nav_help -> {
-                    debugLog("start")
-                    debugLog("end")
+                    LogUtil.d()
                 }
                 R.id.nav_about -> {
-                    debugLog("start")
-                    debugLog("end")
+                    LogUtil.d()
                 }
             }
             activity?.drawer_layout?.closeDrawer(GravityCompat.START)
@@ -154,63 +149,59 @@ class HomeFragment : Fragment(), HomeContract.View {
 
         })
 
-        debugLog("end")
         return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onActivityCreated(savedInstanceState)
         mSectionsPagerAdapter = HomeSectionsPagerAdapter(fragmentManager!!)
         view_pager_container.adapter = mSectionsPagerAdapter
         view_pager_container.offscreenPageLimit = mSectionsPagerAdapter.count - 1
-        debugLog("end")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         mPresenter.start()
         mPresenter.initTwitter(context?.filesDir?.absolutePath)
-        debugLog("end")
     }
 
     override fun onDestroy() {
-        debugLog("start")
+        LogUtil.d()
         mPresenter.clearDisposable()
         super.onDestroy()
-        debugLog("end")
     }
 
     override fun showDrawerProfile(userName: String?, screenName: String, profileImage: String?, profileBannerImage: String?) {
 
         activity?.let { activity ->
             profileBannerImage.let {
-                debugLog(it!!)
+                LogUtil.d(it!!)
                 if (File(it).exists()) {
-                    debugLog("file exists")
+                    LogUtil.d("file exists")
                     activity.home_nav_view?.getHeaderView(0)?.header_profile_banner?.setImageURI(File(it).toUri())
                 } else {
-                    debugLog(File(context?.filesDir, it).absolutePath)
+                    LogUtil.d(File(context?.filesDir, it).absolutePath)
                 }
             }
 
             profileImage.let {
-                debugLog(it!!)
+                LogUtil.d(it!!)
                 if (File(it).exists()) {
-                    debugLog("file exists")
+                    LogUtil.d("file exists")
                     activity.home_nav_view?.getHeaderView(0)?.header_profile_icon?.setImageURI(File(it).toUri())
                 } else {
-                    debugLog(File(context?.filesDir, it).absolutePath)
+                    LogUtil.d(File(context?.filesDir, it).absolutePath)
                 }
             }
 
             userName.let {
-                debugLog(it!!)
+                LogUtil.d(it!!)
                 activity.home_nav_view?.getHeaderView(0)?.header_user_name?.text = it
             }
 
             screenName.let {
-                debugLog(it)
+                LogUtil.d(it)
                 activity.home_nav_view?.getHeaderView(0)?.header_screen_name?.text = it
             }
         }
@@ -226,42 +217,35 @@ class HomeFragment : Fragment(), HomeContract.View {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        debugLog("start")
+        LogUtil.d()
         mPresenter.result(requestCode, resultCode)
-        debugLog("end")
     }
 
     override fun showSuccessfullyTweet() {
-        debugLog("start")
+        LogUtil.d()
         Snackbar.make(activity?.nestedScrollView!!, "tweet sent", Snackbar.LENGTH_LONG).show()
-        debugLog("end")
-
     }
 
     override fun showFailTweet() {
-        debugLog("start")
+        LogUtil.d()
         Snackbar.make(activity?.nestedScrollView!!, "tweet fail", Snackbar.LENGTH_LONG).show()
-        debugLog("end")
     }
 
     override fun showSuccessfullyUpdateProfile() {
-        debugLog("start")
+        LogUtil.d()
         Snackbar.make(activity?.nestedScrollView!!, "success update profile", Snackbar.LENGTH_LONG).show()
         mPresenter.checkImageStatus(context?.filesDir)
-        debugLog("end")
     }
 
     override fun showError(e: Throwable) {
-        debugLog("start")
+        LogUtil.d()
         Snackbar.make(activity?.nestedScrollView!!, e.localizedMessage, Snackbar.LENGTH_LONG).show()
-        debugLog("end")
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        debugLog("start")
+        LogUtil.d()
         inflater.inflate(R.menu.timeline_navigation, menu)
-        debugLog("end")
     }
 
 

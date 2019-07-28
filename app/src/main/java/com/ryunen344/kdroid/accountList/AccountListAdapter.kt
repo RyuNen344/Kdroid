@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.ryunen344.kdroid.R.layout.item_account_list
 import com.ryunen344.kdroid.domain.entity.AccountAndAccountDetail
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.item_account_list.view.*
 import java.io.File
@@ -55,7 +55,7 @@ class AccountListAdapter(accountList : List<AccountAndAccountDetail>, private va
                 .take(1)
                 .subscribe {
                     accountItemListener.onAccountClick(accountList[position].account)
-                    debugLog("subscribe on account click")
+                    LogUtil.d("subscribe on account click")
                 })
 
     }

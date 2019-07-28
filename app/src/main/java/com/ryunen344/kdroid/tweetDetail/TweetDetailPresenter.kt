@@ -3,7 +3,7 @@ package com.ryunen344.kdroid.tweetDetail
 import android.os.Bundle
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import twitter4j.Twitter
@@ -22,23 +22,21 @@ class TweetDetailPresenter(private val tweetDetailView : TweetDetailContract.Vie
     }
 
     override fun start() {
-        debugLog("start")
+        LogUtil.d()
         loadTweetDetail()
-        debugLog("end")
     }
 
     override fun clearDisposable() {
-        debugLog("start")
+        LogUtil.d()
         mCompositeDisposable.clear()
-        debugLog("end")
     }
 
     override fun loadTweetDetail() {
-        debugLog("start")
+        LogUtil.d()
         val disposable : Disposable =
                 apiProvider.getTweetByTweetId(mTwitter, mTweetId).subscribe(
                         { status ->
-                            debugLog(status)
+                            LogUtil.d(status)
                             tweetDetailView.showTweetDetail(status)
 
                         }
@@ -47,7 +45,6 @@ class TweetDetailPresenter(private val tweetDetailView : TweetDetailContract.Vie
                 }
                 )
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
 }

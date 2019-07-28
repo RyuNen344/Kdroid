@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_tweet.view.*
 import org.jsoup.Jsoup
@@ -52,7 +52,7 @@ class TweetDetailAdapter(detailList : MutableList<Status>, private val tweetItem
     }
 
     override fun onBindViewHolder(holder : ViewHolder, position : Int) {
-        debugLog("start")
+        LogUtil.d()
 
         //set status bar
         if (tweetList[position].isRetweet && !tweetList[position].isRetweetedByMe) {
@@ -106,7 +106,6 @@ class TweetDetailAdapter(detailList : MutableList<Status>, private val tweetItem
             tweetItemListener.onTweetLongClick(position, tweetList[position])
             true
         }
-        debugLog("end")
     }
 
 
@@ -173,10 +172,8 @@ class TweetDetailAdapter(detailList : MutableList<Status>, private val tweetItem
 
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(textView : View) {
-                    debugLog("start")
-                    debugLog(spannableString.substring(start + 1, end))
+                    LogUtil.d(spannableString.substring(start + 1, end))
                     tweetItemListener.onAccountClick(spannableString.substring(start + 1, end))
-                    debugLog("end")
                 }
             }, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         }
@@ -187,9 +184,7 @@ class TweetDetailAdapter(detailList : MutableList<Status>, private val tweetItem
 
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(textView : View) {
-                    debugLog("start")
-                    debugLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! onclick きいてるで！！！ハッシュタグ！！")
-                    debugLog("end")
+                    LogUtil.d("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! onclick きいてるで！！！ハッシュタグ！！")
                 }
             }, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         }
@@ -219,8 +214,8 @@ class TweetDetailAdapter(detailList : MutableList<Status>, private val tweetItem
     private fun setImage(imageView : ImageView, mediaUrl : String) {
 
         //set image
-        debugLog("image load")
-        debugLog("image url = " + mediaUrl)
+        LogUtil.d("image load")
+        LogUtil.d("image url = $mediaUrl")
         imageView.visibility = ImageView.VISIBLE
         mPicasso.load(mediaUrl)
                 .placeholder(R.drawable.ic_loading_image_24dp)
@@ -233,10 +228,9 @@ class TweetDetailAdapter(detailList : MutableList<Status>, private val tweetItem
     }
 
     fun notifyStatusChange(position : Int, tweet : Status) {
-        debugLog("start")
+        LogUtil.d()
         tweetList[position] = tweet
         notifyItemChanged(position)
-        debugLog("end")
     }
 
     class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {

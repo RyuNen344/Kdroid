@@ -19,7 +19,7 @@ import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.profile.ProfileActivity
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.fragment_profile_user.*
 import kotlinx.android.synthetic.main.fragment_profile_user.view.*
@@ -46,18 +46,15 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
 
     private var itemListner: ProfileUserContract.ProfileItemListner = object : ProfileUserContract.ProfileItemListner {
         override fun onAccountClick() {
-            debugLog("start")
-            debugLog("end")
+            LogUtil.d()
         }
 
         override fun onImageClick(mediaUrl: String) {
-            debugLog("start")
-            debugLog("end")
+            LogUtil.d()
         }
 
         override fun onTweetClick() {
-            debugLog("start")
-            debugLog("end")
+            LogUtil.d()
         }
 
     }
@@ -65,7 +62,7 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
     private val profileUserAdapter = ProfileUserAdapter(ArrayList(0), itemListner, appProvider, utilProvider)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onCreate(savedInstanceState)
         ensureNotNull(activity) {
             mUserId = it.intent.getLongExtra(ProfileActivity.INTENT_KEY_USER_ID, 0)
@@ -73,9 +70,8 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
                 mScreenName = it
             }
         }
-        debugLog("setPresenter")
+        LogUtil.d("setPresenter")
         ProfileUserPresenter(this, appProvider, apiProvider, mPagerPosition, mUserId, mScreenName)
-        debugLog("end")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -94,7 +90,7 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
 
         mRecyclerView.addOnScrollListener(object : EndlessScrollListener(mLayoutManager) {
             override fun onLoadMore(currentPage: Int) {
-                debugLog("current page is " + currentPage)
+                LogUtil.d("current page is " + currentPage)
                 mPresenter.loadMoreList(currentPage)
             }
         })
@@ -110,23 +106,20 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onViewCreated(view, savedInstanceState)
         profile_user_list.adapter = profileUserAdapter
         mPresenter.start()
-        debugLog("end")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onActivityCreated(savedInstanceState)
-        debugLog("end")
     }
 
     override fun onResume() {
-        debugLog("start")
+        LogUtil.d()
         super.onResume()
-        debugLog("end")
     }
 
     override fun onDestroy() {
@@ -148,21 +141,18 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
     }
 
     override fun showTweetDetail() {
-        debugLog("start")
-        debugLog("end")
+        LogUtil.d()
     }
 
     override fun showProfile() {
-        debugLog("start")
-        debugLog("end")
+        LogUtil.d()
     }
 
     override fun setPresenter(presenter: ProfileUserContract.Presenter) {
-        debugLog("start")
+        LogUtil.d()
         ensureNotNull(presenter) { p ->
             mPresenter = p
         }
-        debugLog("end")
     }
 
     override fun showError(e: Throwable) {

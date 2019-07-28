@@ -5,7 +5,7 @@ import com.ryunen344.kdroid.di.module.ApiModule
 import com.ryunen344.kdroid.di.module.AppModule
 import com.ryunen344.kdroid.di.module.UtilModule
 import com.ryunen344.kdroid.domain.database.AccountDatabase
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
@@ -16,7 +16,7 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        debugLog("start")
+        LogUtil.d()
 
         //init db
         AccountDatabase.init(this)
@@ -29,7 +29,6 @@ class MyApplication : Application() {
             modules(listOf(AppModule, UtilModule, ApiModule))
         }
 
-        debugLog("end")
     }
 
 }

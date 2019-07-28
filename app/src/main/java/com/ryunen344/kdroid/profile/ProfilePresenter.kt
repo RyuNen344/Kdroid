@@ -3,7 +3,7 @@ package com.ryunen344.kdroid.profile
 import android.os.Bundle
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.ensureNotNull
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -27,17 +27,16 @@ class ProfilePresenter(val profileView: ProfileContract.View, val appProvider: A
     }
 
     override fun start() {
-        debugLog("start")
+        LogUtil.d()
         when {
             mUserId != 0L -> loadProfile(mUserId)
             mScreenName.isNotEmpty() -> loadProfile(mScreenName)
             else -> profileView.showError(Throwable("user id not found"))
         }
-        debugLog("end")
     }
 
     override fun loadProfile(userId: Long) {
-        debugLog("start")
+        LogUtil.d()
         val disposable: Disposable = apiProvider.getUserByUserId(mTwitter, userId).subscribe(
                 {
                     infoListener.showUserInfo(it)
@@ -47,11 +46,10 @@ class ProfilePresenter(val profileView: ProfileContract.View, val appProvider: A
         }
         )
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun loadProfile(screenName: String) {
-        debugLog("start")
+        LogUtil.d()
         val disposable: Disposable = apiProvider.getUserByScreenName(mTwitter, screenName).subscribe(
                 {
                     infoListener.showUserInfo(it)
@@ -61,13 +59,11 @@ class ProfilePresenter(val profileView: ProfileContract.View, val appProvider: A
         }
         )
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
 
     override fun clearDisposable() {
-        debugLog("start")
+        LogUtil.d()
         mCompositeDisposable.clear()
-        debugLog("end")
     }
 }

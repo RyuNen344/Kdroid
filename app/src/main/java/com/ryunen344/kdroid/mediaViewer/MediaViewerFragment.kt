@@ -9,7 +9,7 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_media_viewer
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.ensureNotNull
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_media_viewer.*
@@ -29,22 +29,20 @@ class MediaViewerFragment : Fragment(), MediaViewerContract.View {
     }
 
     override fun setPresenter(presenter : MediaViewerContract.Presenter) {
-        debugLog("start")
+        LogUtil.d()
         ensureNotNull(presenter) { p ->
             mPresenter = p
         }
-        debugLog("end")
     }
 
     override fun onActivityCreated(savedInstanceState : Bundle?) {
-        debugLog("start")
+        LogUtil.d()
         super.onActivityCreated(savedInstanceState)
 
         //init save button
         activity?.saveImageButton?.setOnClickListener {
-            debugLog("start saveImageButton onClick")
+            LogUtil.d()
             mPresenter.saveImage(context!!)
-            debugLog("end saveImageButton onClick")
 
         }
 
@@ -52,22 +50,18 @@ class MediaViewerFragment : Fragment(), MediaViewerContract.View {
         activity?.finishViewerButton?.setOnClickListener {
             activity?.finish()
         }
-
-        debugLog("end")
     }
 
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
-        debugLog("start")
+        LogUtil.d()
         var root : View = inflater.inflate(fragment_media_viewer, container, false)
         with(root) {
             mImageViewer = this.imageViewer
             //mImageViewer.scaleType = ImageView.ScaleType.CENTER_INSIDE
-            debugLog("max scale = " + mImageViewer.maximumScale)
-            debugLog("min scale = " + mImageViewer.minimumScale)
+            LogUtil.d("max scale = " + mImageViewer.maximumScale)
+            LogUtil.d("min scale = " + mImageViewer.minimumScale)
         }
         //mImageViewer.isZoomable = true
-
-        debugLog("end")
         return root
     }
 
@@ -77,7 +71,7 @@ class MediaViewerFragment : Fragment(), MediaViewerContract.View {
     }
 
     override fun showImage(mediaUrl : String) {
-        debugLog("start")
+        LogUtil.d()
 
         //load image
         mPicasso
@@ -85,8 +79,6 @@ class MediaViewerFragment : Fragment(), MediaViewerContract.View {
                 .placeholder(R.drawable.ic_loading_image_24dp)
                 .error(R.drawable.ic_loading_image_24dp)
                 .into(mImageViewer)
-
-        debugLog("end")
 
     }
 

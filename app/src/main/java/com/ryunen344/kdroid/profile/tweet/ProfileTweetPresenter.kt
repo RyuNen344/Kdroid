@@ -2,7 +2,7 @@ package com.ryunen344.kdroid.profile.tweet
 
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.util.debugLog
+import com.ryunen344.kdroid.util.LogUtil
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import twitter4j.Paging
@@ -21,16 +21,15 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
     }
 
     override fun start() {
-        debugLog("start")
+        LogUtil.d()
         when (pagerPosition) {
             0 -> loadTweetList()
             1 -> loadFavoriteList()
         }
-        debugLog("end")
     }
 
     override fun loadTweetList() {
-        debugLog("start")
+        LogUtil.d()
         var paging: Paging = Paging(1, 50)
         val disposable: Disposable =
                 when (userId) {
@@ -59,11 +58,10 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
                     }
                 }
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun loadFavoriteList() {
-        debugLog("start")
+        LogUtil.d()
         var paging: Paging = Paging(1, 50)
         val disposable: Disposable =
                 when (userId) {
@@ -92,20 +90,18 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
                     }
                 }
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun loadMoreList(currentPage: Int) {
-        debugLog("start")
+        LogUtil.d()
         when (pagerPosition) {
             0 -> loadMoreTweetList(currentPage)
             1 -> loadMoreFavoriteList(currentPage)
         }
-        debugLog("end")
     }
 
     private fun loadMoreTweetList(currentPage: Int) {
-        debugLog("start")
+        LogUtil.d()
         var paging: Paging = Paging(currentPage + 1, 100)
         val disposable: Disposable =
                 when (userId) {
@@ -134,11 +130,10 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
                     }
                 }
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     private fun loadMoreFavoriteList(currentPage: Int) {
-        debugLog("start")
+        LogUtil.d()
         var paging: Paging = Paging(currentPage + 1, 100)
         val disposable: Disposable =
                 when (userId) {
@@ -166,35 +161,30 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
                     }
                 }
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun openMedia(mediaUrl: String) {
-        debugLog("start")
+        LogUtil.d()
         profileView.showMediaViewer(mediaUrl)
-        debugLog("end")
     }
 
     override fun openTweetDetail() {
-        debugLog("start")
+        LogUtil.d()
         profileView.showTweetDetail()
-        debugLog("end")
     }
 
     override fun openProfile(user: User) {
-        debugLog("start")
+        LogUtil.d()
         profileView.showProfile(user)
-        debugLog("end")
     }
 
     override fun openProfile(screenName: String) {
-        debugLog("start")
+        LogUtil.d()
         profileView.showProfile(screenName)
-        debugLog("end")
     }
 
     override fun changeFavorite(position: Int, tweet: Status) {
-        debugLog("start")
+        LogUtil.d()
         val disposable: Disposable =
                 if (!tweet.isFavorited)
                     apiProvider.createFavorite(twitter, tweet.id).subscribe(
@@ -214,17 +204,16 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
                             })
 
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun changeRetweet(position: Int, tweet: Status) {
-        debugLog("start")
+        LogUtil.d()
 
         val disposable: Disposable =
                 if (!tweet.isRetweetedByMe) {
                     apiProvider.createRetweet(twitter, tweet.id).subscribe(
                             {
-                                debugLog("create RT")
+                                LogUtil.d("create RT")
                                 profileView.notifyStatusChange(position, it.retweetedStatus)
                             },
                             {
@@ -233,7 +222,7 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
                 } else {
                     apiProvider.destroyRetweet(twitter, tweet.currentUserRetweetId).subscribe(
                             {
-                                debugLog("destroy RT")
+                                LogUtil.d("destroy RT")
                                 profileView.notifyStatusChange(position, it)
                             },
                             {
@@ -243,12 +232,10 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
 
 
         mCompositeDisposable.add(disposable)
-        debugLog("end")
     }
 
     override fun clearDisposable() {
-        debugLog("start")
+        LogUtil.d()
         mCompositeDisposable.clear()
-        debugLog("end")
     }
 }
