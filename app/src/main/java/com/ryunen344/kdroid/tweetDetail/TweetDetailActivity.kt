@@ -5,8 +5,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.ryunen344.kdroid.R
-import com.ryunen344.kdroid.di.provider.ApiProvider
-import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.replaceFragmentInActivity
 import kotlinx.android.synthetic.main.activity_profile.toolbar
@@ -15,9 +13,7 @@ import org.koin.android.ext.android.inject
 
 class TweetDetailActivity : AppCompatActivity() {
 
-    val appProvider : AppProvider by inject()
-    val apiProvider : ApiProvider by inject()
-    lateinit var mPresenter : TweetDetailContract.Presenter
+    private val tweetDetailFragment : TweetDetailFragment by inject()
 
     companion object {
         const val INTENT_KEY_TWEET_ID : String = "key_tweet_id"
@@ -32,12 +28,16 @@ class TweetDetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(false)
 
-        var tweetDetailFragment : TweetDetailFragment? = supportFragmentManager.findFragmentById(tweetDetailFrame.id) as TweetDetailFragment?
-                ?: TweetDetailFragment.newInstance().also {
+        var bundle : Bundle = Bundle()
+        bundle.putLong(INTENT_KEY_TWEET_ID, intent.getLongExtra(INTENT_KEY_TWEET_ID, 0))
+
+        tweetDetailFragment.arguments = bundle
+
+        supportFragmentManager.findFragmentById(tweetDetailFrame.id) as TweetDetailFragment?
+                ?: tweetDetailFragment.also {
                     replaceFragmentInActivity(supportFragmentManager, it, tweetDetailFrame.id)
                 }
 
-        mPresenter = TweetDetailPresenter(tweetDetailFragment!!, appProvider, apiProvider, intent.extras)
     }
 
     override fun onCreateOptionsMenu(menu : Menu) : Boolean {

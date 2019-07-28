@@ -1,28 +1,29 @@
 package com.ryunen344.kdroid.tweetDetail
 
-import android.os.Bundle
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
+import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.LogUtil
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import twitter4j.Twitter
 
-class TweetDetailPresenter(private val tweetDetailView : TweetDetailContract.View, val appProvider : AppProvider, private val apiProvider : ApiProvider, val bundle : Bundle?) : TweetDetailContract.Presenter {
+class TweetDetailPresenter(private val tweetId : Long) : TweetDetailContract.Presenter, KoinComponent {
 
+    val apiProvider : ApiProvider by inject()
+    private val appProvider : AppProvider by inject()
+    private val utilProvider : UtilProvider by inject()
     private var mTwitter : Twitter = appProvider.provideTwitter()
     private var mTweetId : Long = 0L
     var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
 
-    init {
-        bundle?.let { it ->
-            mTweetId = it.getLong(TweetDetailActivity.INTENT_KEY_TWEET_ID, 0)
-        }
-        tweetDetailView.setPresenter(this)
-    }
+    override lateinit var view : TweetDetailContract.View
 
     override fun start() {
         LogUtil.d()
+        LogUtil.d(tweetId)
         loadTweetDetail()
     }
 
@@ -34,14 +35,14 @@ class TweetDetailPresenter(private val tweetDetailView : TweetDetailContract.Vie
     override fun loadTweetDetail() {
         LogUtil.d()
         val disposable : Disposable =
-                apiProvider.getTweetByTweetId(mTwitter, mTweetId).subscribe(
+                apiProvider.getTweetByTweetId(mTwitter, tweetId).subscribe(
                         { status ->
                             LogUtil.d(status)
-                            tweetDetailView.showTweetDetail(status)
+                            view.showTweetDetail(status)
 
                         }
                         , { e ->
-                    tweetDetailView.showError(e)
+                    view.showError(e)
                 }
                 )
         mCompositeDisposable.add(disposable)

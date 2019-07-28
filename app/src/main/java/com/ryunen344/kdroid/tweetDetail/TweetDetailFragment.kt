@@ -13,19 +13,21 @@ import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.di.provider.UtilProvider
+import com.ryunen344.kdroid.tweetDetail.TweetDetailActivity.Companion.INTENT_KEY_TWEET_ID
 import com.ryunen344.kdroid.util.LogUtil
 import kotlinx.android.synthetic.main.fragment_tweet_detail.view.*
 import org.koin.android.ext.android.inject
+import org.koin.android.scope.currentScope
 import twitter4j.Status
 import twitter4j.User
 
 
 class TweetDetailFragment : Fragment(), TweetDetailContract.View {
 
-
     private val appProvider : AppProvider by inject()
     private val utilProvider : UtilProvider by inject()
-    private lateinit var mPresenter : TweetDetailContract.Presenter
+    override val presenter : TweetDetailContract.Presenter by currentScope.inject()
+
     lateinit var mainListView : LinearLayout
     lateinit var mLayoutManager : LinearLayoutManager
     lateinit var mRecyclerView : RecyclerView
@@ -73,11 +75,11 @@ class TweetDetailFragment : Fragment(), TweetDetailContract.View {
 
     private val tweetDetailAdapter = TweetDetailAdapter(ArrayList(0), itemListener, appProvider, utilProvider)
 
-    override fun setPresenter(presenter : TweetDetailContract.Presenter) {
+    override fun onCreate(savedInstanceState : Bundle?) {
         LogUtil.d()
-        presenter.let {
-            mPresenter = it
-        }
+        super.onCreate(savedInstanceState)
+
+        currentScope.getKoin().setProperty(INTENT_KEY_TWEET_ID, arguments!!.getLong(INTENT_KEY_TWEET_ID))
     }
 
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
@@ -111,7 +113,8 @@ class TweetDetailFragment : Fragment(), TweetDetailContract.View {
 
     override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
         LogUtil.d()
-        mPresenter.start()
+        presenter.view = this
+        presenter.start()
     }
 
     override fun showTweetDetail(status : Status) {
@@ -122,11 +125,11 @@ class TweetDetailFragment : Fragment(), TweetDetailContract.View {
 
     override fun onDestroy() {
         super.onDestroy()
-        mPresenter.clearDisposable()
+        presenter.clearDisposable()
     }
 
     override fun showError(e : Throwable) {
-        LogUtil.d()
+        LogUtil.w(e)
         Snackbar.make(view!!, e.localizedMessage, Snackbar.LENGTH_LONG).show()
     }
 

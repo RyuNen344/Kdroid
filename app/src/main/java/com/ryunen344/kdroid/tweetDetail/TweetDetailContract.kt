@@ -1,17 +1,17 @@
 package com.ryunen344.kdroid.tweetDetail
 
-import com.ryunen344.kdroid.BasePresenter
-import com.ryunen344.kdroid.BaseView
+import com.ryunen344.kdroid.PreBasePresenter
+import com.ryunen344.kdroid.PreBaseView
 import twitter4j.Status
 import twitter4j.User
 
 interface TweetDetailContract {
 
-    interface View : BaseView<Presenter> {
+    interface View : PreBaseView<Presenter> {
         fun showTweetDetail(status : Status)
     }
 
-    interface Presenter : BasePresenter {
+    interface Presenter : PreBasePresenter<View> {
         fun loadTweetDetail()
         fun clearDisposable()
     }
