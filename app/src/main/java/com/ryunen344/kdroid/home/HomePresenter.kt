@@ -14,7 +14,7 @@ import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.domain.database.AccountDatabase
 import com.ryunen344.kdroid.domain.entity.AccountAndAccountDetail
 import com.ryunen344.kdroid.domain.entity.AccountDetail
-import com.ryunen344.kdroid.domain.repository.AccountDao
+import com.ryunen344.kdroid.domain.repository.AccountRepository
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.splitLastThreeWord
@@ -53,7 +53,7 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
     override fun initTwitter(absoluteDirPath : String?) {
         LogUtil.d()
         mAccountDatabase?.let { accountDatabase ->
-            val accountDao : AccountDao = accountDatabase.accountDao()
+            val accountDao : AccountRepository = accountDatabase.accountRepository()
 
             accountDao.loadAccountById(mUserId)
                     .subscribeOn(Schedulers.io())
@@ -84,7 +84,7 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                     //compare local profile
                     if (mAccountAndDetail.accountDetails.isEmpty()) {
                         mAccountDatabase?.let { accountDatabase ->
-                            val accountDao : AccountDao = accountDatabase.accountDao()
+                            val accountDao : AccountRepository = accountDatabase.accountRepository()
 
                             accountDao
                                     .insertAccountDetail(AccountDetail(mUserId, insertUserName, insertProfileImage, insertLocalProfileImage, insertProfileBannerImage, insertLocalProfileBannerImage))
@@ -98,7 +98,7 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
                                 insertProfileImage != mAccountAndDetail.accountDetails[0].profileImage ||
                                 insertProfileBannerImage != mAccountAndDetail.accountDetails[0].profileBannerImage) {
                             mAccountDatabase?.let { accountDatabase ->
-                                val accountDao : AccountDao = accountDatabase.accountDao()
+                                val accountDao : AccountRepository = accountDatabase.accountRepository()
 
                                 accountDao
                                         .insertAccountDetail(AccountDetail(mUserId, insertUserName, insertProfileImage, insertLocalProfileImage, insertProfileBannerImage, insertLocalProfileBannerImage))
@@ -122,7 +122,7 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
         LogUtil.d()
 
         mAccountDatabase?.let { accountDatabase ->
-            val accountDao : AccountDao = accountDatabase.accountDao()
+            val accountDao : AccountRepository = accountDatabase.accountRepository()
 
             //制約を作成
             val workManager : WorkManager = WorkManager.getInstance()

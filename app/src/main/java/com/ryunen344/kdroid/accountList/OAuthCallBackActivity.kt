@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ryunen344.kdroid.R.layout.activity_oauth_callback
 import com.ryunen344.kdroid.domain.database.AccountDatabase
 import com.ryunen344.kdroid.domain.entity.Account
-import com.ryunen344.kdroid.domain.repository.AccountDao
+import com.ryunen344.kdroid.domain.repository.AccountRepository
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_oauth_callback.*
 import twitter4j.TwitterException
@@ -49,7 +49,7 @@ class OAuthCallBackActivity : AppCompatActivity() {
 
                     // 書き込み（永続化）
                     AccountDatabase.getInstance()?.let { accountDatabase ->
-                        val accountDao : AccountDao = accountDatabase.accountDao()
+                        val accountDao : AccountRepository = accountDatabase.accountRepository()
 
                         accountDao
                                 .insertAccount(Account(token!!.userId, token!!.screenName, token!!.token, token!!.tokenSecret))

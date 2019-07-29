@@ -3,7 +3,7 @@ package com.ryunen344.kdroid.accountList
 import android.net.Uri
 import android.os.Handler
 import com.ryunen344.kdroid.domain.database.AccountDatabase
-import com.ryunen344.kdroid.domain.repository.AccountDao
+import com.ryunen344.kdroid.domain.repository.AccountRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import twitter4j.TwitterException
@@ -25,7 +25,7 @@ class AccountListPresenter(val accountListView : AccountListContract.View) : Acc
     override fun loadAccountList() {
         //accountListView.showProgress(true)
         AccountDatabase.getInstance()?.let { accountDatabase ->
-            val accountDao : AccountDao = accountDatabase.accountDao()
+            val accountDao : AccountRepository = accountDatabase.accountRepository()
 
             accountDao.findAccountList()
                     .subscribeOn(Schedulers.io())

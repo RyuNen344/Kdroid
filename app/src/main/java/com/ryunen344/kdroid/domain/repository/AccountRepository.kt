@@ -13,7 +13,7 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 
 @Dao
-interface AccountDao{
+interface AccountRepository {
 
     @Query("select * from Account")
     fun findAccountList() : Single<List<AccountAndAccountDetail>>

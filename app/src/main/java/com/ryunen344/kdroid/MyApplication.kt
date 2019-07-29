@@ -3,6 +3,7 @@ package com.ryunen344.kdroid
 import android.app.Application
 import com.ryunen344.kdroid.di.module.ApiModule
 import com.ryunen344.kdroid.di.module.AppModule
+import com.ryunen344.kdroid.di.module.RepositoryModule
 import com.ryunen344.kdroid.di.module.UtilModule
 import com.ryunen344.kdroid.domain.database.AccountDatabase
 import com.ryunen344.kdroid.util.LogUtil
@@ -26,7 +27,7 @@ class MyApplication : Application() {
             androidLogger(Level.DEBUG)
             androidContext(this@MyApplication)
             androidFileProperties()
-            modules(listOf(AppModule, UtilModule, ApiModule))
+            modules(listOf(AppModule, UtilModule, ApiModule, RepositoryModule))
         }
 
     }

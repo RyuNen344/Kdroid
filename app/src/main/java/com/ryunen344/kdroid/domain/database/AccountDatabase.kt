@@ -6,12 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.ryunen344.kdroid.domain.entity.Account
 import com.ryunen344.kdroid.domain.entity.AccountDetail
-import com.ryunen344.kdroid.domain.repository.AccountDao
+import com.ryunen344.kdroid.domain.repository.AccountRepository
 
 @Database(entities = [Account::class, AccountDetail::class], version = AccountDatabase.DATABASE_VERSION)
 abstract class AccountDatabase : RoomDatabase(){
 
-    abstract fun accountDao() : AccountDao
+    abstract fun accountRepository() : AccountRepository
 
     companion object {
         const val DATABASE_VERSION = 1

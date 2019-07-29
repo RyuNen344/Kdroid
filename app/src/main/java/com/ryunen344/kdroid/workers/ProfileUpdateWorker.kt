@@ -1,25 +1,22 @@
 package com.ryunen344.kdroid.workers
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.ryunen344.kdroid.domain.repository.TwitterSource
+import com.ryunen344.kdroid.di.provider.AppProvider
+import com.ryunen344.kdroid.domain.repository.TwitterMediaRepository
 import com.ryunen344.kdroid.util.LogUtil
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 
-class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters) : Worker(appContext, workerParams) {
+class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters) : Worker(appContext, workerParams), KoinComponent {
 
-    private var mTwitterSource : TwitterSource = Retrofit.Builder()
-            .baseUrl("https://google.co.jp")
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .build().create(TwitterSource::class.java)
-
+    private var mTwitterSource : TwitterMediaRepository
+    private val appProvider : AppProvider by inject()
 
     companion object {
         const val WORK_ID_PROFILE_IMAGE : String = "work_id_profile_image"
@@ -28,6 +25,11 @@ class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters)
         const val KEY_ONLINE_IMAGE_URL : String = "key_online_image_url"
     }
 
+    init {
+        mTwitterSource = appProvider.provideRetrofit().create(TwitterMediaRepository::class.java)
+    }
+
+    @SuppressLint("CheckResult")
     override fun doWork() : Result {
         LogUtil.d()
         var localFileName : String

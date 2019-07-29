@@ -12,20 +12,23 @@ import twitter4j.conf.ConfigurationBuilder
 
 class AppProvider{
 
-    lateinit var twitter : Twitter
+    private lateinit var twitter : Twitter
+    private var okHttpClient : OkHttpClient = OkHttpClient()
+    private var picasso : Picasso = Picasso.get()
+    private var retrofit : Retrofit = Retrofit.Builder()
+            .baseUrl("https://google.co.jp")
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .build()
 
-    fun provideOkhttpClient() : OkHttpClient {
-        //var client : OkHttpClient.Builder = OkHttpClient.Builder()
-        var client = OkHttpClient()
-        return client
+    init {
+        //init picasso instance
+        picasso.setIndicatorsEnabled(false)
+        picasso.isLoggingEnabled = false
     }
 
     fun provideRetrofit() : Retrofit {
-        return Retrofit.Builder()
-                .client(provideOkhttpClient())
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build()
+        return retrofit
     }
 
     /**
@@ -42,10 +45,6 @@ class AppProvider{
     }
 
     fun providePiccaso(): Picasso {
-        val picasso: Picasso = Picasso.get()
-        //init picasso instance
-        picasso.setIndicatorsEnabled(false)
-        picasso.isLoggingEnabled = false
         return picasso
     }
 }
