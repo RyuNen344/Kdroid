@@ -6,16 +6,19 @@ import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.ryunen344.kdroid.R.layout.activity_oauth_callback
-import com.ryunen344.kdroid.domain.database.AccountDatabase
 import com.ryunen344.kdroid.domain.entity.Account
-import com.ryunen344.kdroid.domain.repository.AccountRepository
+import com.ryunen344.kdroid.domain.repository.AccountRepositoryImpl
+import com.ryunen344.kdroid.util.LogUtil
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_oauth_callback.*
+import org.koin.android.ext.android.inject
 import twitter4j.TwitterException
 import twitter4j.auth.AccessToken
 import kotlin.concurrent.thread
 
 class OAuthCallBackActivity : AppCompatActivity() {
+
+    private val accountRepositoryImpl : AccountRepositoryImpl by inject()
 
     companion object {
         var token : AccessToken? = null
@@ -40,7 +43,7 @@ class OAuthCallBackActivity : AppCompatActivity() {
                     //AccessTokenオブジェクトを取得
                     token = AccountListFragment.mOauth.getOAuthAccessToken(AccountListFragment.mReq, verifier)
                 } catch (e : TwitterException) {
-                    e.printStackTrace()
+                    LogUtil.e(e)
                 }
                 handler.post {
                     // TextView一個のレイアウト
@@ -48,14 +51,9 @@ class OAuthCallBackActivity : AppCompatActivity() {
                     Log.d("OAuthCallBackActivity", "token is " + callback_text.text)
 
                     // 書き込み（永続化）
-                    AccountDatabase.getInstance()?.let { accountDatabase ->
-                        val accountDao : AccountRepository = accountDatabase.accountRepository()
-
-                        accountDao
-                                .insertAccount(Account(token!!.userId, token!!.screenName, token!!.token, token!!.tokenSecret))
-                                .subscribeOn(Schedulers.io())
-                                .subscribe({}, { e -> e.printStackTrace() })
-                    }
+                    accountRepositoryImpl.insertAccount(Account(token!!.userId, token!!.screenName, token!!.token, token!!.tokenSecret))
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({}, { e -> e.printStackTrace() })
                 }
             }
         } else {

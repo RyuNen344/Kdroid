@@ -15,6 +15,7 @@ import com.ryunen344.kdroid.domain.database.AccountDatabase
 import com.ryunen344.kdroid.domain.entity.AccountAndAccountDetail
 import com.ryunen344.kdroid.domain.entity.AccountDetail
 import com.ryunen344.kdroid.domain.repository.AccountRepository
+import com.ryunen344.kdroid.domain.repository.AccountRepositoryImpl
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.splitLastThreeWord
@@ -23,18 +24,21 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import twitter4j.Twitter
 import twitter4j.auth.AccessToken
 import java.io.File
 import java.io.File.separator
 
-class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvider, val apiProvider : ApiProvider, val bundle : Bundle?) : HomeContract.Presenter {
+class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvider, val apiProvider : ApiProvider, val bundle : Bundle?) : HomeContract.Presenter, KoinComponent {
 
     var mTwitter : Twitter = appProvider.provideTwitter()
     private val mAccountDatabase : AccountDatabase? = AccountDatabase.getInstance()
     private var mUserId : Long = 0L
     private var mAccountAndDetail : AccountAndAccountDetail = AccountAndAccountDetail()
     var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
+    private val accountRepositoryImpl : AccountRepositoryImpl by inject()
 
     init {
         bundle?.let {
@@ -52,23 +56,20 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
 
     override fun initTwitter(absoluteDirPath : String?) {
         LogUtil.d()
-        mAccountDatabase?.let { accountDatabase ->
-            val accountDao : AccountRepository = accountDatabase.accountRepository()
-
-            accountDao.loadAccountById(mUserId)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(
-                            {
-                                mTwitter.oAuthAccessToken = AccessToken(it.account.token, it.account.tokenSecret)
-                                mAccountAndDetail = it
-                                initProfile(absoluteDirPath)
-                                homeView.showDrawerProfile(it.accountDetails[0].userName, it.account.screenName, it.accountDetails[0].localProfileImage, it.accountDetails[0].localProfileBannerImage)
-                            },
-                            { e ->
-                                LogUtil.e(e)
-                                homeView.showError(e)
-                            })
-        }
+        val disposable : Disposable = accountRepositoryImpl.loadAccountById(mUserId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        {
+                            mTwitter.oAuthAccessToken = AccessToken(it.account.token, it.account.tokenSecret)
+                            mAccountAndDetail = it
+                            initProfile(absoluteDirPath)
+                            homeView.showDrawerProfile(it.accountDetails[0].userName, it.account.screenName, it.accountDetails[0].localProfileImage, it.accountDetails[0].localProfileBannerImage)
+                        },
+                        { e ->
+                            LogUtil.e(e)
+                            homeView.showError(e)
+                        })
+        mCompositeDisposable.add(disposable)
     }
 
     override fun initProfile(absoluteDirPath : String?) {

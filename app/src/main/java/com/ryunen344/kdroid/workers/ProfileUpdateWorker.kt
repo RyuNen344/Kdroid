@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.domain.repository.TwitterMediaRepository
+import com.ryunen344.kdroid.domain.repository.TwitterMediaRepositoryImpl
 import com.ryunen344.kdroid.util.LogUtil
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -15,8 +15,7 @@ import org.koin.core.inject
 
 class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters) : Worker(appContext, workerParams), KoinComponent {
 
-    private var mTwitterSource : TwitterMediaRepository
-    private val appProvider : AppProvider by inject()
+    private val twitterMediaRepositoryImpl : TwitterMediaRepositoryImpl by inject()
 
     companion object {
         const val WORK_ID_PROFILE_IMAGE : String = "work_id_profile_image"
@@ -25,28 +24,24 @@ class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters)
         const val KEY_ONLINE_IMAGE_URL : String = "key_online_image_url"
     }
 
-    init {
-        mTwitterSource = appProvider.provideRetrofit().create(TwitterMediaRepository::class.java)
-    }
-
     @SuppressLint("CheckResult")
     override fun doWork() : Result {
         LogUtil.d()
-        var localFileName : String
-        var dataUrl : String
+        lateinit var localFileName : String
+        lateinit var dataUrl : String
         var isSuccess : Boolean = false
 
-        inputData.getString(KEY_LOCAL_IMAGE_URL).let {
-            localFileName = it!!
+        inputData.getString(KEY_LOCAL_IMAGE_URL)?.let {
+            localFileName = it
         }
         LogUtil.d(localFileName)
 
-        inputData.getString(KEY_ONLINE_IMAGE_URL).let {
-            dataUrl = it!!
+        inputData.getString(KEY_ONLINE_IMAGE_URL)?.let {
+            dataUrl = it
         }
         LogUtil.d(dataUrl)
 
-        mTwitterSource.getImageFromUrl(dataUrl)
+        val disposable : Disposable = twitterMediaRepositoryImpl.getImageFromUrl(dataUrl)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(
@@ -60,6 +55,8 @@ class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters)
                             LogUtil.e("fail to save", it)
                         }
                 )
+
+        disposable.dispose()
 
         return if (isSuccess) Result.success() else Result.failure()
     }
