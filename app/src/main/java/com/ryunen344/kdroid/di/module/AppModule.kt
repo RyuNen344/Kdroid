@@ -1,6 +1,10 @@
 package com.ryunen344.kdroid.di.module
 
 import com.ryunen344.kdroid.di.provider.AppProvider
+import com.ryunen344.kdroid.home.HomeActivity
+import com.ryunen344.kdroid.home.HomeContract
+import com.ryunen344.kdroid.home.HomeFragment
+import com.ryunen344.kdroid.home.HomePresenter
 import com.ryunen344.kdroid.tweetDetail.TweetDetailActivity
 import com.ryunen344.kdroid.tweetDetail.TweetDetailContract
 import com.ryunen344.kdroid.tweetDetail.TweetDetailFragment
@@ -10,6 +14,12 @@ import org.koin.dsl.module
 
 val AppModule = module {
     single {AppProvider()}
+
+
+    factory { HomeFragment() }
+    scope(named<HomeFragment>()) {
+        scoped { HomePresenter(getProperty(HomeActivity.INTENT_KEY_USER_ID)) as HomeContract.Presenter }
+    }
 
     factory { TweetDetailFragment() }
     scope(named<TweetDetailFragment>()) {

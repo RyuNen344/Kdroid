@@ -19,11 +19,15 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_tweet.view.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import twitter4j.Status
 import java.util.regex.Pattern
 
-class TweetDetailAdapter(detailList : MutableList<Status>, private val tweetItemListener : TweetDetailContract.TweetItemListener, val appProvider : AppProvider, private val utilProvider : UtilProvider) : RecyclerView.Adapter<TweetDetailAdapter.ViewHolder>() {
+class TweetDetailAdapter(detailList : MutableList<Status>, private val tweetItemListener : TweetDetailContract.TweetItemListener) : RecyclerView.Adapter<TweetDetailAdapter.ViewHolder>(), KoinComponent {
 
+    private val appProvider : AppProvider by inject()
+    private val utilProvider : UtilProvider by inject()
     var tweetList : MutableList<Status> = detailList
         set(mainList : MutableList<Status>) {
             field = mainList

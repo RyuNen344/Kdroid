@@ -56,8 +56,6 @@ class ProfileUpdateWorker(appContext : Context, workerParams : WorkerParameters)
                         }
                 )
 
-        disposable.dispose()
-
         return if (isSuccess) Result.success() else Result.failure()
     }
 }

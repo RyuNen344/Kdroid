@@ -2,7 +2,6 @@ package com.ryunen344.kdroid.tweetDetail
 
 import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.LogUtil
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -12,12 +11,10 @@ import twitter4j.Twitter
 
 class TweetDetailPresenter(private val tweetId : Long) : TweetDetailContract.Presenter, KoinComponent {
 
-    val apiProvider : ApiProvider by inject()
+    private val apiProvider : ApiProvider by inject()
     private val appProvider : AppProvider by inject()
-    private val utilProvider : UtilProvider by inject()
     private var mTwitter : Twitter = appProvider.provideTwitter()
-    private var mTweetId : Long = 0L
-    var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
+    private var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
 
     override lateinit var view : TweetDetailContract.View
 

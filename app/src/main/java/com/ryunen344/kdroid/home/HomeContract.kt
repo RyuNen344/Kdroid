@@ -1,13 +1,13 @@
 package com.ryunen344.kdroid.home
 
-import com.ryunen344.kdroid.BasePresenter
-import com.ryunen344.kdroid.BaseView
+import com.ryunen344.kdroid.PreBasePresenter
+import com.ryunen344.kdroid.PreBaseView
 import twitter4j.User
 import java.io.File
 
 interface HomeContract {
 
-    interface View : BaseView<Presenter> {
+    interface View : PreBaseView<Presenter> {
         fun showAddNewTweet()
         fun showSuccessfullyTweet()
         fun showFailTweet()
@@ -15,7 +15,7 @@ interface HomeContract {
         fun showDrawerProfile(userName : String?, screenName : String, profileImage : String?, profileBannerImage : String?)
     }
 
-    interface Presenter : BasePresenter {
+    interface Presenter : PreBasePresenter<View> {
         fun initTwitter(absoluteDirPath : String?)
         fun initProfile(absoluteDirPath : String?)
         fun checkImageStatus(internalFileDir : File?)

@@ -17,30 +17,21 @@ import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_home
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
-import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.LogUtil
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.nav_home_header.view.*
-import org.koin.android.ext.android.inject
+import org.koin.android.scope.currentScope
 import twitter4j.User
 import java.io.File
 
 
 class HomeFragment : Fragment(), HomeContract.View {
 
-    val appProvider: AppProvider by inject()
-    val utilProvider: UtilProvider by inject()
-    lateinit var mPresenter: HomeContract.Presenter
+    override val presenter : HomeContract.Presenter by currentScope.inject()
     var prevMenuItem: MenuItem? = null
     private lateinit var mSectionsPagerAdapter: HomeSectionsPagerAdapter
-
-    companion object {
-        fun newInstance() = HomeFragment()
-    }
-
 
     private var itemListener: HomeContract.MainItemListener = object : HomeContract.MainItemListener {
         override fun onImageClick(mediaUrl: String) {
@@ -58,11 +49,10 @@ class HomeFragment : Fragment(), HomeContract.View {
         }
     }
 
-    override fun setPresenter(presenter: HomeContract.Presenter) {
+    override fun onCreate(savedInstanceState : Bundle?) {
         LogUtil.d()
-        presenter.let {
-            mPresenter = it
-        }
+        super.onCreate(savedInstanceState)
+        currentScope.getKoin().setProperty(HomeActivity.INTENT_KEY_USER_ID, arguments!!.getLong(HomeActivity.INTENT_KEY_USER_ID))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -162,13 +152,14 @@ class HomeFragment : Fragment(), HomeContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         LogUtil.d()
-        mPresenter.start()
-        mPresenter.initTwitter(context?.filesDir?.absolutePath)
+        presenter.view = this
+        presenter.start()
+        presenter.initTwitter(context?.filesDir?.absolutePath)
     }
 
     override fun onDestroy() {
         LogUtil.d()
-        mPresenter.clearDisposable()
+        presenter.clearDisposable()
         super.onDestroy()
     }
 
@@ -206,7 +197,6 @@ class HomeFragment : Fragment(), HomeContract.View {
             }
         }
 
-
     }
 
 
@@ -218,7 +208,7 @@ class HomeFragment : Fragment(), HomeContract.View {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         LogUtil.d()
-        mPresenter.result(requestCode, resultCode)
+        presenter.result(requestCode, resultCode)
     }
 
     override fun showSuccessfullyTweet() {
@@ -234,7 +224,7 @@ class HomeFragment : Fragment(), HomeContract.View {
     override fun showSuccessfullyUpdateProfile() {
         LogUtil.d()
         Snackbar.make(activity?.nestedScrollView!!, "success update profile", Snackbar.LENGTH_LONG).show()
-        mPresenter.checkImageStatus(context?.filesDir)
+        presenter.checkImageStatus(context?.filesDir)
     }
 
     override fun showError(e: Throwable) {

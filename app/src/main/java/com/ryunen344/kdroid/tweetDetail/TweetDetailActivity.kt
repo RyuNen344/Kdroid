@@ -30,7 +30,6 @@ class TweetDetailActivity : AppCompatActivity() {
 
         var bundle : Bundle = Bundle()
         bundle.putLong(INTENT_KEY_TWEET_ID, intent.getLongExtra(INTENT_KEY_TWEET_ID, 0))
-
         tweetDetailFragment.arguments = bundle
 
         supportFragmentManager.findFragmentById(tweetDetailFrame.id) as TweetDetailFragment?

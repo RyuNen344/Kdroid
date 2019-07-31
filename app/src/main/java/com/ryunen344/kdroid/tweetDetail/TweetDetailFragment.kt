@@ -11,12 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
-import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.tweetDetail.TweetDetailActivity.Companion.INTENT_KEY_TWEET_ID
 import com.ryunen344.kdroid.util.LogUtil
 import kotlinx.android.synthetic.main.fragment_tweet_detail.view.*
-import org.koin.android.ext.android.inject
 import org.koin.android.scope.currentScope
 import twitter4j.Status
 import twitter4j.User
@@ -24,18 +21,12 @@ import twitter4j.User
 
 class TweetDetailFragment : Fragment(), TweetDetailContract.View {
 
-    private val appProvider : AppProvider by inject()
-    private val utilProvider : UtilProvider by inject()
     override val presenter : TweetDetailContract.Presenter by currentScope.inject()
 
     lateinit var mainListView : LinearLayout
     lateinit var mLayoutManager : LinearLayoutManager
     lateinit var mRecyclerView : RecyclerView
     lateinit var mSwipeRefreshLayout : SwipeRefreshLayout
-
-    companion object {
-        fun newInstance() = TweetDetailFragment()
-    }
 
     private var itemListener : TweetDetailContract.TweetItemListener = object : TweetDetailContract.TweetItemListener {
 
@@ -73,7 +64,7 @@ class TweetDetailFragment : Fragment(), TweetDetailContract.View {
 
     }
 
-    private val tweetDetailAdapter = TweetDetailAdapter(ArrayList(0), itemListener, appProvider, utilProvider)
+    private val tweetDetailAdapter = TweetDetailAdapter(ArrayList(0), itemListener)
 
     override fun onCreate(savedInstanceState : Bundle?) {
         LogUtil.d()

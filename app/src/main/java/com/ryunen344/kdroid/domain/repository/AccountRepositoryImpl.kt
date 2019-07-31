@@ -19,6 +19,13 @@ class AccountRepositoryImpl : AccountRepository {
         }
     }
 
+    fun provideDatabase() : AccountDatabase {
+        accountDatabase?.let { it ->
+            accountDao = it.accountRepository()
+        }
+        return accountDatabase!!
+    }
+
     override fun findAccountList() : Single<List<AccountAndAccountDetail>> {
         return accountDao.findAccountList()
     }

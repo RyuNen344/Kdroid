@@ -1,7 +1,6 @@
 package com.ryunen344.kdroid.home
 
 import android.app.Activity
-import android.os.Bundle
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
@@ -9,13 +8,11 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
-import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.domain.database.AccountDatabase
 import com.ryunen344.kdroid.domain.entity.AccountAndAccountDetail
 import com.ryunen344.kdroid.domain.entity.AccountDetail
-import com.ryunen344.kdroid.domain.repository.AccountRepository
 import com.ryunen344.kdroid.domain.repository.AccountRepositoryImpl
+import com.ryunen344.kdroid.domain.repository.TwitterRepositoryImpl
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.splitLastThreeWord
@@ -31,50 +28,42 @@ import twitter4j.auth.AccessToken
 import java.io.File
 import java.io.File.separator
 
-class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvider, val apiProvider : ApiProvider, val bundle : Bundle?) : HomeContract.Presenter, KoinComponent {
+class HomePresenter(private val userId : Long) : HomeContract.Presenter, KoinComponent {
 
-    var mTwitter : Twitter = appProvider.provideTwitter()
-    private val mAccountDatabase : AccountDatabase? = AccountDatabase.getInstance()
-    private var mUserId : Long = 0L
+    private val appProvider : AppProvider by inject()
+    private var mTwitter : Twitter = appProvider.provideTwitter()
     private var mAccountAndDetail : AccountAndAccountDetail = AccountAndAccountDetail()
-    var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
+    private var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
     private val accountRepositoryImpl : AccountRepositoryImpl by inject()
+    private val twitterRepositoryImpl : TwitterRepositoryImpl by inject()
 
-    init {
-        bundle?.let {
-            mUserId = it.getLong(HomeActivity.INTENT_KEY_USER_ID, 0)
-        }
-        homeView.setPresenter(this)
-    }
+    override lateinit var view : HomeContract.View
 
     override fun start() {
-        LogUtil.d()
-        if (mUserId == 0L) {
-            homeView.showError(Throwable("user id not found"))
-        }
+        LogUtil.d(userId)
     }
 
     override fun initTwitter(absoluteDirPath : String?) {
         LogUtil.d()
-        val disposable : Disposable = accountRepositoryImpl.loadAccountById(mUserId)
+        val disposable : Disposable = accountRepositoryImpl.loadAccountById(userId)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         {
                             mTwitter.oAuthAccessToken = AccessToken(it.account.token, it.account.tokenSecret)
                             mAccountAndDetail = it
                             initProfile(absoluteDirPath)
-                            homeView.showDrawerProfile(it.accountDetails[0].userName, it.account.screenName, it.accountDetails[0].localProfileImage, it.accountDetails[0].localProfileBannerImage)
+                            view.showDrawerProfile(it.accountDetails[0].userName, it.account.screenName, it.accountDetails[0].localProfileImage, it.accountDetails[0].localProfileBannerImage)
                         },
                         { e ->
                             LogUtil.e(e)
-                            homeView.showError(e)
+                            view.showError(e)
                         })
         mCompositeDisposable.add(disposable)
     }
 
     override fun initProfile(absoluteDirPath : String?) {
         LogUtil.d()
-        val disposable : Disposable = apiProvider.getUserByUserId(mTwitter, mUserId).subscribe(
+        val disposable : Disposable = twitterRepositoryImpl.getUserByUserId(mTwitter, userId).subscribe(
                 {
                     var insertUserName : String = it.name
                     var insertProfileImage : String = it.get400x400ProfileImageURLHttps()
@@ -84,36 +73,30 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
 
                     //compare local profile
                     if (mAccountAndDetail.accountDetails.isEmpty()) {
-                        mAccountDatabase?.let { accountDatabase ->
-                            val accountDao : AccountRepository = accountDatabase.accountRepository()
-
-                            accountDao
-                                    .insertAccountDetail(AccountDetail(mUserId, insertUserName, insertProfileImage, insertLocalProfileImage, insertProfileBannerImage, insertLocalProfileBannerImage))
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe {
-                                        homeView.showSuccessfullyUpdateProfile()
-                                    }
-                        }
+                        accountRepositoryImpl
+                                .insertAccountDetail(AccountDetail(userId, insertUserName, insertProfileImage, insertLocalProfileImage, insertProfileBannerImage, insertLocalProfileBannerImage))
+                                .subscribeOn(Schedulers.io())
+                                .subscribe {
+                                    view.showSuccessfullyUpdateProfile()
+                                }
                     } else {
                         if (insertUserName != mAccountAndDetail.accountDetails[0].userName ||
                                 insertProfileImage != mAccountAndDetail.accountDetails[0].profileImage ||
                                 insertProfileBannerImage != mAccountAndDetail.accountDetails[0].profileBannerImage) {
-                            mAccountDatabase?.let { accountDatabase ->
-                                val accountDao : AccountRepository = accountDatabase.accountRepository()
 
-                                accountDao
-                                        .insertAccountDetail(AccountDetail(mUserId, insertUserName, insertProfileImage, insertLocalProfileImage, insertProfileBannerImage, insertLocalProfileBannerImage))
-                                        .subscribeOn(Schedulers.io())
-                                        .subscribe {
-                                            homeView.showSuccessfullyUpdateProfile()
-                                        }
-                            }
+                            accountRepositoryImpl
+                                    .insertAccountDetail(AccountDetail(userId, insertUserName, insertProfileImage, insertLocalProfileImage, insertProfileBannerImage, insertLocalProfileBannerImage))
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe {
+                                        view.showSuccessfullyUpdateProfile()
+
+                                    }
                         }
                     }
                 }
                 , { e ->
             LogUtil.e(e)
-            homeView.showError(e)
+            view.showError(e)
         }
         )
         mCompositeDisposable.add(disposable)
@@ -122,58 +105,53 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
     override fun checkImageStatus(internalFileDir : File?) {
         LogUtil.d()
 
-        mAccountDatabase?.let { accountDatabase ->
-            val accountDao : AccountRepository = accountDatabase.accountRepository()
+        //制約を作成
+        val workManager : WorkManager = WorkManager.getInstance()
+        val constraints = Constraints.Builder()
+                .setRequiresBatteryNotLow(true)
+                .setRequiresStorageNotLow(true)
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
-            //制約を作成
-            val workManager : WorkManager = WorkManager.getInstance()
-            val constraints = Constraints.Builder()
-                    .setRequiresBatteryNotLow(true)
-                    .setRequiresStorageNotLow(true)
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
+        val disposable : Disposable = accountRepositoryImpl.loadAccountById(userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (it.accountDetails.isNotEmpty()) {
+                        LogUtil.d(File(it.accountDetails[0].localProfileImage).exists())
+                        if (!File(it.accountDetails[0].localProfileImage).exists()) {
+                            LogUtil.d("work request")
+                            //work manager request save image
+                            workManager.beginUniqueWork(
+                                    ProfileUpdateWorker.WORK_ID_PROFILE_IMAGE,
+                                    ExistingWorkPolicy.REPLACE,
+                                    OneTimeWorkRequestBuilder<ProfileUpdateWorker>()
+                                            .setConstraints(constraints)
+                                            .setInputData(createInputDataForUrl(it.accountDetails[0].localProfileImage!!, it.accountDetails[0].profileImage!!))
+                                            .build()
+                            ).enqueue()
+                        }
+                        LogUtil.d(File(it.accountDetails[0].localProfileBannerImage).exists())
+                        if (!File(it.accountDetails[0].localProfileBannerImage).exists()) {
+                            LogUtil.d("work request")
+                            //work manager request save image
+                            workManager.beginUniqueWork(
+                                    ProfileUpdateWorker.WORK_ID_PROFILE_BANNER_IMAGE,
+                                    ExistingWorkPolicy.REPLACE,
+                                    OneTimeWorkRequestBuilder<ProfileUpdateWorker>()
+                                            .setConstraints(constraints)
+                                            .setInputData(createInputDataForUrl(it.accountDetails[0].localProfileBannerImage!!, it.accountDetails[0].profileBannerImage!!))
+                                            .build()
+                            ).enqueue()
+                        }
 
-            accountDao.loadAccountById(mUserId)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            {
-                                if (it.accountDetails.isNotEmpty()) {
-                                    LogUtil.d(File(it.accountDetails[0].localProfileImage).exists())
-                                    if (!File(it.accountDetails[0].localProfileImage).exists()) {
-                                        LogUtil.d("work request")
-                                        //work manager request save image
-                                        workManager.beginUniqueWork(
-                                                ProfileUpdateWorker.WORK_ID_PROFILE_IMAGE,
-                                                ExistingWorkPolicy.REPLACE,
-                                                OneTimeWorkRequestBuilder<ProfileUpdateWorker>()
-                                                        .setConstraints(constraints)
-                                                        .setInputData(createInputDataForUrl(it.accountDetails[0].localProfileImage!!, it.accountDetails[0].profileImage!!))
-                                                        .build()
-                                        ).enqueue()
-                                    }
-                                    LogUtil.d(File(it.accountDetails[0].localProfileBannerImage).exists())
-                                    if (!File(it.accountDetails[0].localProfileBannerImage).exists()) {
-                                        LogUtil.d("work request")
-                                        //work manager request save image
-                                        workManager.beginUniqueWork(
-                                                ProfileUpdateWorker.WORK_ID_PROFILE_BANNER_IMAGE,
-                                                ExistingWorkPolicy.REPLACE,
-                                                OneTimeWorkRequestBuilder<ProfileUpdateWorker>()
-                                                        .setConstraints(constraints)
-                                                        .setInputData(createInputDataForUrl(it.accountDetails[0].localProfileBannerImage!!, it.accountDetails[0].profileBannerImage!!))
-                                                        .build()
-                                        ).enqueue()
-                                    }
-
-                                }
-                            },
-                            { e ->
-                                LogUtil.e(e)
-                                homeView.showError(e)
-                            })
-
-        }
+                    }
+                },
+                        { e ->
+                            LogUtil.e(e)
+                            view.showError(e)
+                        })
+        mCompositeDisposable.add(disposable)
     }
 
     private fun createInputDataForUrl(localImageUrl : String, onlineImageUrl : String) : Data {
@@ -184,7 +162,7 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
     }
 
     override fun addNewTweet() {
-        homeView.showAddNewTweet()
+        view.showAddNewTweet()
     }
 
     override fun result(requestCode : Int, resultCode : Int) {
@@ -192,8 +170,8 @@ class HomePresenter(val homeView : HomeContract.View, val appProvider : AppProvi
         when (requestCode) {
             AddTweetReplyActivity.REQUEST_ADD_TWEET -> {
                 when (resultCode) {
-                    Activity.RESULT_OK -> homeView.showSuccessfullyTweet()
-                    Activity.RESULT_CANCELED -> homeView.showFailTweet()
+                    Activity.RESULT_OK -> view.showSuccessfullyTweet()
+                    Activity.RESULT_CANCELED -> view.showFailTweet()
                 }
             }
             MediaViewerActivity.REQUEST_SHOW_MEDIA -> {
