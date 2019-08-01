@@ -6,14 +6,14 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.ryunen344.kdroid.home.search.HomeSearchFragment
 import com.ryunen344.kdroid.home.tweet.HomeTweetFragment
 
-class HomeSectionsPagerAdapter(fragmentManager : FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+class HomeSectionsPagerAdapter(fragmentManager : FragmentManager) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getItem(position : Int) : Fragment {
         return when (position) {
-            0 -> HomeTweetFragment.newInstance().also {
+            0 -> HomeTweetFragment().also {
                 it.mPagerPosition = position
             }
-            1 -> HomeTweetFragment.newInstance().also {
+            1 -> HomeTweetFragment().also {
                 it.mPagerPosition = position
             }
             else -> HomeSearchFragment.newInstance()

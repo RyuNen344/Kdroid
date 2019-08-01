@@ -1,13 +1,13 @@
 package com.ryunen344.kdroid.home.tweet
 
-import com.ryunen344.kdroid.BasePresenter
-import com.ryunen344.kdroid.BaseView
+import com.ryunen344.kdroid.PreBasePresenter
+import com.ryunen344.kdroid.PreBaseView
 import twitter4j.Status
 import twitter4j.User
 
 interface HomeTweetContract {
 
-    interface View : BaseView<Presenter> {
+    interface View : PreBaseView<Presenter> {
         fun showTweetList(tweetList: MutableList<Status>)
         fun showMediaViewer(mediaUrl: String)
         fun showTweetDetail(tweet : Status)
@@ -17,7 +17,7 @@ interface HomeTweetContract {
         fun notifyStatusChange(position: Int, tweet: Status)
     }
 
-    interface Presenter : BasePresenter {
+    interface Presenter : PreBasePresenter<View> {
         fun loadLeastList()
         fun loadTimelineList()
         fun loadMentionList()
