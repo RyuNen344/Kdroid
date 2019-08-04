@@ -1,5 +1,8 @@
 package com.ryunen344.kdroid.di.module
 
+import com.ryunen344.kdroid.addTweetReply.AddTweetReplyContract
+import com.ryunen344.kdroid.addTweetReply.AddTweetReplyFragment
+import com.ryunen344.kdroid.addTweetReply.AddTweetReplyPresenter
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.home.HomeActivity
 import com.ryunen344.kdroid.home.HomeContract
@@ -27,6 +30,12 @@ val AppModule = module {
     scope(named<HomeTweetFragment>()){
         scoped { HomeTweetPresenter(getProperty(HomeTweetFragment.INTENT_KEY_PAGER_POSITION), getProperty(HomeActivity.INTENT_KEY_USER_ID)) as HomeTweetContract.Presenter}
     }
+
+    factory { AddTweetReplyFragment() }
+    scope(named<AddTweetReplyFragment>()) {
+        scoped { AddTweetReplyPresenter() as AddTweetReplyContract.Presenter }
+    }
+
 
     factory { TweetDetailFragment() }
     scope(named<TweetDetailFragment>()) {

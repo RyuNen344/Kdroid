@@ -11,11 +11,11 @@ import org.koin.android.ext.android.inject
 
 class AddTweetReplyActivity : AppCompatActivity() {
 
-    val appProvider : AppProvider by inject()
-    lateinit var mPresenter : AddTweetReplyContract.Presenter
+    private val appProvider : AppProvider by inject()
+    private val addTweetReplyFragment : AddTweetReplyFragment by inject()
 
     companion object {
-        val REQUEST_ADD_TWEET : Int = 10
+        const val REQUEST_ADD_TWEET : Int = 10
     }
 
     override fun onCreate(savedInstanceState : Bundle?) {
@@ -26,12 +26,10 @@ class AddTweetReplyActivity : AppCompatActivity() {
         //supportActionBar?.setDisplayHomeAsUpEnabled(false)
         //supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        var addTweetReplyFragment : AddTweetReplyFragment? = supportFragmentManager.findFragmentById(addTweetReplyFrame.id) as AddTweetReplyFragment?
-                ?: AddTweetReplyFragment.newInstance().also {
+        supportFragmentManager.findFragmentById(addTweetReplyFrame.id) as AddTweetReplyFragment?
+                ?: addTweetReplyFragment.also {
                     replaceFragmentInActivity(supportFragmentManager, it, addTweetReplyFrame.id)
                 }
-
-        mPresenter = AddTweetReplyPresenter(addTweetReplyFragment!!, appProvider)
     }
 
     override fun onSupportNavigateUp() : Boolean {

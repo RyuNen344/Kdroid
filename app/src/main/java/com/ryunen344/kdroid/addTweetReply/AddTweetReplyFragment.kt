@@ -10,32 +10,28 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.util.LogUtil
-import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.activity_add_tweet_reply.*
 import kotlinx.android.synthetic.main.fragment_add_tweet_reply.*
 import kotlinx.android.synthetic.main.fragment_add_tweet_reply.view.*
+import org.koin.android.scope.currentScope
 
 class AddTweetReplyFragment : Fragment(), AddTweetReplyContract.View {
 
-    lateinit var mPresenter : AddTweetReplyContract.Presenter
+    override val presenter : AddTweetReplyContract.Presenter by currentScope.inject()
+
     var mTweetDescription : TextView? = null
-
-    companion object {
-        fun newInstance() = AddTweetReplyFragment()
-    }
-
-    override fun setPresenter(presenter : AddTweetReplyContract.Presenter) {
+    override fun onCreate(savedInstanceState : Bundle?) {
         LogUtil.d()
-        ensureNotNull(presenter) { p ->
-            mPresenter = p
-        }
+        super.onCreate(savedInstanceState)
     }
+
 
     override fun onActivityCreated(savedInstanceState : Bundle?) {
+        LogUtil.d()
         super.onActivityCreated(savedInstanceState)
 
         activity?.tweetButton?.setOnClickListener {
-            mPresenter.sendTweet(mTweetDescription?.text.toString())
+            presenter.sendTweet(mTweetDescription?.text.toString())
         }
 
     }
@@ -51,13 +47,14 @@ class AddTweetReplyFragment : Fragment(), AddTweetReplyContract.View {
     }
 
     override fun showTimeline() {
+        LogUtil.d()
         activity?.setResult(Activity.RESULT_OK)
         activity?.finish()
     }
 
     override fun showError(e : Throwable) {
         //fixme
-        LogUtil.d(e)
+        LogUtil.e(e)
         Snackbar.make(add_tweet_reply_description, e.message.toString(), Snackbar.LENGTH_LONG).show()
     }
 
