@@ -5,44 +5,14 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.ryunen344.kdroid.R
-import com.ryunen344.kdroid.di.provider.ApiProvider
-import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.replaceFragmentInActivity
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_profile.*
 import org.koin.android.ext.android.inject
-import twitter4j.User
 
 class ProfileActivity : AppCompatActivity() {
 
-
-    val appProvider: AppProvider by inject()
-    val apiProvider: ApiProvider by inject()
-    lateinit var mPresenter: ProfileContract.Presenter
-    private var mPicasso: Picasso = appProvider.providePiccaso()
-
-
-    private var infoListener: ProfileContract.ProfileInfoListener = object : ProfileContract.ProfileInfoListener {
-        override fun showUserInfo(user: User) {
-            LogUtil.d()
-            profile_screen_name.text = user.screenName
-            profile_description.text = user.description
-            profile_place.text = user.name
-
-            mPicasso
-                    .load(user.profileBanner1500x500URL)
-                    .placeholder(R.drawable.ic_loading_image_24dp)
-                    .error(R.drawable.ic_loading_image_24dp)
-                    .into(profile_banner)
-
-            mPicasso
-                    .load(user.originalProfileImageURLHttps)
-                    .placeholder(R.drawable.ic_loading_image_24dp)
-                    .error(R.drawable.ic_loading_image_24dp)
-                    .into(profile_icon)
-        }
-    }
+    private val profileFragment : ProfileFragment by inject()
 
     companion object {
         const val INTENT_KEY_USER_ID : String = "key_user_id"
@@ -58,12 +28,15 @@ class ProfileActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(false)
 
-        var profileFragment: ProfileFragment? = supportFragmentManager.findFragmentById(profileFrame.id) as ProfileFragment?
-                ?: ProfileFragment.newInstance().also {
+        var bundle : Bundle = Bundle()
+        bundle.putLong(INTENT_KEY_USER_ID, intent.getLongExtra(INTENT_KEY_USER_ID, 0))
+        bundle.putString(INTENT_KEY_SCREEN_NAME, intent.getStringExtra(INTENT_KEY_SCREEN_NAME))
+        profileFragment.arguments = bundle
+
+        supportFragmentManager.findFragmentById(profileFrame.id) as ProfileFragment?
+                ?: profileFragment.also {
                     replaceFragmentInActivity(supportFragmentManager, it, profileFrame.id)
                 }
-
-        mPresenter = ProfilePresenter(profileFragment!!, appProvider, apiProvider, intent.extras, infoListener)
     }
 
 
@@ -85,6 +58,5 @@ class ProfileActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 
 }

@@ -9,27 +9,22 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.LogUtil
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import org.koin.android.ext.android.inject
+import org.koin.android.scope.currentScope
 import twitter4j.User
 
 class ProfileFragment : Fragment(), ProfileContract.View {
 
+    override val presenter : ProfileContract.Presenter by currentScope.inject()
+
     private val appProvider : AppProvider by inject()
-    private val utilProvider: UtilProvider by inject()
-    private lateinit var mPresenter: ProfileContract.Presenter
+    private val mPicasso = appProvider.providePiccaso()
     private lateinit var mSectionsPagerAdapter: ProfileSectionsPagerAdapter
 
-    private val mPicasso = appProvider.providePiccaso()
-
-    companion object {
-        fun newInstance() = ProfileFragment()
-    }
-
-    private var itemListner: ProfileContract.ProfileItemListener = object : ProfileContract.ProfileItemListener {
+    private var itemListener : ProfileContract.ProfileItemListener = object : ProfileContract.ProfileItemListener {
         override fun onAccountClick() {
             LogUtil.d()
         }
@@ -44,18 +39,19 @@ class ProfileFragment : Fragment(), ProfileContract.View {
 
     }
 
-    override fun setPresenter(presenter: ProfileContract.Presenter) {
+    override fun onCreate(savedInstanceState : Bundle?) {
         LogUtil.d()
-        presenter.let {
-            mPresenter = it
-        }
+        super.onCreate(savedInstanceState)
+
+        currentScope.getKoin().setProperty(ProfileActivity.INTENT_KEY_USER_ID, arguments!!.getLong(ProfileActivity.INTENT_KEY_USER_ID))
+        currentScope.getKoin().setProperty(ProfileActivity.INTENT_KEY_SCREEN_NAME, arguments!!.getString(ProfileActivity.INTENT_KEY_SCREEN_NAME, ""))
+        presenter.view = this
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         LogUtil.d()
         LogUtil.d(container.toString())
-        val root = inflater.inflate(R.layout.fragment_profile, container, false)
-        return root
+        return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -70,12 +66,12 @@ class ProfileFragment : Fragment(), ProfileContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         LogUtil.d()
-        mPresenter.start()
+        presenter.start()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mPresenter.clearDisposable()
+        presenter.clearDisposable()
     }
 
     override fun showUserInfo(user: User) {

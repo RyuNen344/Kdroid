@@ -1,48 +1,40 @@
 package com.ryunen344.kdroid.profile
 
-import android.os.Bundle
-import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
+import com.ryunen344.kdroid.domain.repository.TwitterRepositoryImpl
 import com.ryunen344.kdroid.util.LogUtil
-import com.ryunen344.kdroid.util.ensureNotNull
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import twitter4j.Twitter
 
-class ProfilePresenter(val profileView: ProfileContract.View, val appProvider: AppProvider, private val apiProvider: ApiProvider, val bundle: Bundle?, private val infoListener: ProfileContract.ProfileInfoListener) : ProfileContract.Presenter {
+class ProfilePresenter(private val userId : Long, private val screenName : String) : ProfileContract.Presenter, KoinComponent {
 
+    private val appProvider : AppProvider by inject()
     private var mTwitter: Twitter = appProvider.provideTwitter()
-    private var mUserId: Long = 0L
-    private var mScreenName: String = ""
-    var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
+    private val twitterRepositoryImpl : TwitterRepositoryImpl by inject()
+    private var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
 
-    init {
-        bundle?.let { it ->
-            mUserId = it.getLong(ProfileActivity.INTENT_KEY_USER_ID, 0)
-            ensureNotNull(it.getString(ProfileActivity.INTENT_KEY_SCREEN_NAME)) {
-                mScreenName = it
-            }
-        }
-        profileView.setPresenter(this)
-    }
+    override lateinit var view : ProfileContract.View
 
     override fun start() {
         LogUtil.d()
         when {
-            mUserId != 0L -> loadProfile(mUserId)
-            mScreenName.isNotEmpty() -> loadProfile(mScreenName)
-            else -> profileView.showError(Throwable("user id not found"))
+            userId != 0L -> loadProfile(userId)
+            screenName.isNotEmpty() -> loadProfile(screenName)
+            else -> view.showError(Throwable("user id not found"))
         }
     }
 
     override fun loadProfile(userId: Long) {
         LogUtil.d()
-        val disposable: Disposable = apiProvider.getUserByUserId(mTwitter, userId).subscribe(
+        val disposable : Disposable = twitterRepositoryImpl.getUserByUserId(mTwitter, userId).subscribe(
                 {
-                    infoListener.showUserInfo(it)
+                    view.showUserInfo(it)
                 }
                 , { e ->
-            profileView.showError(e)
+            view.showError(e)
         }
         )
         mCompositeDisposable.add(disposable)
@@ -50,17 +42,16 @@ class ProfilePresenter(val profileView: ProfileContract.View, val appProvider: A
 
     override fun loadProfile(screenName: String) {
         LogUtil.d()
-        val disposable: Disposable = apiProvider.getUserByScreenName(mTwitter, screenName).subscribe(
+        val disposable : Disposable = twitterRepositoryImpl.getUserByScreenName(mTwitter, screenName).subscribe(
                 {
-                    infoListener.showUserInfo(it)
+                    view.showUserInfo(it)
                 }
                 , { e ->
-            profileView.showError(e)
+            view.showError(e)
         }
         )
         mCompositeDisposable.add(disposable)
     }
-
 
     override fun clearDisposable() {
         LogUtil.d()

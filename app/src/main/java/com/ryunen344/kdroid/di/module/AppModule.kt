@@ -15,6 +15,10 @@ import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.mediaViewer.MediaViewerContract
 import com.ryunen344.kdroid.mediaViewer.MediaViewerFragment
 import com.ryunen344.kdroid.mediaViewer.MediaViewerPresenter
+import com.ryunen344.kdroid.profile.ProfileActivity
+import com.ryunen344.kdroid.profile.ProfileContract
+import com.ryunen344.kdroid.profile.ProfileFragment
+import com.ryunen344.kdroid.profile.ProfilePresenter
 import com.ryunen344.kdroid.tweetDetail.TweetDetailActivity
 import com.ryunen344.kdroid.tweetDetail.TweetDetailContract
 import com.ryunen344.kdroid.tweetDetail.TweetDetailFragment
@@ -43,6 +47,11 @@ val AppModule = module {
     factory { TweetDetailFragment() }
     scope(named<TweetDetailFragment>()) {
         scoped { TweetDetailPresenter(getProperty(TweetDetailActivity.INTENT_KEY_TWEET_ID)) as TweetDetailContract.Presenter }
+    }
+
+    factory { ProfileFragment() }
+    scope(named<ProfileFragment>()) {
+        scoped { ProfilePresenter(getProperty(ProfileActivity.INTENT_KEY_USER_ID), getProperty(ProfileActivity.INTENT_KEY_SCREEN_NAME)) as ProfileContract.Presenter }
     }
 
     factory { MediaViewerFragment() }

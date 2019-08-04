@@ -1,17 +1,16 @@
 package com.ryunen344.kdroid.profile
 
-import com.ryunen344.kdroid.BasePresenter
-import com.ryunen344.kdroid.BaseView
+import com.ryunen344.kdroid.PreBasePresenter
+import com.ryunen344.kdroid.PreBaseView
 import twitter4j.User
 
 interface ProfileContract {
 
-    interface View : BaseView<Presenter> {
+    interface View : PreBaseView<Presenter> {
         fun showUserInfo(user: User)
-
     }
 
-    interface Presenter : BasePresenter {
+    interface Presenter : PreBasePresenter<View> {
         fun loadProfile(userId: Long)
         fun loadProfile(screenName: String)
         fun clearDisposable()
@@ -21,9 +20,5 @@ interface ProfileContract {
         fun onAccountClick()
         fun onImageClick(mediaUrl: String)
         fun onTweetClick()
-    }
-
-    interface ProfileInfoListener {
-        fun showUserInfo(user: User)
     }
 }
