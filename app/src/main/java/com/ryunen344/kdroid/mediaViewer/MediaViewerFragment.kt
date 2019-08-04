@@ -10,30 +10,34 @@ import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_media_viewer
 import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.util.LogUtil
-import com.ryunen344.kdroid.util.ensureNotNull
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_media_viewer.*
 import kotlinx.android.synthetic.main.fragment_media_viewer.view.*
 import org.koin.android.ext.android.inject
+import org.koin.android.scope.currentScope
 
 
 class MediaViewerFragment : Fragment(), MediaViewerContract.View {
 
+
     val appProvider : AppProvider by inject()
-    lateinit var mPresenter : MediaViewerContract.Presenter
     lateinit var mImageViewer : PhotoView
     private var mPicasso : Picasso = appProvider.providePiccaso()
+
+    override val presenter : MediaViewerContract.Presenter by currentScope.inject()
 
     companion object {
         fun newInstance() = MediaViewerFragment()
     }
 
-    override fun setPresenter(presenter : MediaViewerContract.Presenter) {
+    override fun onCreate(savedInstanceState : Bundle?) {
         LogUtil.d()
-        ensureNotNull(presenter) { p ->
-            mPresenter = p
-        }
+        super.onCreate(savedInstanceState)
+
+        currentScope.getKoin().setProperty(MediaViewerActivity.INTENT_KEY_MEDIA_URL, arguments!!.getString(MediaViewerActivity.INTENT_KEY_MEDIA_URL, ""))
+        presenter.view = this
     }
+
 
     override fun onActivityCreated(savedInstanceState : Bundle?) {
         LogUtil.d()
@@ -42,7 +46,7 @@ class MediaViewerFragment : Fragment(), MediaViewerContract.View {
         //init save button
         activity?.saveImageButton?.setOnClickListener {
             LogUtil.d()
-            mPresenter.saveImage(context!!)
+            presenter.saveImage(context!!)
 
         }
 
@@ -67,7 +71,7 @@ class MediaViewerFragment : Fragment(), MediaViewerContract.View {
 
     override fun onResume() {
         super.onResume()
-        mPresenter.start()
+        presenter.start()
     }
 
     override fun showImage(mediaUrl : String) {
@@ -83,7 +87,7 @@ class MediaViewerFragment : Fragment(), MediaViewerContract.View {
     }
 
     override fun showError(e : Throwable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        LogUtil.e(e)
     }
 
 }

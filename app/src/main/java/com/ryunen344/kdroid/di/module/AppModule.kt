@@ -11,6 +11,10 @@ import com.ryunen344.kdroid.home.HomePresenter
 import com.ryunen344.kdroid.home.tweet.HomeTweetContract
 import com.ryunen344.kdroid.home.tweet.HomeTweetFragment
 import com.ryunen344.kdroid.home.tweet.HomeTweetPresenter
+import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
+import com.ryunen344.kdroid.mediaViewer.MediaViewerContract
+import com.ryunen344.kdroid.mediaViewer.MediaViewerFragment
+import com.ryunen344.kdroid.mediaViewer.MediaViewerPresenter
 import com.ryunen344.kdroid.tweetDetail.TweetDetailActivity
 import com.ryunen344.kdroid.tweetDetail.TweetDetailContract
 import com.ryunen344.kdroid.tweetDetail.TweetDetailFragment
@@ -36,9 +40,13 @@ val AppModule = module {
         scoped { AddTweetReplyPresenter() as AddTweetReplyContract.Presenter }
     }
 
-
     factory { TweetDetailFragment() }
     scope(named<TweetDetailFragment>()) {
         scoped { TweetDetailPresenter(getProperty(TweetDetailActivity.INTENT_KEY_TWEET_ID)) as TweetDetailContract.Presenter }
+    }
+
+    factory { MediaViewerFragment() }
+    scope(named<MediaViewerFragment>()) {
+        scoped { MediaViewerPresenter(getProperty(MediaViewerActivity.INTENT_KEY_MEDIA_URL)) as MediaViewerContract.Presenter }
     }
 }

@@ -15,20 +15,21 @@ import com.ryunen344.kdroid.di.provider.AppProvider
 import com.ryunen344.kdroid.util.LogUtil
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import java.io.File
 
 
-class MediaViewerPresenter(var mediaViewerView: MediaViewerContract.View, var appProvider: AppProvider, val mediaUrl: String) : MediaViewerContract.Presenter {
+class MediaViewerPresenter(val mediaUrl : String) : MediaViewerContract.Presenter, KoinComponent {
 
-    init {
-        mediaViewerView.setPresenter(this)
-    }
-
+    private val appProvider : AppProvider by inject()
     private var mPicasso: Picasso = appProvider.providePiccaso()
+
+    override lateinit var view : MediaViewerContract.View
 
     override fun start() {
         LogUtil.d()
-        mediaViewerView.showImage(mediaUrl)
+        view.showImage(mediaUrl)
     }
 
     override fun saveImage(context: Context) {
@@ -41,15 +42,15 @@ class MediaViewerPresenter(var mediaViewerView: MediaViewerContract.View, var ap
     }
 
     override fun reloadImage() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        LogUtil.d()
     }
 
     override fun rotateRight() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        LogUtil.d()
     }
 
     override fun rotateLeft() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        LogUtil.d()
     }
 
     //target to save
