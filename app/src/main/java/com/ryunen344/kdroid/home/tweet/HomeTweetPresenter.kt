@@ -112,7 +112,7 @@ class HomeTweetPresenter(private val pagerPosition : Int, val userId : Long) : H
         val disposable : Disposable = twitterRepositoryImpl.getTimeLine(twitter, paging).subscribe(
                 { list : MutableList<Status> ->
                     tweetList = (list + tweetList).toMutableList()
-                    view.showTweetList(tweetList)
+                    view.showTweetList(tweetList, list.size)
                 }
                 , { e ->
             view.showError(e)
@@ -127,7 +127,7 @@ class HomeTweetPresenter(private val pagerPosition : Int, val userId : Long) : H
         val disposable : Disposable = twitterRepositoryImpl.getMention(twitter, paging).subscribe(
                 { list : MutableList<Status> ->
                     tweetList = (list + tweetList).toMutableList()
-                    view.showTweetList(tweetList)
+                    view.showTweetList(tweetList, list.size)
                 }
                 , { e ->
             view.showError(e)

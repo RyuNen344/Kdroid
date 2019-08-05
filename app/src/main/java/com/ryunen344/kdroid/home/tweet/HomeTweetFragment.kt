@@ -154,7 +154,15 @@ class HomeTweetFragment : Fragment(), HomeTweetContract.View {
     }
 
     override fun showTweetList(tweetList : MutableList<Status>) {
+        LogUtil.d()
         homeTweetAdapter.tweetList = tweetList
+        homeTweetAdapter.notifyDataSetChanged()
+    }
+
+    override fun showTweetList(tweetList : MutableList<Status>, offset : Int) {
+        LogUtil.d()
+        homeTweetAdapter.tweetList = tweetList
+        mRecyclerView.scrollToPosition(offset)
         homeTweetAdapter.notifyDataSetChanged()
     }
 
