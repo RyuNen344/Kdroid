@@ -1,24 +1,26 @@
 package com.ryunen344.kdroid.profile.tweet
 
-import com.ryunen344.kdroid.di.provider.ApiProvider
 import com.ryunen344.kdroid.di.provider.AppProvider
+import com.ryunen344.kdroid.domain.repository.TwitterRepositoryImpl
 import com.ryunen344.kdroid.util.LogUtil
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import twitter4j.Paging
 import twitter4j.Status
 import twitter4j.Twitter
 import twitter4j.User
 
-class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appProvider: AppProvider, val apiProvider: ApiProvider, val pagerPosition: Int, val userId: Long, val screenName: String) : ProfileTweetContract.Presenter {
+class ProfileTweetPresenter(private val pagerPosition : Int, private val userId : Long, private val screenName : String) : ProfileTweetContract.Presenter, KoinComponent {
 
-    lateinit var tweetList: MutableList<Status>
-    var twitter: Twitter = appProvider.provideTwitter()
-    var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
+    lateinit var tweetList : MutableList<Status>
+    private val appProvider : AppProvider by inject()
+    private var twitter : Twitter = appProvider.provideTwitter()
+    private var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
+    private val twitterRepositoryImpl : TwitterRepositoryImpl by inject()
 
-    init {
-        profileView.setPresenter(this)
-    }
+    override lateinit var view : ProfileTweetContract.View
 
     override fun start() {
         LogUtil.d()
@@ -30,29 +32,29 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
 
     override fun loadTweetList() {
         LogUtil.d()
-        var paging: Paging = Paging(1, 50)
-        val disposable: Disposable =
+        var paging : Paging = Paging(1, 50)
+        val disposable : Disposable =
                 when (userId) {
                     0L -> {
-                        apiProvider.getUserTimelineByScreenName(twitter, paging, screenName).subscribe(
-                                { list: MutableList<Status> ->
+                        twitterRepositoryImpl.getUserTimelineByScreenName(twitter, paging, screenName).subscribe(
+                                { list : MutableList<Status> ->
                                     tweetList = list
-                                    profileView.showTweetList(tweetList)
+                                    view.showTweetList(tweetList)
                                 }
                                 , { e ->
-                            profileView.showError(e)
+                            view.showError(e)
                         }
                         )
                     }
 
                     else -> {
-                        apiProvider.getUserTimelineByUserId(twitter, paging, userId).subscribe(
-                                { list: MutableList<Status> ->
+                        twitterRepositoryImpl.getUserTimelineByUserId(twitter, paging, userId).subscribe(
+                                { list : MutableList<Status> ->
                                     tweetList = list
-                                    profileView.showTweetList(tweetList)
+                                    view.showTweetList(tweetList)
                                 }
                                 , { e ->
-                            profileView.showError(e)
+                            view.showError(e)
                         }
                         )
                     }
@@ -62,29 +64,29 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
 
     override fun loadFavoriteList() {
         LogUtil.d()
-        var paging: Paging = Paging(1, 50)
-        val disposable: Disposable =
+        var paging : Paging = Paging(1, 50)
+        val disposable : Disposable =
                 when (userId) {
                     0L -> {
-                        apiProvider.getUserFavoriteByScreenName(twitter, paging, screenName).subscribe(
-                                { list: MutableList<Status> ->
+                        twitterRepositoryImpl.getUserFavoriteByScreenName(twitter, paging, screenName).subscribe(
+                                { list : MutableList<Status> ->
                                     tweetList = list
-                                    profileView.showTweetList(tweetList)
+                                    view.showTweetList(tweetList)
                                 }
                                 , { e ->
-                            profileView.showError(e)
+                            view.showError(e)
                         }
                         )
                     }
 
                     else -> {
-                        apiProvider.getUserFavoriteByUserId(twitter, paging, userId).subscribe(
-                                { list: MutableList<Status> ->
+                        twitterRepositoryImpl.getUserFavoriteByUserId(twitter, paging, userId).subscribe(
+                                { list : MutableList<Status> ->
                                     tweetList = list
-                                    profileView.showTweetList(tweetList)
+                                    view.showTweetList(tweetList)
                                 }
                                 , { e ->
-                            profileView.showError(e)
+                            view.showError(e)
                         }
                         )
                     }
@@ -92,7 +94,7 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
         mCompositeDisposable.add(disposable)
     }
 
-    override fun loadMoreList(currentPage: Int) {
+    override fun loadMoreList(currentPage : Int) {
         LogUtil.d()
         when (pagerPosition) {
             0 -> loadMoreTweetList(currentPage)
@@ -100,31 +102,31 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
         }
     }
 
-    private fun loadMoreTweetList(currentPage: Int) {
+    private fun loadMoreTweetList(currentPage : Int) {
         LogUtil.d()
-        var paging: Paging = Paging(currentPage + 1, 100)
-        val disposable: Disposable =
+        var paging : Paging = Paging(currentPage + 1, 100)
+        val disposable : Disposable =
                 when (userId) {
                     0L -> {
-                        apiProvider.getUserTimelineByScreenName(twitter, paging, screenName).subscribe(
-                                { list: MutableList<Status> ->
+                        twitterRepositoryImpl.getUserTimelineByScreenName(twitter, paging, screenName).subscribe(
+                                { list : MutableList<Status> ->
                                     tweetList.plusAssign(list)
-                                    profileView.showTweetList(tweetList)
+                                    view.showTweetList(tweetList)
                                 }
                                 , { e ->
-                            profileView.showError(e)
+                            view.showError(e)
                         }
                         )
                     }
 
                     else -> {
-                        apiProvider.getUserTimelineByUserId(twitter, paging, userId).subscribe(
-                                { list: MutableList<Status> ->
+                        twitterRepositoryImpl.getUserTimelineByUserId(twitter, paging, userId).subscribe(
+                                { list : MutableList<Status> ->
                                     tweetList.plusAssign(list)
-                                    profileView.showTweetList(tweetList)
+                                    view.showTweetList(tweetList)
                                 }
                                 , { e ->
-                            profileView.showError(e)
+                            view.showError(e)
                         }
                         )
                     }
@@ -132,30 +134,30 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
         mCompositeDisposable.add(disposable)
     }
 
-    private fun loadMoreFavoriteList(currentPage: Int) {
+    private fun loadMoreFavoriteList(currentPage : Int) {
         LogUtil.d()
-        var paging: Paging = Paging(currentPage + 1, 100)
-        val disposable: Disposable =
+        var paging : Paging = Paging(currentPage + 1, 100)
+        val disposable : Disposable =
                 when (userId) {
                     0L -> {
-                        apiProvider.getUserFavoriteByScreenName(twitter, paging, screenName).subscribe(
-                                { list: MutableList<Status> ->
+                        twitterRepositoryImpl.getUserFavoriteByScreenName(twitter, paging, screenName).subscribe(
+                                { list : MutableList<Status> ->
                                     tweetList.plusAssign(list)
-                                    profileView.showTweetList(tweetList)
+                                    view.showTweetList(tweetList)
                                 }
                                 , { e ->
-                            profileView.showError(e)
+                            view.showError(e)
                         }
                         )
                     }
                     else -> {
-                        apiProvider.getUserFavoriteByUserId(twitter, paging, userId).subscribe(
-                                { list: MutableList<Status> ->
+                        twitterRepositoryImpl.getUserFavoriteByUserId(twitter, paging, userId).subscribe(
+                                { list : MutableList<Status> ->
                                     tweetList.plusAssign(list)
-                                    profileView.showTweetList(tweetList)
+                                    view.showTweetList(tweetList)
                                 }
                                 , { e ->
-                            profileView.showError(e)
+                            view.showError(e)
                         }
                         )
                     }
@@ -163,70 +165,70 @@ class ProfileTweetPresenter(val profileView: ProfileTweetContract.View, val appP
         mCompositeDisposable.add(disposable)
     }
 
-    override fun openMedia(mediaUrl: String) {
+    override fun openMedia(mediaUrl : String) {
         LogUtil.d()
-        profileView.showMediaViewer(mediaUrl)
+        view.showMediaViewer(mediaUrl)
     }
 
     override fun openTweetDetail() {
         LogUtil.d()
-        profileView.showTweetDetail()
+        view.showTweetDetail()
     }
 
-    override fun openProfile(user: User) {
+    override fun openProfile(user : User) {
         LogUtil.d()
-        profileView.showProfile(user)
+        view.showProfile(user)
     }
 
-    override fun openProfile(screenName: String) {
+    override fun openProfile(screenName : String) {
         LogUtil.d()
-        profileView.showProfile(screenName)
+        view.showProfile(screenName)
     }
 
-    override fun changeFavorite(position: Int, tweet: Status) {
+    override fun changeFavorite(position : Int, tweet : Status) {
         LogUtil.d()
-        val disposable: Disposable =
+        val disposable : Disposable =
                 if (!tweet.isFavorited)
-                    apiProvider.createFavorite(twitter, tweet.id).subscribe(
+                    twitterRepositoryImpl.createFavorite(twitter, tweet.id).subscribe(
                             {
-                                profileView.notifyStatusChange(position, it)
+                                view.notifyStatusChange(position, it)
                             },
                             {
-                                profileView.showError(it)
+                                view.showError(it)
                             })
                 else
-                    apiProvider.destroyFavorite(twitter, tweet.id).subscribe(
+                    twitterRepositoryImpl.destroyFavorite(twitter, tweet.id).subscribe(
                             {
-                                profileView.notifyStatusChange(position, it)
+                                view.notifyStatusChange(position, it)
                             },
                             {
-                                profileView.showError(it)
+                                view.showError(it)
                             })
 
         mCompositeDisposable.add(disposable)
     }
 
-    override fun changeRetweet(position: Int, tweet: Status) {
+    override fun changeRetweet(position : Int, tweet : Status) {
         LogUtil.d()
 
-        val disposable: Disposable =
+        val disposable : Disposable =
                 if (!tweet.isRetweetedByMe) {
-                    apiProvider.createRetweet(twitter, tweet.id).subscribe(
+                    twitterRepositoryImpl.createRetweet(twitter, tweet.id).subscribe(
                             {
                                 LogUtil.d("create RT")
-                                profileView.notifyStatusChange(position, it.retweetedStatus)
+                                view.notifyStatusChange(position, it.retweetedStatus)
                             },
                             {
-                                profileView.showError(it)
+                                view.showError(it)
                             })
                 } else {
-                    apiProvider.destroyRetweet(twitter, tweet.currentUserRetweetId).subscribe(
+                    twitterRepositoryImpl.destroyRetweet(twitter, tweet.currentUserRetweetId).subscribe(
                             {
                                 LogUtil.d("destroy RT")
-                                profileView.notifyStatusChange(position, it)
+                                view.notifyStatusChange(position, it)
                             },
                             {
-                                profileView.showError(it)
+                                view.showError(it)
                             })
                 }
 

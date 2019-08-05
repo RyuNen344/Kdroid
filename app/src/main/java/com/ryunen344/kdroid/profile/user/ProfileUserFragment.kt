@@ -14,42 +14,36 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R.layout.fragment_profile_user
 import com.ryunen344.kdroid.behavior.EndlessScrollListener
-import com.ryunen344.kdroid.di.provider.ApiProvider
-import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.profile.ProfileActivity
 import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.fragment_profile_user.*
 import kotlinx.android.synthetic.main.fragment_profile_user.view.*
-import org.koin.android.ext.android.inject
+import org.koin.android.scope.currentScope
 import twitter4j.User
 
 class ProfileUserFragment : Fragment(), ProfileUserContract.View {
 
+    override val presenter : ProfileUserContract.Presenter by currentScope.inject()
 
-    private val appProvider: AppProvider by inject()
-    private val apiProvider: ApiProvider by inject()
-    private val utilProvider: UtilProvider by inject()
-    private lateinit var mPresenter: ProfileUserContract.Presenter
-    lateinit var profileUserListView: LinearLayout
-    lateinit var mLayoutManager: LinearLayoutManager
-    lateinit var mRecyclerView: RecyclerView
-    var mPagerPosition: Int = 0
-    private var mUserId: Long = 0L
-    private var mScreenName: String = ""
+    lateinit var profileUserListView : LinearLayout
+    lateinit var mLayoutManager : LinearLayoutManager
+    lateinit var mRecyclerView : RecyclerView
+    var mPagerPosition : Int = 0
+    private var mUserId : Long = 0L
+    private var mScreenName : String = ""
 
     companion object {
-        fun newInstance() = ProfileUserFragment()
+        const val INTENT_KEY_PAGER_POSITION : String = "key_pager_position"
     }
 
-    private var itemListner: ProfileUserContract.ProfileItemListner = object : ProfileUserContract.ProfileItemListner {
+    private var itemListner : ProfileUserContract.ProfileItemListener = object : ProfileUserContract.ProfileItemListener {
         override fun onAccountClick() {
             LogUtil.d()
         }
 
-        override fun onImageClick(mediaUrl: String) {
+        override fun onImageClick(mediaUrl : String) {
             LogUtil.d()
         }
 
@@ -59,24 +53,25 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
 
     }
 
-    private val profileUserAdapter = ProfileUserAdapter(ArrayList(0), itemListner, appProvider, utilProvider)
+    private val profileUserAdapter = ProfileUserAdapter(ArrayList(0), itemListner)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState : Bundle?) {
         LogUtil.d()
         super.onCreate(savedInstanceState)
         ensureNotNull(activity) {
             mUserId = it.intent.getLongExtra(ProfileActivity.INTENT_KEY_USER_ID, 0)
-            ensureNotNull(it.intent.getStringExtra(ProfileActivity.INTENT_KEY_SCREEN_NAME)) {
-                mScreenName = it
-            }
+            mScreenName = it.intent.getStringExtra(ProfileActivity.INTENT_KEY_SCREEN_NAME) ?: ""
         }
-        LogUtil.d("setPresenter")
-        ProfileUserPresenter(this, appProvider, apiProvider, mPagerPosition, mUserId, mScreenName)
+
+        currentScope.getKoin().setProperty(ProfileActivity.INTENT_KEY_USER_ID, mUserId)
+        currentScope.getKoin().setProperty(ProfileActivity.INTENT_KEY_SCREEN_NAME, mScreenName)
+        currentScope.getKoin().setProperty(INTENT_KEY_PAGER_POSITION, mPagerPosition)
+        presenter.view = this
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        var root: View = inflater.inflate(fragment_profile_user, container, false)
+        var root : View = inflater.inflate(fragment_profile_user, container, false)
 
         with(root) {
             mLayoutManager = LinearLayoutManager(context)
@@ -89,9 +84,9 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
         }
 
         mRecyclerView.addOnScrollListener(object : EndlessScrollListener(mLayoutManager) {
-            override fun onLoadMore(currentPage: Int) {
+            override fun onLoadMore(currentPage : Int) {
                 LogUtil.d("current page is " + currentPage)
-                mPresenter.loadMoreList(currentPage)
+                presenter.loadMoreList(currentPage)
             }
         })
 
@@ -105,14 +100,14 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
         return root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
         LogUtil.d()
         super.onViewCreated(view, savedInstanceState)
         profile_user_list.adapter = profileUserAdapter
-        mPresenter.start()
+        presenter.start()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
+    override fun onActivityCreated(savedInstanceState : Bundle?) {
         LogUtil.d()
         super.onActivityCreated(savedInstanceState)
     }
@@ -124,15 +119,15 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
 
     override fun onDestroy() {
         super.onDestroy()
-        mPresenter.clearDisposable()
+        presenter.clearDisposable()
     }
 
-    override fun showUserList(userList: List<User>) {
+    override fun showUserList(userList : List<User>) {
         profileUserAdapter.profileUserList = userList
         profileUserAdapter.notifyDataSetChanged()
     }
 
-    override fun showMediaViewer(mediaUrl: String) {
+    override fun showMediaViewer(mediaUrl : String) {
         val intent = Intent(context, MediaViewerActivity::class.java).apply {
             putExtra(MediaViewerActivity.INTENT_KEY_MEDIA_URL, mediaUrl)
         }
@@ -148,14 +143,7 @@ class ProfileUserFragment : Fragment(), ProfileUserContract.View {
         LogUtil.d()
     }
 
-    override fun setPresenter(presenter: ProfileUserContract.Presenter) {
-        LogUtil.d()
-        ensureNotNull(presenter) { p ->
-            mPresenter = p
-        }
-    }
-
-    override fun showError(e: Throwable) {
+    override fun showError(e : Throwable) {
         Snackbar.make(view!!, e.localizedMessage, Snackbar.LENGTH_LONG).show()
     }
 

@@ -19,6 +19,12 @@ import com.ryunen344.kdroid.profile.ProfileActivity
 import com.ryunen344.kdroid.profile.ProfileContract
 import com.ryunen344.kdroid.profile.ProfileFragment
 import com.ryunen344.kdroid.profile.ProfilePresenter
+import com.ryunen344.kdroid.profile.tweet.ProfileTweetContract
+import com.ryunen344.kdroid.profile.tweet.ProfileTweetFragment
+import com.ryunen344.kdroid.profile.tweet.ProfileTweetPresenter
+import com.ryunen344.kdroid.profile.user.ProfileUserContract
+import com.ryunen344.kdroid.profile.user.ProfileUserFragment
+import com.ryunen344.kdroid.profile.user.ProfileUserPresenter
 import com.ryunen344.kdroid.tweetDetail.TweetDetailActivity
 import com.ryunen344.kdroid.tweetDetail.TweetDetailContract
 import com.ryunen344.kdroid.tweetDetail.TweetDetailFragment
@@ -52,6 +58,16 @@ val AppModule = module {
     factory { ProfileFragment() }
     scope(named<ProfileFragment>()) {
         scoped { ProfilePresenter(getProperty(ProfileActivity.INTENT_KEY_USER_ID), getProperty(ProfileActivity.INTENT_KEY_SCREEN_NAME)) as ProfileContract.Presenter }
+    }
+
+    factory { ProfileTweetFragment() }
+    scope(named<ProfileTweetFragment>()) {
+        scoped { ProfileTweetPresenter(getProperty(ProfileTweetFragment.INTENT_KEY_PAGER_POSITION), getProperty(ProfileActivity.INTENT_KEY_USER_ID), getProperty(ProfileActivity.INTENT_KEY_SCREEN_NAME)) as ProfileTweetContract.Presenter }
+    }
+
+    factory { ProfileUserFragment() }
+    scope(named<ProfileUserFragment>()) {
+        scoped { ProfileUserPresenter(getProperty(ProfileUserFragment.INTENT_KEY_PAGER_POSITION), getProperty(ProfileActivity.INTENT_KEY_USER_ID), getProperty(ProfileActivity.INTENT_KEY_SCREEN_NAME)) as ProfileUserContract.Presenter }
     }
 
     factory { MediaViewerFragment() }

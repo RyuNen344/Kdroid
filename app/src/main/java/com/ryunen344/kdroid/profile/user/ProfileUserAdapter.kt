@@ -8,13 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.util.LogUtil
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_user.view.*
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import twitter4j.User
 
-class ProfileUserAdapter(profileUserList: List<User>, val profileItemListner: ProfileUserContract.ProfileItemListner, val appProvider: AppProvider, val utilProvider: UtilProvider) : RecyclerView.Adapter<ProfileUserAdapter.ViewHolder>() {
+class ProfileUserAdapter(profileUserList : List<User>, val profileItemListener : ProfileUserContract.ProfileItemListener) : RecyclerView.Adapter<ProfileUserAdapter.ViewHolder>(), KoinComponent {
 
     var profileUserList: List<User> = profileUserList
         set(profileUserList: List<User>) {
@@ -22,9 +23,12 @@ class ProfileUserAdapter(profileUserList: List<User>, val profileItemListner: Pr
             notifyDataSetChanged()
         }
 
-    private val SCREEN_NAME_PREFIX : String = "@"
-
+    private val appProvider : AppProvider by inject()
     private var mPicasso: Picasso = appProvider.providePiccaso()
+
+    companion object {
+        private const val SCREEN_NAME_PREFIX : String = "@"
+    }
 
     override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : ViewHolder {
         var view : View = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
@@ -57,7 +61,7 @@ class ProfileUserAdapter(profileUserList: List<User>, val profileItemListner: Pr
         }
 
         holder.user_account_name.text = profileUserList[position].name
-        var screenName : String = SCREEN_NAME_PREFIX + profileUserList[position].screenName
+        var screenName : String = Companion.SCREEN_NAME_PREFIX + profileUserList[position].screenName
         holder.user_screen_name.text = screenName
         holder.user_description.text = profileUserList[position].description
 
@@ -72,4 +76,6 @@ class ProfileUserAdapter(profileUserList: List<User>, val profileItemListner: Pr
         var user_description : TextView = itemView.user_profile_description
 
     }
+
+
 }

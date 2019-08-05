@@ -16,25 +16,20 @@ import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_profile_tweet
 import com.ryunen344.kdroid.behavior.EndlessScrollListener
-import com.ryunen344.kdroid.di.provider.ApiProvider
-import com.ryunen344.kdroid.di.provider.AppProvider
-import com.ryunen344.kdroid.di.provider.UtilProvider
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
 import com.ryunen344.kdroid.profile.ProfileActivity
 import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.ensureNotNull
 import kotlinx.android.synthetic.main.fragment_profile_tweet.*
 import kotlinx.android.synthetic.main.fragment_profile_tweet.view.*
-import org.koin.android.ext.android.inject
+import org.koin.android.scope.currentScope
 import twitter4j.Status
 import twitter4j.User
 
 class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
 
-    private val appProvider : AppProvider by inject()
-    private val apiProvider : ApiProvider by inject()
-    private val utilProvider : UtilProvider by inject()
-    private lateinit var mPresenter : ProfileTweetContract.Presenter
+    override val presenter : ProfileTweetContract.Presenter by currentScope.inject()
+
     lateinit var profileTweetListView : LinearLayout
     lateinit var mLayoutManager : LinearLayoutManager
     lateinit var mRecyclerView : RecyclerView
@@ -43,35 +38,35 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
     private var mScreenName: String = ""
 
     companion object {
-        fun newInstance() = ProfileTweetFragment()
+        const val INTENT_KEY_PAGER_POSITION : String = "key_pager_position"
     }
 
     private var itemListener: ProfileTweetContract.ProfileItemListener = object : ProfileTweetContract.ProfileItemListener {
         override fun onImageClick(mediaUrl: String) {
             LogUtil.d()
-            mPresenter.openMedia(mediaUrl)
+            presenter.openMedia(mediaUrl)
         }
 
         override fun onAccountClick(user : User) {
             //fixme
             LogUtil.d()
-            mPresenter.openProfile(user)
+            presenter.openProfile(user)
         }
 
         override fun onAccountClick(screenName: String) {
             LogUtil.d()
-            mPresenter.openProfile(screenName)
+            presenter.openProfile(screenName)
         }
 
         override fun onTweetClick() {
             //fixme
             LogUtil.d()
-            mPresenter.openTweetDetail()
+            presenter.openTweetDetail()
         }
 
         override fun onTweetLongClick(position: Int, tweet: Status) {
             LogUtil.d()
-            mPresenter.changeFavorite(position, tweet)
+            presenter.changeFavorite(position, tweet)
         }
 
         override fun onContextMenuClick(position: Int, tweet: Status) {
@@ -81,19 +76,21 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
 
     }
 
-    private val profileTweetAdapter = ProfileTweetAdapter(ArrayList(0), itemListener, appProvider, utilProvider)
+    private val profileTweetAdapter = ProfileTweetAdapter(ArrayList(0), itemListener)
 
     override fun onCreate(savedInstanceState : Bundle?) {
         LogUtil.d()
         super.onCreate(savedInstanceState)
         ensureNotNull(activity) {
             mUserId = it.intent.getLongExtra(ProfileActivity.INTENT_KEY_USER_ID, 0)
-            ensureNotNull(it.intent.getStringExtra(ProfileActivity.INTENT_KEY_SCREEN_NAME)) {
-                mScreenName = it
-            }
+            mScreenName = it.intent.getStringExtra(ProfileActivity.INTENT_KEY_SCREEN_NAME) ?: ""
         }
-        LogUtil.d("setPresenter")
-        ProfileTweetPresenter(this, appProvider, apiProvider, mPagerPosition, mUserId, mScreenName)
+
+        currentScope.getKoin().setProperty(ProfileActivity.INTENT_KEY_USER_ID, mUserId)
+        currentScope.getKoin().setProperty(ProfileActivity.INTENT_KEY_SCREEN_NAME, mScreenName)
+        currentScope.getKoin().setProperty(INTENT_KEY_PAGER_POSITION, mPagerPosition)
+        profileTweetAdapter.mUserId = mUserId
+        presenter.view = this
     }
 
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
@@ -113,7 +110,7 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
         mRecyclerView.addOnScrollListener(object : EndlessScrollListener(mLayoutManager) {
             override fun onLoadMore(currentPage : Int) {
                 LogUtil.d("current page is " + currentPage)
-                mPresenter.loadMoreList(currentPage)
+                presenter.loadMoreList(currentPage)
             }
         })
 
@@ -131,7 +128,7 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
         LogUtil.d()
         super.onViewCreated(view, savedInstanceState)
         profile_tweet_list.adapter = profileTweetAdapter
-        mPresenter.start()
+        presenter.start()
     }
 
     override fun onActivityCreated(savedInstanceState : Bundle?) {
@@ -146,7 +143,7 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
 
     override fun onDestroy() {
         LogUtil.d()
-        mPresenter.clearDisposable()
+        presenter.clearDisposable()
         super.onDestroy()
     }
 
@@ -197,13 +194,6 @@ class ProfileTweetFragment : Fragment(), ProfileTweetContract.View {
         LogUtil.d()
         super.onCreateContextMenu(menu, v, menuInfo)
         activity?.menuInflater?.inflate(R.menu.timeline_navigation, menu)
-    }
-
-    override fun setPresenter(presenter : ProfileTweetContract.Presenter) {
-        LogUtil.d()
-        ensureNotNull(presenter) { p ->
-            mPresenter = p
-        }
     }
 
     override fun showError(e : Throwable) {

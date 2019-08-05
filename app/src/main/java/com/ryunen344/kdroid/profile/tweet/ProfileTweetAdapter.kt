@@ -19,16 +19,21 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_tweet.view.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import twitter4j.Status
 import java.util.regex.Pattern
 
-class ProfileTweetAdapter(profileTweetList: MutableList<Status>, val profileItemListener: ProfileTweetContract.ProfileItemListener, val appProvider: AppProvider, val utilProvider: UtilProvider) : RecyclerView.Adapter<ProfileTweetAdapter.ViewHolder>() {
+class ProfileTweetAdapter(profileTweetList : MutableList<Status>, val profileItemListener : ProfileTweetContract.ProfileItemListener) : RecyclerView.Adapter<ProfileTweetAdapter.ViewHolder>(), KoinComponent {
 
     var profileTweetList: MutableList<Status> = profileTweetList
         set(profileTweetList: MutableList<Status>) {
             field = profileTweetList
             notifyDataSetChanged()
         }
+
+    private val appProvider : AppProvider by inject()
+    private val utilProvider : UtilProvider by inject()
 
     private val SCREEN_NAME_PREFIX: String = "@"
     private val VIA_PREFIX: String = "via "
