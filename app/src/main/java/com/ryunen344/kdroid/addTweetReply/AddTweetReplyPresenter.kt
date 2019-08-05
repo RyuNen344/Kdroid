@@ -1,10 +1,10 @@
 package com.ryunen344.kdroid.addTweetReply
 
 import com.ryunen344.kdroid.di.provider.AppProvider
+import com.ryunen344.kdroid.domain.repository.TwitterRepositoryImpl
 import com.ryunen344.kdroid.util.LogUtil
-import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.disposables.Disposable
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import twitter4j.Twitter
@@ -13,38 +13,35 @@ import twitter4j.Twitter
 class AddTweetReplyPresenter() : AddTweetReplyContract.Presenter, KoinComponent {
 
     private val appProvider : AppProvider by inject()
-    private var mTwitter : Twitter = appProvider.provideTwitter()
+    private var twitter : Twitter = appProvider.provideTwitter()
+    private var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
+    private val twitterRepositoryImpl : TwitterRepositoryImpl by inject()
 
     override lateinit var view : AddTweetReplyContract.View
-
-    private val compositeDisposable = CompositeDisposable()
 
     override fun start() {
         //nop
     }
 
     override fun sendTweet(tweetDescription : String) {
-        LogUtil.d()
         LogUtil.d(tweetDescription)
+        val disposable : Disposable = twitterRepositoryImpl.updateStatus(twitter, tweetDescription).subscribe(
+                {
+                    LogUtil.d()
+                    view.showTimeline()
+                },
+                {
+                    LogUtil.e(it)
+                    view.showError(it)
+                })
 
-        tweetDescription.let {
-            Completable.create {
-                mTwitter.updateStatus(tweetDescription)
-                it.onComplete()
-            }
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(
-                            {
-                                view.showTimeline()
-                            },
-                            {
-                                view.showError(it)
-                                LogUtil.e(it)
-                            })
-        }.run {
-            LogUtil.d(tweetDescription)
-        }
-
+        mCompositeDisposable.add(disposable)
     }
+
+    override fun clearDisposable() {
+        LogUtil.d()
+        mCompositeDisposable.clear()
+    }
+
 
 }

@@ -1,5 +1,7 @@
 package com.ryunen344.kdroid.domain.repository
 
+import io.reactivex.Completable
+import io.reactivex.CompletableOnSubscribe
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -10,6 +12,19 @@ import twitter4j.Twitter
 import twitter4j.User
 
 class TwitterRepositoryImpl : TwitterRepository {
+
+    override fun updateStatus(twitter : Twitter, status : String) : Completable {
+        return Completable.create(CompletableOnSubscribe { emitter ->
+            try {
+                twitter.updateStatus(status)
+                emitter.onComplete()
+            } catch (t : Throwable) {
+                emitter.onError(t)
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
 
     override fun getTimeLine(twitter : Twitter, paging : Paging) : Single<MutableList<Status>> {
         return Single.create(SingleOnSubscribe<MutableList<Status>>

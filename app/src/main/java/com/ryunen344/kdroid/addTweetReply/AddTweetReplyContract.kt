@@ -11,6 +11,7 @@ interface AddTweetReplyContract {
 
     interface Presenter : PreBasePresenter<View> {
         fun sendTweet(tweetDescription : String)
+        fun clearDisposable()
     }
 
 }

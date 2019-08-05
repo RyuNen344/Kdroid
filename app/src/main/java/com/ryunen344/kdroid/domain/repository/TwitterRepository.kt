@@ -1,5 +1,6 @@
 package com.ryunen344.kdroid.domain.repository
 
+import io.reactivex.Completable
 import io.reactivex.Single
 import twitter4j.Paging
 import twitter4j.Status
@@ -8,6 +9,7 @@ import twitter4j.User
 
 interface TwitterRepository {
 
+    fun updateStatus(twitter : Twitter, status : String) : Completable
     fun getTimeLine(twitter : Twitter, paging : Paging) : Single<MutableList<Status>>
     fun getMention(twitter : Twitter, paging : Paging) : Single<MutableList<Status>>
     fun createFavorite(twitter : Twitter, tweetId : Long) : Single<Status>

@@ -19,12 +19,13 @@ class AddTweetReplyFragment : Fragment(), AddTweetReplyContract.View {
 
     override val presenter : AddTweetReplyContract.Presenter by currentScope.inject()
 
-    var mTweetDescription : TextView? = null
+    private var mTweetDescription : TextView? = null
+
     override fun onCreate(savedInstanceState : Bundle?) {
         LogUtil.d()
         super.onCreate(savedInstanceState)
+        presenter.view = this
     }
-
 
     override fun onActivityCreated(savedInstanceState : Bundle?) {
         LogUtil.d()
@@ -46,6 +47,12 @@ class AddTweetReplyFragment : Fragment(), AddTweetReplyContract.View {
         return root
     }
 
+    override fun onDestroy() {
+        LogUtil.d()
+        presenter.clearDisposable()
+        super.onDestroy()
+    }
+
     override fun showTimeline() {
         LogUtil.d()
         activity?.setResult(Activity.RESULT_OK)
@@ -57,6 +64,5 @@ class AddTweetReplyFragment : Fragment(), AddTweetReplyContract.View {
         LogUtil.e(e)
         Snackbar.make(add_tweet_reply_description, e.message.toString(), Snackbar.LENGTH_LONG).show()
     }
-
 
 }
