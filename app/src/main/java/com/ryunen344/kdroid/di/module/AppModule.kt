@@ -25,9 +25,9 @@ import com.ryunen344.kdroid.profile.tweet.ProfileTweetPresenter
 import com.ryunen344.kdroid.profile.user.ProfileUserContract
 import com.ryunen344.kdroid.profile.user.ProfileUserFragment
 import com.ryunen344.kdroid.profile.user.ProfileUserPresenter
-import com.ryunen344.kdroid.setting.SettingContract
-import com.ryunen344.kdroid.setting.SettingFragment
-import com.ryunen344.kdroid.setting.SettingPresenter
+import com.ryunen344.kdroid.settings.SettingsContract
+import com.ryunen344.kdroid.settings.SettingsFragment
+import com.ryunen344.kdroid.settings.SettingsPresenter
 import com.ryunen344.kdroid.tweetDetail.TweetDetailActivity
 import com.ryunen344.kdroid.tweetDetail.TweetDetailContract
 import com.ryunen344.kdroid.tweetDetail.TweetDetailFragment
@@ -78,8 +78,8 @@ val AppModule = module {
         scoped { MediaViewerPresenter(getProperty(MediaViewerActivity.INTENT_KEY_MEDIA_URL)) as MediaViewerContract.Presenter }
     }
 
-    factory { SettingFragment() }
-    scope(named<SettingFragment>()) {
-        scoped { SettingPresenter() as SettingContract.Presenter }
+    factory { SettingsFragment() }
+    scope(named<SettingsFragment>()) {
+        scoped { SettingsPresenter() as SettingsContract.Presenter }
     }
 }

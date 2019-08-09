@@ -1,9 +1,9 @@
-package com.ryunen344.kdroid.setting
+package com.ryunen344.kdroid.settings
 
 import com.ryunen344.kdroid.PreBasePresenter
 import com.ryunen344.kdroid.PreBaseView
 
-interface SettingContract {
+interface SettingsContract {
 
     interface View : PreBaseView<Presenter> {
         fun doSomething()

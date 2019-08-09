@@ -17,7 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_home
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
-import com.ryunen344.kdroid.setting.SettingsActivity
+import com.ryunen344.kdroid.settings.SettingsActivity
 import com.ryunen344.kdroid.util.LogUtil
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home.*

@@ -1,4 +1,4 @@
-package com.ryunen344.kdroid.setting
+package com.ryunen344.kdroid.settings
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
@@ -6,9 +6,9 @@ import com.ryunen344.kdroid.R.xml.pref_headers
 import com.ryunen344.kdroid.util.LogUtil
 import org.koin.android.scope.currentScope
 
-class SettingFragment : PreferenceFragmentCompat(), SettingContract.View {
+class SettingsFragment : PreferenceFragmentCompat(), SettingsContract.View {
 
-    override val presenter : SettingContract.Presenter by currentScope.inject()
+    override val presenter : SettingsContract.Presenter by currentScope.inject()
 
     override fun onCreate(savedInstanceState : Bundle?) {
         LogUtil.d()

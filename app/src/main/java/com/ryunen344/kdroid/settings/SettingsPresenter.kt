@@ -1,11 +1,11 @@
-package com.ryunen344.kdroid.setting
+package com.ryunen344.kdroid.settings
 
 import com.ryunen344.kdroid.util.LogUtil
 import org.koin.core.KoinComponent
 
-class SettingPresenter : SettingContract.Presenter, KoinComponent {
+class SettingsPresenter : SettingsContract.Presenter, KoinComponent {
 
-    override lateinit var view : SettingContract.View
+    override lateinit var view : SettingsContract.View
 
     override fun start() {
         LogUtil.d()
