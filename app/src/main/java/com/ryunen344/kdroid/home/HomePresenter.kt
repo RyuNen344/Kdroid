@@ -14,6 +14,7 @@ import com.ryunen344.kdroid.domain.entity.AccountDetail
 import com.ryunen344.kdroid.domain.repository.AccountRepositoryImpl
 import com.ryunen344.kdroid.domain.repository.TwitterRepositoryImpl
 import com.ryunen344.kdroid.mediaViewer.MediaViewerActivity
+import com.ryunen344.kdroid.setting.SettingsActivity
 import com.ryunen344.kdroid.util.LogUtil
 import com.ryunen344.kdroid.util.splitLastThreeWord
 import com.ryunen344.kdroid.workers.ProfileUpdateWorker
@@ -173,6 +174,9 @@ class HomePresenter(private val userId : Long) : HomeContract.Presenter, KoinCom
                     Activity.RESULT_OK -> view.showSuccessfullyTweet()
                     Activity.RESULT_CANCELED -> view.showFailTweet()
                 }
+            }
+            SettingsActivity.REQUEST_SETTING -> {
+                LogUtil.d()
             }
             MediaViewerActivity.REQUEST_SHOW_MEDIA -> {
                 LogUtil.d("media finish()")

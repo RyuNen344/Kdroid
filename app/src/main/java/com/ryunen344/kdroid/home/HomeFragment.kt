@@ -17,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.kdroid.R
 import com.ryunen344.kdroid.R.layout.fragment_home
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyActivity
+import com.ryunen344.kdroid.setting.SettingsActivity
 import com.ryunen344.kdroid.util.LogUtil
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -84,6 +85,8 @@ class HomeFragment : Fragment(), HomeContract.View {
                 }
                 R.id.nav_setting -> {
                     LogUtil.d()
+                    val intent = Intent(context, SettingsActivity::class.java)
+                    startActivityForResult(intent, SettingsActivity.REQUEST_SETTING)
                 }
                 R.id.nav_feedback -> {
                     LogUtil.d()
