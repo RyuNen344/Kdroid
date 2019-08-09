@@ -14,7 +14,7 @@ android {
 
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.ryunen344.kdroid"
+        applicationId "com.ryunen344.twikot"
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
