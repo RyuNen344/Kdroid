@@ -1,5 +1,8 @@
 package com.ryunen344.kdroid.di.module
 
+import com.ryunen344.kdroid.accountList.AccountListContract
+import com.ryunen344.kdroid.accountList.AccountListFragment
+import com.ryunen344.kdroid.accountList.AccountListPresenter
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyContract
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyFragment
 import com.ryunen344.kdroid.addTweetReply.AddTweetReplyPresenter
@@ -37,6 +40,11 @@ import org.koin.dsl.module
 
 val AppModule = module {
     single {AppProvider()}
+
+    factory { AccountListFragment() }
+    scope(named<AccountListFragment>()) {
+        scoped { AccountListPresenter() as AccountListContract.Presenter }
+    }
 
     factory { HomeFragment() }
     scope(named<HomeFragment>()) {

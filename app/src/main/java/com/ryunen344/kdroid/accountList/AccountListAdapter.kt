@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_account_list.view.*
 import java.io.File
 
 
-class AccountListAdapter(accountList : List<AccountAndAccountDetail>, private val accountItemListener : AccountListContract.AccountItemListner) : RecyclerView.Adapter<AccountListAdapter.ViewHolder>() {
+class AccountListAdapter(accountList : List<AccountAndAccountDetail>, private val accountItemListener : AccountListContract.AccountItemListener) : RecyclerView.Adapter<AccountListAdapter.ViewHolder>() {
 
     var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
     var accountList : List<AccountAndAccountDetail> = accountList

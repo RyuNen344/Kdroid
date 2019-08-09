@@ -2,42 +2,52 @@ package com.ryunen344.kdroid.accountList
 
 import android.net.Uri
 import android.os.Handler
-import com.ryunen344.kdroid.domain.database.AccountDatabase
-import com.ryunen344.kdroid.domain.repository.AccountRepository
+import com.ryunen344.kdroid.domain.repository.AccountRepositoryImpl
+import com.ryunen344.kdroid.util.LogUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import twitter4j.TwitterException
 import twitter4j.auth.OAuthAuthorization
 import twitter4j.auth.RequestToken
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
-class AccountListPresenter(val accountListView : AccountListContract.View) : AccountListContract.Presenter{
+class AccountListPresenter : AccountListContract.Presenter, KoinComponent {
 
-    init {
-        accountListView.setPresenter(this)
-    }
+    override lateinit var view : AccountListContract.View
+
+    private var mCompositeDisposable : CompositeDisposable = CompositeDisposable()
+    private val accountRepositoryImpl : AccountRepositoryImpl by inject()
 
     override fun start() {
         //fixme
+        LogUtil.d()
         loadAccountList()
     }
 
     override fun loadAccountList() {
-        //accountListView.showProgress(true)
-        AccountDatabase.getInstance()?.let { accountDatabase ->
-            val accountDao : AccountRepository = accountDatabase.accountRepository()
-
-            accountDao.findAccountList()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            { accountListView.showAccountList(it) }
-                            , { e -> accountListView.showError(e) }
-                    )
-        }
+        LogUtil.d()
+        view.showProgress(true)
+        val disposable = accountRepositoryImpl.findAccountList()
+                .delay(800, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            view.showAccountList(it)
+                        },
+                        {
+                            view.showError(it)
+                        }
+                )
+        mCompositeDisposable.add(disposable)
     }
 
     override fun addAccountWithOAuth(oauth : OAuthAuthorization, consumerKey : String, consumerSecretKey : String) {
+        LogUtil.d()
         //fixme
         var mReq: RequestToken? = null
         // Oauth認証オブジェクトにconsumerKeyとconsumerSecretを設定
@@ -53,13 +63,13 @@ class AccountListPresenter(val accountListView : AccountListContract.View) : Acc
                 mUri  = Uri.parse(mReq?.authorizationURL)
                 // Log.i(TAG, mUri.toString())
             } catch (e: TwitterException) {
-                accountListView.showError(e)
+                view.showError(e)
             }
             handler.post {
                 if (mUri != null) {
-                    accountListView.showCallback(mReq, mUri)
+                    view.showCallback(mReq, mUri)
                 } else {
-                    accountListView.showError(Throwable("uri is null"))
+                    view.showError(Throwable("uri is null"))
                 }
             }
         }
@@ -68,6 +78,11 @@ class AccountListPresenter(val accountListView : AccountListContract.View) : Acc
 
     override fun deleteAccount() {
         //fixme
+    }
+
+    override fun clearDisposable() {
+        LogUtil.d()
+        mCompositeDisposable.clear()
     }
 
 }

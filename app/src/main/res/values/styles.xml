@@ -36,6 +36,11 @@
     </style>
 
 
+    <style name="ContentLoadingProgress">
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+    </style>
+
+
     <!-- 半透明背景設定 -->
     <drawable name="transparameter">#7f000000</drawable>
 
