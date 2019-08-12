@@ -17,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.twikot.R
 import com.ryunen344.twikot.R.layout.fragment_home
 import com.ryunen344.twikot.addTweetReply.AddTweetReplyActivity
+import com.ryunen344.twikot.profile.ProfileActivity
 import com.ryunen344.twikot.settings.SettingsActivity
 import com.ryunen344.twikot.util.LogUtil
 import kotlinx.android.synthetic.main.activity_home.*
@@ -54,6 +55,7 @@ class HomeFragment : Fragment(), HomeContract.View {
         LogUtil.d()
         super.onCreate(savedInstanceState)
         currentScope.getKoin().setProperty(HomeActivity.INTENT_KEY_USER_ID, arguments!!.getLong(HomeActivity.INTENT_KEY_USER_ID))
+        presenter.view = this
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -79,9 +81,16 @@ class HomeFragment : Fragment(), HomeContract.View {
             when (item.itemId) {
                 R.id.nav_profile -> {
                     LogUtil.d()
+                    val intent = Intent(context, ProfileActivity::class.java).apply {
+                        putExtra(ProfileActivity.INTENT_KEY_USER_ID, arguments!!.getLong(HomeActivity.INTENT_KEY_USER_ID))
+                    }
+                    startActivity(intent)
                 }
                 R.id.nav_reload -> {
                     LogUtil.d()
+                    mSectionsPagerAdapter.destroyAll(view_pager_container)
+                    setPagerAdapter()
+                    mSectionsPagerAdapter.notifyDataSetChanged()
                 }
                 R.id.nav_setting -> {
                     LogUtil.d()
@@ -148,14 +157,11 @@ class HomeFragment : Fragment(), HomeContract.View {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         LogUtil.d()
         super.onActivityCreated(savedInstanceState)
-        mSectionsPagerAdapter = HomeSectionsPagerAdapter(fragmentManager!!)
-        view_pager_container.adapter = mSectionsPagerAdapter
-        view_pager_container.offscreenPageLimit = mSectionsPagerAdapter.count - 1
+        setPagerAdapter()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         LogUtil.d()
-        presenter.view = this
         presenter.start()
         presenter.initTwitter(context?.filesDir?.absolutePath)
     }
@@ -241,5 +247,11 @@ class HomeFragment : Fragment(), HomeContract.View {
         inflater.inflate(R.menu.timeline_navigation, menu)
     }
 
+    private fun setPagerAdapter() {
+        LogUtil.d()
+        mSectionsPagerAdapter = HomeSectionsPagerAdapter(fragmentManager!!)
+        view_pager_container.adapter = mSectionsPagerAdapter
+        view_pager_container.offscreenPageLimit = mSectionsPagerAdapter.count - 1
+    }
 
 }

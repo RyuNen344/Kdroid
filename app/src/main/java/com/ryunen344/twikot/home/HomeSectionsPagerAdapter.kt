@@ -1,10 +1,12 @@
 package com.ryunen344.twikot.home
 
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.ryunen344.twikot.home.search.HomeSearchFragment
 import com.ryunen344.twikot.home.tweet.HomeTweetFragment
+import com.ryunen344.twikot.util.LogUtil
 
 class HomeSectionsPagerAdapter(fragmentManager : FragmentManager) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
@@ -29,6 +31,13 @@ class HomeSectionsPagerAdapter(fragmentManager : FragmentManager) : FragmentPage
             0 -> "timeline"
             1 -> "mention"
             else -> "search"
+        }
+    }
+
+    fun destroyAll(container : ViewGroup) {
+        for (position in 0 .. count) {
+            LogUtil.d()
+            destroyItem(container, position, getItem(position))
         }
     }
 
