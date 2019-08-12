@@ -22,7 +22,7 @@ import org.jsoup.nodes.Document
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import twitter4j.Status
-import java.util.regex.Pattern
+import java.util.regex.*
 
 
 class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemListener : HomeTweetContract.TweetItemListener) : RecyclerView.Adapter<HomeTweetAdapter.ViewHolder>(), KoinComponent {
@@ -232,7 +232,7 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
                 .into(imageView)
 
         imageView.setOnClickListener {
-            tweetItemListener.onImageClick(mediaUrl)
+            tweetItemListener.onImageClick(mediaUrl, it as ImageView)
         }
     }
 

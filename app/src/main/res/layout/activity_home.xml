@@ -54,7 +54,7 @@
                 android:layout_height="?actionBarSize"
                 android:layout_gravity="bottom"
                 android:background="?android:attr/windowBackground"
-                app:layout_behavior="com.ryunen344.kdroid.behavior.BottomNavigationBehavior"
+            app:layout_behavior="com.ryunen344.twikot.behavior.BottomNavigationBehavior"
                 app:menu="@menu/timeline_navigation"
                 app:layout_scrollFlags="snap"/>
 
@@ -66,7 +66,7 @@
                 android:layout_margin="@dimen/fab_margin"
                 app:layout_anchor="@id/navigation"
                 app:layout_anchorGravity="top|end"
-                app:layout_behavior="com.ryunen344.kdroid.behavior.BottomNavigationFABBehavior"
+            app:layout_behavior="com.ryunen344.twikot.behavior.BottomNavigationFABBehavior"
                 app:srcCompat="@android:drawable/ic_dialog_email"
                 app:useCompatPadding="true"/>
 

@@ -1,5 +1,6 @@
 package com.ryunen344.twikot.home.tweet
 
+import android.widget.ImageView
 import com.ryunen344.twikot.di.provider.AppProvider
 import com.ryunen344.twikot.domain.repository.TwitterRepositoryImpl
 import com.ryunen344.twikot.util.LogUtil
@@ -139,6 +140,11 @@ class HomeTweetPresenter(private val pagerPosition : Int, val userId : Long) : H
     override fun openMedia(mediaUrl : String) {
         LogUtil.d()
         view.showMediaViewer(mediaUrl)
+    }
+
+    override fun openMedia(mediaUrl : String, targetView : ImageView) {
+        LogUtil.d()
+        view.showMediaViewer(mediaUrl, targetView)
     }
 
     override fun openTweetDetail(tweet : Status) {
