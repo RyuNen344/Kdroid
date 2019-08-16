@@ -1,0 +1,63 @@
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:key="category_front"
+        app:title="Display Setting">
+
+        <com.ryunen344.twikot.settings.preferences.WallpaperPreference
+            android:dialogLayout="@layout/fragment_preference_wallpaper"
+            app:key="key_wallpaper"
+            app:summary="Report technical issues or suggest new features"
+            app:title="Wallpaper" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="category_operation"
+        app:title="Operation Setting">
+
+        <Preference
+            app:key="asdf"
+            app:summary="Report technical issues or suggest new features"
+            app:title="Send feedback" />
+
+        <ListPreference
+            android:defaultValue="180"
+            android:entries="@array/pref_sync_frequency_titles"
+            android:entryValues="@array/pref_sync_frequency_values"
+            android:key="sync_frequency"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:title="@string/pref_title_sync_frequency" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="category_about_this_app"
+        app:title="about this app">
+
+        <Preference
+            app:key="key_about_this_app"
+            app:title="About This App">
+
+            <intent
+                android:targetClass="com.ryunen344.twikot.accountList.AccountListActivity"
+                android:targetPackage="com.ryunen344.twikot" />
+
+        </Preference>
+
+        <Preference
+            app:key="key_license"
+            app:title="License">
+
+            <intent
+                android:targetClass="com.ryunen344.twikot.accountList.AccountListActivity"
+                android:targetPackage="com.ryunen344.twikot" />
+
+        </Preference>
+
+    </PreferenceCategory>
+
+
+</androidx.preference.PreferenceScreen>

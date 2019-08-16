@@ -31,6 +31,9 @@ import com.ryunen344.twikot.profile.user.ProfileUserPresenter
 import com.ryunen344.twikot.settings.SettingsContract
 import com.ryunen344.twikot.settings.SettingsFragment
 import com.ryunen344.twikot.settings.SettingsPresenter
+import com.ryunen344.twikot.settings.preferences.WallpaperPreferenceContract
+import com.ryunen344.twikot.settings.preferences.WallpaperPreferenceDialogFragmentCompat
+import com.ryunen344.twikot.settings.preferences.WallpaperPreferencePresenter
 import com.ryunen344.twikot.tweetDetail.TweetDetailActivity
 import com.ryunen344.twikot.tweetDetail.TweetDetailContract
 import com.ryunen344.twikot.tweetDetail.TweetDetailFragment
@@ -89,5 +92,10 @@ val AppModule = module {
     factory { SettingsFragment() }
     scope(named<SettingsFragment>()) {
         scoped { SettingsPresenter() as SettingsContract.Presenter }
+    }
+
+    factory { WallpaperPreferenceDialogFragmentCompat() }
+    scope(named<WallpaperPreferenceDialogFragmentCompat>()) {
+        scoped { WallpaperPreferencePresenter() as WallpaperPreferenceContract.Presenter }
     }
 }
