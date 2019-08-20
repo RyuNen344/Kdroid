@@ -1,12 +1,15 @@
 package com.ryunen344.twikot.settings.preferences
 
 import android.app.Dialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Switch
@@ -24,6 +27,7 @@ class WallpaperPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat()
     lateinit var button : Button
     lateinit var switch : Switch
     lateinit var seekBar : SeekBar
+    lateinit var image : ImageView
 
     companion object {
 
@@ -35,6 +39,8 @@ class WallpaperPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat()
             fragment.arguments = bundle
             return fragment
         }
+
+        const val REQUEST_IMAGE_GET = 1
     }
 
     override fun onCreateDialog(savedInstanceState : Bundle?) : Dialog {
@@ -44,6 +50,8 @@ class WallpaperPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat()
         val builder = AlertDialog.Builder(context!!)
                 .setTitle(preference.title)
                 .setIcon(preference.icon)
+                .setPositiveButton("positive", this)
+                .setNegativeButton("negative", this)
 
         val contentView = onCreateDialogView(context)
         if (contentView != null) {
@@ -97,11 +105,11 @@ class WallpaperPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat()
             button = it.wallpaper_button
             seekBar = it.alpha_seekbar
             switch = it.crop_switch
+            image = it.wallpaper_view
         }
 
         button.setOnClickListener {
-            onClickLog(it)
-            presenter.doSomething()
+            presenter.selectWallpaperImage()
         }
 
         seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -135,6 +143,26 @@ class WallpaperPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat()
 
     override fun doSomething() {
         LogUtil.d()
+    }
+
+    override fun openImagePicker() {
+        LogUtil.d()
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        if (intent.resolveActivity(activity?.packageManager!!) != null) {
+            startActivityForResult(intent, REQUEST_IMAGE_GET)
+        }
+
+    }
+
+    override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?) {
+        LogUtil.d()
+        presenter.result(requestCode, resultCode, data)
+    }
+
+    override fun showWallpaperImage(imageUri : Uri) {
+        LogUtil.d(imageUri)
+        image.setImageURI(imageUri)
     }
 
     override fun showError(e : Throwable) {
