@@ -18,25 +18,6 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@color/grey_800" />
 
-    <SeekBar
-        android:id="@+id/alpha_seekbar"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_margin="@dimen/text_margin"
-        app:layout_constraintTop_toBottomOf="@+id/wallpaper_view"
-        tools:layout_editor_absoluteX="0dp" />
-
-    <Switch
-        android:id="@+id/crop_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/profile_image_margin"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toStartOf="@+id/wallpaper_button"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/alpha_seekbar" />
-
     <Button
         android:id="@+id/wallpaper_button"
         android:layout_width="wrap_content"
@@ -46,7 +27,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/alpha_seekbar" />
+        app:layout_constraintTop_toBottomOf="@+id/wallpaper_alpha_seekbar" />
+
+    <SeekBar
+        android:id="@+id/wallpaper_alpha_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_margin="@dimen/text_margin"
+        app:layout_constraintTop_toBottomOf="@+id/wallpaper_view"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <Switch
+        android:id="@+id/wallpaper_crop_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/profile_image_margin"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toStartOf="@+id/wallpaper_button"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wallpaper_alpha_seekbar" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

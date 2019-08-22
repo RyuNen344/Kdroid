@@ -6,7 +6,6 @@
         app:title="Display Setting">
 
         <com.ryunen344.twikot.settings.preferences.WallpaperPreference
-            android:dialogLayout="@layout/fragment_preference_wallpaper"
             app:key="key_wallpaper"
             app:summary="Report technical issues or suggest new features"
             app:title="Wallpaper" />

@@ -103,8 +103,8 @@ class WallpaperPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat()
 
         view?.let {
             button = it.wallpaper_button
-            seekBar = it.alpha_seekbar
-            switch = it.crop_switch
+            seekBar = it.wallpaper_alpha_seekbar
+            switch = it.wallpaper_crop_switch
             image = it.wallpaper_view
         }
 
