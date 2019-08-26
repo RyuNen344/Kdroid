@@ -8,14 +8,16 @@ import com.ryunen344.twikot.PreBaseView
 interface WallpaperPreferenceContract {
 
     interface View : PreBaseView<Presenter> {
-        fun doSomething()
+        fun setSharedPreferencesParam(uriStr : String?, seekBarValue : Int, cropState : Boolean)
+        fun initView()
         fun openImagePicker()
         fun showWallpaperImage(imageUri : Uri)
     }
 
     interface Presenter : PreBasePresenter<View> {
-        fun doSomething()
         fun selectWallpaperImage()
+        fun loadSharedPreferences()
+        fun saveCurrentPreferences(uriString : String?, seekBarValue : Int, cropSwitchState : Boolean)
         fun result(requestCode : Int, resultCode : Int, data : Intent?)
     }
 

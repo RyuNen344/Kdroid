@@ -18,7 +18,9 @@ import com.ryunen344.twikot.R
 import com.ryunen344.twikot.util.LogUtil
 
 class WallpaperPreference : DialogPreference {
-    internal var mSwitchView : View? = null
+    internal var mUriString : String? = null
+
+    internal var mSwitchView : SwitchCompat? = null
     internal var mChecked : Boolean = false
     internal var mCheckedSet : Boolean = false
 
@@ -33,28 +35,49 @@ class WallpaperPreference : DialogPreference {
     private var mSummary : String? = null
     private var mValueSet : Boolean = false
 
+    companion object {
+        class SavedState : BaseSavedState {
+
+            internal var mUri : String? = null
+            internal var mSeekBarValue : Int? = null
+            internal var mMin : Int? = null
+            internal var mMax : Int? = null
+            internal var mChecked : Boolean = false
+
+            internal constructor(source : Parcel) : super(source) {
+                LogUtil.d(source.toString())
+                mUri = source.readString()
+                mSeekBarValue = source.readInt()
+                mMin = source.readInt()
+                mMax = source.readInt()
+                mChecked = source.readInt() == 1
+            }
+
+            internal constructor(superState : Parcelable) : super(superState)
+
+            override fun writeToParcel(dest : Parcel, flags : Int) {
+                LogUtil.d(dest.toString())
+                super.writeToParcel(dest, flags)
+                dest.writeString(mUri)
+                dest.writeInt(mSeekBarValue!!)
+                dest.writeInt(mMin!!)
+                dest.writeInt(mMax!!)
+                dest.writeInt(if (mChecked) 1 else 0)
+            }
+        }
+    }
+
 
     private val mSeekBarChangeListener = object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar : SeekBar, progress : Int, fromUser : Boolean) {
-//            if (fromUser && (mUpdatesContinuously || !mTrackingTouch)) {
-//                syncValueInternal(seekBar)
-//            } else {
-//                // We always want to update the text while the seekbar is being dragged
-//                updateLabelValue(progress + mMin)
-//            }
             LogUtil.d()
         }
 
         override fun onStartTrackingTouch(seekBar : SeekBar) {
-//            mTrackingTouch = true
             LogUtil.d()
         }
 
         override fun onStopTrackingTouch(seekBar : SeekBar) {
-//            mTrackingTouch = false
-//            if (seekBar.progress + mMin != mSeekBarValue) {
-//                syncValueInternal(seekBar)
-//            }
             LogUtil.d()
         }
     }
@@ -89,6 +112,7 @@ class WallpaperPreference : DialogPreference {
     private val mSwitchChangedListener = object : CompoundButton.OnCheckedChangeListener {
 
         override fun onCheckedChanged(buttonView : CompoundButton, isChecked : Boolean) {
+            LogUtil.d()
             if (!callChangeListener(isChecked)) {
                 // Listener didn't like it, change it back.
                 // CompoundButton will make sure we don't recurse.
@@ -135,15 +159,18 @@ class WallpaperPreference : DialogPreference {
 
     override fun onBindViewHolder(holder : PreferenceViewHolder?) {
         super.onBindViewHolder(holder)
+        LogUtil.d(holder.toString())
         holder?.let {
             it.itemView.setOnKeyListener(mSeekBarKeyListener)
             mSeekBar = it.findViewById(R.id.wallpaper_alpha_seekbar) as SeekBar?
-            mSwitchView = it.findViewById(R.id.wallpaper_crop_switch)
+            mSwitchView = it.findViewById(R.id.wallpaper_crop_switch) as SwitchCompat?
             mSwitchView?.let { v ->
+                LogUtil.d()
                 syncSwitchView(v)
             }
         }
         mSeekBar ?: return
+        LogUtil.d()
         mSeekBar?.setOnSeekBarChangeListener(mSeekBarChangeListener)
         mSeekBar?.max = mMax - mMin
 
@@ -152,16 +179,28 @@ class WallpaperPreference : DialogPreference {
 
     }
 
+    override fun performClick(view : View?) {
+        LogUtil.d(view.toString())
+        super.performClick(view)
+        view?.let {
+            syncSwitchView(it)
+        }
+    }
+
     override fun onGetDefaultValue(a : TypedArray?, index : Int) : Any {
+        LogUtil.d(a.toString())
         return a?.getString(index)!!
     }
 
     override fun onSaveInstanceState() : Parcelable {
+        LogUtil.d()
         val superState = super.onSaveInstanceState()
         if (isPersistent) {
             // No need to save instance state since it's persistent
             return superState
         }
+
+        LogUtil.d(superState.toString())
 
         // Save the instance state
         val myState = SavedState(superState)
@@ -172,6 +211,7 @@ class WallpaperPreference : DialogPreference {
     }
 
     override fun onRestoreInstanceState(state : Parcelable?) {
+        LogUtil.d(state.toString())
         if (state == null || state.javaClass != SavedState::class.java) {
             // Didn't save state for us in onSaveInstanceState
             super.onRestoreInstanceState(state)
@@ -187,38 +227,33 @@ class WallpaperPreference : DialogPreference {
         notifyChanged()
     }
 
-    inner class SavedState : BaseSavedState {
 
-        internal var mUri : String? = null
-        internal var mSeekBarValue : Int? = null
-        internal var mMin : Int? = null
-        internal var mMax : Int? = null
-        internal var mChecked : Boolean = false
+    fun setUriString(uriString : String?) {
+        LogUtil.d()
 
-        internal constructor(source : Parcel) : super(source) {
-            mUri = source.readString()
-            mSeekBarValue = source.readInt()
-            mMin = source.readInt()
-            mMax = source.readInt()
-            mChecked = source.readInt() == 1
+        mUriString = uriString
+        uriString?.let {
+            persistString(it)
         }
+        notifyChanged()
 
-        internal constructor(superState : Parcelable) : super(superState)
-
-        override fun writeToParcel(dest : Parcel, flags : Int) {
-            super.writeToParcel(dest, flags)
-            dest.writeString(mUri)
-            dest.writeInt(mSeekBarValue!!)
-            dest.writeInt(mMin!!)
-            dest.writeInt(mMax!!)
-            dest.writeInt(if (mChecked) 1 else 0)
-        }
     }
 
+    fun setSeekBarValue(value : Int) {
+        LogUtil.d(value)
+
+        mSeekBarValue = value
+        persistInt(20)
+        notifyChanged()
+    }
+
+
     fun setChecked(checked : Boolean) {
+        LogUtil.d(checked)
         // Always persist/notify the first time; don't assume the field's default of false.
         val changed = mChecked != checked
         if (changed || !mCheckedSet) {
+            LogUtil.d()
             mChecked = checked
             mCheckedSet = true
             persistBoolean(checked)
@@ -229,14 +264,19 @@ class WallpaperPreference : DialogPreference {
         }
     }
 
+
     private fun syncSwitchView(view : View) {
+        LogUtil.d(view.toString())
         if (view is SwitchCompat) {
+            LogUtil.d()
             view.setOnCheckedChangeListener(null)
         }
         if (view is Checkable) {
+            LogUtil.d()
             (view as Checkable).isChecked = mChecked
         }
         if (view is SwitchCompat) {
+            LogUtil.d()
             view.setOnCheckedChangeListener(mSwitchChangedListener)
         }
     }
