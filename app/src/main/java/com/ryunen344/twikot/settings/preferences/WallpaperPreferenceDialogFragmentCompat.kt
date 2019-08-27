@@ -1,8 +1,10 @@
 package com.ryunen344.twikot.settings.preferences
 
+import android.Manifest
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +21,7 @@ import androidx.preference.PreferenceDialogFragmentCompat
 import com.ryunen344.twikot.util.LogUtil
 import kotlinx.android.synthetic.main.fragment_preference_wallpaper.view.*
 import org.koin.android.scope.currentScope
+import java.io.BufferedInputStream
 
 
 class WallpaperPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat(), WallpaperPreferenceContract.View {
@@ -59,6 +62,10 @@ class WallpaperPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat()
         LogUtil.d()
         super.onCreate(savedInstanceState)
         presenter.view = this
+        context?.filesDir?.absolutePath?.let {
+            presenter.setAbsoluteFilePath(it)
+        }
+
         if (savedInstanceState == null) {
             LogUtil.d()
             presenter.loadSharedPreferences()
@@ -70,7 +77,11 @@ class WallpaperPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat()
             cropSwitchState = savedInstanceState.getBoolean(SAVE_STATE_CROP_SWITCH)
         }
 
-        presenter.view = this
+        requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), 0)
+//        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 0)
+//        }
+
     }
 
     override fun onSaveInstanceState(outState : Bundle) {
@@ -137,8 +148,8 @@ class WallpaperPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat()
         })
 
         switch.setOnClickListener {
-            onClickLog(it)
             cropSwitchState = switch.isChecked
+            image.cropToPadding = cropSwitchState
         }
 
     }
@@ -164,10 +175,6 @@ class WallpaperPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat()
         }
     }
 
-    private fun onClickLog(any : Any) {
-        LogUtil.d(any)
-    }
-
     override fun openImagePicker() {
         LogUtil.d()
         val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -184,6 +191,11 @@ class WallpaperPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat()
 
     override fun showWallpaperImage(imageUri : Uri) {
         LogUtil.d(imageUri)
+
+        val stream = context?.contentResolver?.openInputStream(imageUri)
+        val bitmap = BitmapFactory.decodeStream(BufferedInputStream(stream!!))
+
+        presenter.setTempBitMap(bitmap)
         uriString = imageUri.toString()
         image.setImageURI(imageUri)
     }
@@ -200,7 +212,10 @@ class WallpaperPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat()
         LogUtil.d()
         switch.isChecked = cropSwitchState
         seekBar.progress = seekBarValue
-        image.setImageURI(uriString?.toUri())
+        uriString?.let {
+            image.setImageURI(it.toUri())
+        }
+        image.cropToPadding = cropSwitchState
     }
 
     override fun showError(e : Throwable) {

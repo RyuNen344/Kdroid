@@ -14,9 +14,7 @@ class WallpaperRepositoryImpl(context : Context) : WallpaperRepository {
     private val dataStore : SharedPreferences = context.getSharedPreferences("WallpaperDataStore", Context.MODE_PRIVATE)
 
     override fun setUri(uriStr : String?) {
-        uriStr?.let {
-            dataStore.edit().putString(KEY_URI, it).apply()
-        }
+        dataStore.edit().putString(KEY_URI, uriStr).apply()
 
     }
 
@@ -25,9 +23,8 @@ class WallpaperRepositoryImpl(context : Context) : WallpaperRepository {
     }
 
     override fun setSeekBarValue(value : Int?) {
-        value?.let {
-            dataStore.edit().putInt(KEY_SEEKBAR_VALUE, value).apply()
-        }
+        val value = value ?: 0
+        dataStore.edit().putInt(KEY_SEEKBAR_VALUE, value).apply()
     }
 
     override fun getSeekBarValue() : Int {
