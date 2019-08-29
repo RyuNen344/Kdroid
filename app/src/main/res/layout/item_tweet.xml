@@ -6,210 +6,210 @@
     android:background="?android:attr/selectableItemBackground">
 
     <FrameLayout
-            android:id="@+id/tweet_color_bar"
-            android:layout_width="8dp"
-            android:layout_height="match_parent"
+        android:id="@+id/tweet_color_bar"
+        android:layout_width="8dp"
+        android:layout_height="match_parent"
         android:alpha="0.5"
-            android:background="@color/colorPrimary"
-            android:measureAllChildren="true"/>
+        android:background="@color/colorPrimary"
+        android:measureAllChildren="true" />
 
 
     <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/list_item_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/list_item_padding"
         android:paddingTop="@dimen/list_item_padding"
-            android:paddingRight="@dimen/list_item_padding"
+        android:paddingRight="@dimen/list_item_padding"
         android:paddingBottom="@dimen/list_item_padding">
 
         <FrameLayout
             android:id="@+id/iconFrame"
-                android:layout_width="wrap_content"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <ImageView
-                    android:id="@+id/tweet_icon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:id="@+id/tweet_icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:contentDescription="@string/contentDescription_main_icon"
                 android:src="@android:drawable/sym_def_app_icon"
                 android:transitionName="@string/transition_name_profile" />
 
             <ImageView
-                    android:id="@+id/rt_icon"
-                    android:layout_width="23dp"
-                    android:layout_height="23dp"
-                    android:layout_gravity="end|bottom"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:id="@+id/rt_icon"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_gravity="end|bottom"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:contentDescription="@string/contentDescription_rt_icon"
                 android:src="@android:drawable/ic_input_add"
                 android:visibility="invisible" />
 
         </FrameLayout>
 
-        <TextView
-                android:id="@+id/tweet_account_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/iconFrame"
-                android:maxLines="1"
-                android:textAppearance="@style/TextAppearance.AppCompat"/>
-
-        <TextView
-                android:id="@+id/tweet_screen_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_toEndOf="@id/tweet_account_name"
-                android:maxLines="1"
-                android:textAppearance="@style/TextAppearance.AppCompat"/>
-
         <ImageView
-                android:id="@+id/tweet_lock_icon"
-                android:layout_width="12sp"
-                android:layout_height="12sp"
+            android:id="@+id/tweet_lock_icon"
+            android:layout_width="12sp"
+            android:layout_height="12sp"
             android:layout_above="@+id/tweet_description"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginBottom="@dimen/list_item_padding"
             android:layout_toEndOf="@id/tweet_screen_name"
             android:contentDescription="@string/contentDescription_main_lock_icon"
-                android:src="@drawable/ic_lock"
+            android:src="@drawable/ic_lock"
             android:visibility="gone" />
 
         <ImageView
-                android:id="@+id/tweet_retweet_icon"
-                android:layout_width="12sp"
-                android:layout_height="12sp"
+            android:id="@+id/tweet_retweet_icon"
+            android:layout_width="12sp"
+            android:layout_height="12sp"
             android:layout_alignParentTop="true"
-                android:layout_marginBottom="6dp"
+            android:layout_marginBottom="6dp"
             android:layout_toStartOf="@id/tweet_fav_icon"
             android:contentDescription="@string/contentDescription_main_lock_icon"
-                android:src="@drawable/ic_retweet"
-                android:tint="#37FF00"
+            android:src="@drawable/ic_retweet"
+            android:tint="#37FF00"
             android:visibility="visible" />
 
         <ImageView
-                android:id="@+id/tweet_fav_icon"
-                android:layout_width="12sp"
-                android:layout_height="12sp"
+            android:id="@+id/tweet_fav_icon"
+            android:layout_width="12sp"
+            android:layout_height="12sp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-                android:layout_marginBottom="6dp"
+            android:layout_marginBottom="6dp"
             android:contentDescription="@string/contentDescription_main_lock_icon"
-                android:src="@drawable/ic_fav_star"
-                android:tint="#ffd700"
+            android:src="@drawable/ic_fav_star"
+            android:tint="#ffd700"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/tweet_context_menu"
+            android:layout_width="24sp"
+            android:layout_height="24sp"
+            android:layout_below="@id/tweet_fav_icon"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/contentDescription_main_lock_icon"
+            android:src="@drawable/ic_context"
             android:visibility="visible" />
 
         <TextView
-                android:id="@+id/tweet_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            android:id="@+id/tweet_account_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/iconFrame"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
+
+        <TextView
+            android:id="@+id/tweet_screen_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_toEndOf="@id/tweet_account_name"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
+
+        <TextView
+            android:id="@+id/tweet_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/tweet_screen_name"
             android:layout_toStartOf="@id/tweet_context_menu"
             android:layout_toEndOf="@id/iconFrame"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
-
-        <ImageView
-                android:id="@+id/tweet_context_menu"
-                android:layout_width="24sp"
-                android:layout_height="24sp"
-            android:layout_below="@id/tweet_fav_icon"
-            android:layout_alignParentEnd="true"
-                android:layout_marginBottom="6dp"
-            android:contentDescription="@string/contentDescription_main_lock_icon"
-                android:src="@drawable/ic_context"
-            android:visibility="visible" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <TextView
-                android:id="@+id/tweet_via_and_date"
+            android:id="@+id/tweet_via_and_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-                android:layout_below="@id/tweet_description"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_below="@id/tweet_description"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_toEndOf="@id/iconFrame"
-                android:textAppearance="@style/TextAppearance.AppCompat"/>
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/imageFrame"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tweet_via_and_date"
-            android:layout_toEndOf="@id/iconFrame">
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_below="@id/tweet_via_and_date"
+            android:layout_toEndOf="@id/iconFrame"
+            android:visibility="gone">
 
             <ImageView
-                    android:id="@+id/tweet_image1"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                android:id="@+id/tweet_image1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:contentDescription="@string/contentDescription_image"
-                    android:scaleType="centerCrop"
+                android:scaleType="centerCrop"
                 android:src="@android:drawable/sym_def_app_icon"
                 android:transitionName="@string/transition_name_image"
                 android:visibility="gone"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/tweet_image3"
                 app:layout_constraintEnd_toStartOf="@+id/tweet_image2"
-                app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintHorizontal_chainStyle="spread"
-                    app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="spread" />
-
-            <ImageView
-                    android:id="@+id/tweet_image2"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                android:contentDescription="@string/contentDescription_image"
-                    android:scaleType="centerCrop"
-                android:src="@android:drawable/sym_def_app_icon"
-                android:transitionName="@string/transition_name_image"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@+id/tweet_image4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintHorizontal_chainStyle="spread"
-                    app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/tweet_image1"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="spread" />
 
             <ImageView
-                    android:id="@+id/tweet_image3"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                android:id="@+id/tweet_image2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                app:layout_constrainedHeight="true"
                 android:contentDescription="@string/contentDescription_image"
-                    android:scaleType="centerCrop"
+                app:layout_constraintBottom_toTopOf="@+id/tweet_image3"
                 android:src="@android:drawable/sym_def_app_icon"
                 android:transitionName="@string/transition_name_image"
                 android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tweet_image4"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHeight_max="160dp"
                 app:layout_constraintHorizontal_chainStyle="spread"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tweet_image1"
-                    app:layout_constraintVertical_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/tweet_image1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="spread" />
 
             <ImageView
-                    android:id="@+id/tweet_image4"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                android:id="@+id/tweet_image3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                app:layout_constrainedHeight="true"
                 android:contentDescription="@string/contentDescription_image"
-                    android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:src="@android:drawable/sym_def_app_icon"
                 android:transitionName="@string/transition_name_image"
                 android:visibility="gone"
+                app:layout_constraintHeight_max="160dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tweet_image1"
+                app:layout_constraintEnd_toStartOf="@+id/tweet_image4"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintVertical_chainStyle="spread" />
+
+            <ImageView
+                android:id="@+id/tweet_image4"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                app:layout_constrainedHeight="true"
+                android:contentDescription="@string/contentDescription_image"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@android:drawable/sym_def_app_icon"
+                android:transitionName="@string/transition_name_image"
+                android:visibility="gone"
+                app:layout_constraintHeight_max="80dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintHorizontal_chainStyle="spread"
-                    app:layout_constraintStart_toEndOf="@+id/tweet_image3"
-                    app:layout_constraintTop_toBottomOf="@+id/tweet_image2"
-                    app:layout_constraintVertical_bias="1.0"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toEndOf="@+id/tweet_image3"
+                app:layout_constraintTop_toBottomOf="@+id/tweet_image2"
                 app:layout_constraintVertical_chainStyle="spread" />
 
 

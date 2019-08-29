@@ -207,12 +207,14 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
     private fun initImage(holder : ViewHolder, tweetStatus : Status) {
 
         //set visible
+        holder.imageFrame.visibility = View.GONE
         for (i in 0 until 4) {
             holder.imageList[i].visibility = View.GONE
         }
 
         if (tweetStatus.mediaEntities.isNotEmpty()) {
-            for (i in 0 until tweetStatus.mediaEntities.size) {
+            holder.imageFrame.visibility = View.VISIBLE
+            for (i in tweetStatus.mediaEntities.indices) {
                 setImage(holder.imageList[i], tweetStatus.mediaEntities[i].mediaURLHttps)
             }
         }
@@ -255,6 +257,7 @@ class HomeTweetAdapter(mainList : MutableList<Status>, private val tweetItemList
         var tweet_via_and_date : TextView = itemView.tweet_via_and_date
         var tweet_description : TextView = itemView.tweet_description
         var tweet_context_menu : ImageView = itemView.tweet_context_menu
+        var imageFrame : View = itemView.imageFrame
         var imageList : List<ImageView> = listOf<ImageView>(itemView.tweet_image1, itemView.tweet_image2, itemView.tweet_image3, itemView.tweet_image4)
     }
 }
