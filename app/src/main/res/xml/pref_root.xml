@@ -5,7 +5,7 @@
         app:key="category_front"
         app:title="Display Setting">
 
-        <com.ryunen344.twikot.settings.preferences.WallpaperPreference
+        <com.ryunen344.twikot.settings.preferences.wallpaper.WallpaperPreference
             app:key="key_wallpaper"
             app:summary="Report technical issues or suggest new features"
             app:title="Wallpaper" />

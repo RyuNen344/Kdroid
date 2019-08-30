@@ -1,4 +1,4 @@
-package com.ryunen344.twikot.settings.preferences
+package com.ryunen344.twikot.settings.preferences.wallpaper
 
 import android.Manifest
 import android.app.Dialog

@@ -1,4 +1,4 @@
-package com.ryunen344.twikot.settings.preferences
+package com.ryunen344.twikot.settings.preferences.wallpaper
 
 import android.content.Context
 import android.content.res.TypedArray

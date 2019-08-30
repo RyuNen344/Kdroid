@@ -5,8 +5,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.ryunen344.twikot.R.xml.pref_root
-import com.ryunen344.twikot.settings.preferences.WallpaperPreference
-import com.ryunen344.twikot.settings.preferences.WallpaperPreferenceDialogFragmentCompat
+import com.ryunen344.twikot.settings.preferences.wallpaper.WallpaperPreference
+import com.ryunen344.twikot.settings.preferences.wallpaper.WallpaperPreferenceDialogFragmentCompat
 import com.ryunen344.twikot.util.LogUtil
 import org.koin.android.scope.currentScope
 

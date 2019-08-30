@@ -31,9 +31,9 @@ import com.ryunen344.twikot.profile.user.ProfileUserPresenter
 import com.ryunen344.twikot.settings.SettingsContract
 import com.ryunen344.twikot.settings.SettingsFragment
 import com.ryunen344.twikot.settings.SettingsPresenter
-import com.ryunen344.twikot.settings.preferences.WallpaperPreferenceContract
-import com.ryunen344.twikot.settings.preferences.WallpaperPreferenceDialogFragmentCompat
-import com.ryunen344.twikot.settings.preferences.WallpaperPreferencePresenter
+import com.ryunen344.twikot.settings.preferences.wallpaper.WallpaperPreferenceContract
+import com.ryunen344.twikot.settings.preferences.wallpaper.WallpaperPreferenceDialogFragmentCompat
+import com.ryunen344.twikot.settings.preferences.wallpaper.WallpaperPreferencePresenter
 import com.ryunen344.twikot.tweetDetail.TweetDetailActivity
 import com.ryunen344.twikot.tweetDetail.TweetDetailContract
 import com.ryunen344.twikot.tweetDetail.TweetDetailFragment
