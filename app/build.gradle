@@ -18,7 +18,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
-        versionName "0.0.1"
+        versionName "0.0.1-alpha01"
         project.version 1
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -75,7 +75,7 @@ dependencies {
     //implementation "androidx.room:room-guava:$room_version"
 
     //workmanager
-    def workmanager_version = "2.1.0"
+    def workmanager_version = "2.2.0"
     implementation "androidx.work:work-runtime-ktx:$workmanager_version"
     implementation "androidx.work:work-rxjava2:$workmanager_version"
 
@@ -110,6 +110,10 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation "androidx.preference:preference:1.1.0-rc01"
 
+    //firebase
+    implementation 'com.google.firebase:firebase-core:17.2.0'
+    implementation 'com.google.firebase:firebase-analytics:17.2.0'
+
     //implementation "com.google.guava:guava:27.0.1-android"
 
     //test
@@ -124,3 +128,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.2.0'
     androidTestImplementation "androidx.room:room-testing:$room_version"
 }
+
+apply plugin: 'com.google.gms.google-services'
