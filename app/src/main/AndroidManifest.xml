@@ -68,6 +68,10 @@
                 android:label="@string/action_settings"
                 android:theme="@style/AppTheme">
         </activity>
+        <activity
+            android:name=".settings.preferences.license.LicenseActivity"
+            android:label="@string/title_no_need_title"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

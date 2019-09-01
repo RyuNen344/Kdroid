@@ -13,26 +13,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:key="category_operation"
-        app:title="Operation Setting">
-
-        <Preference
-            app:key="asdf"
-            app:summary="Report technical issues or suggest new features"
-            app:title="Send feedback" />
-
-        <ListPreference
-            android:defaultValue="180"
-            android:entries="@array/pref_sync_frequency_titles"
-            android:entryValues="@array/pref_sync_frequency_values"
-            android:key="sync_frequency"
-            android:negativeButtonText="@null"
-            android:positiveButtonText="@null"
-            android:title="@string/pref_title_sync_frequency" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
         app:key="category_about_this_app"
         app:title="about this app">
 
@@ -41,7 +21,7 @@
             app:title="About This App">
 
             <intent
-                android:targetClass="com.ryunen344.twikot.accountList.AccountListActivity"
+                android:targetClass="com.ryunen344.twikot.settings.preferences.license.LicenseActivity"
                 android:targetPackage="com.ryunen344.twikot" />
 
         </Preference>
@@ -51,7 +31,7 @@
             app:title="License">
 
             <intent
-                android:targetClass="com.ryunen344.twikot.accountList.AccountListActivity"
+                android:targetClass="com.ryunen344.twikot.settings.preferences.license.LicenseActivity"
                 android:targetPackage="com.ryunen344.twikot" />
 
         </Preference>

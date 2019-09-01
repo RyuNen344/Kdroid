@@ -16,6 +16,7 @@
     <string name="title_search">Search</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_login">Login</string>
+    <string name="title_activity_license">License</string>
     <string name="title_no_need_title"></string>
 
     <string name="transition_name_profile">transition_name_profile</string>
@@ -212,4 +213,5 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="app_license">このアプリはApache License Version 2.0でライセンスされています</string>
 </resources>
