@@ -10,7 +10,6 @@ import com.ryunen344.twikot.domain.entity.Account
 import com.ryunen344.twikot.domain.repository.AccountRepositoryImpl
 import com.ryunen344.twikot.util.LogUtil
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_oauth_callback.*
 import org.koin.android.ext.android.inject
 import twitter4j.TwitterException
 import twitter4j.auth.AccessToken
@@ -46,27 +45,29 @@ class OAuthCallBackActivity : AppCompatActivity() {
                     LogUtil.e(e)
                 }
                 handler.post {
-                    // TextView一個のレイアウト
-                    callback_text.text = "token：" + token?.token + "\r\n" + "tokenSecret：" + token?.tokenSecret + "\r\n" + "screenName：" + token?.screenName + "\r\n" + "userId：" + token?.userId
-                    Log.d("OAuthCallBackActivity", "token is " + callback_text.text)
+                    Log.d("OAuthCallBackActivity", "token is " + token?.token)
 
                     // 書き込み（永続化）
                     accountRepositoryImpl.insertAccount(Account(token!!.userId, token!!.screenName, token!!.token, token!!.tokenSecret))
                             .subscribeOn(Schedulers.io())
-                            .subscribe({}, { e -> e.printStackTrace() })
+                            .subscribe(
+                                    {
+                                        var intent : Intent = Intent(this, AccountListActivity::class.java)
+                                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                        startActivity(intent)
+                                        overridePendingTransition(0, 0)
+                                        finish()
+                                    },
+                                    { e ->
+                                        e.printStackTrace()
+                                    }
+                            )
                 }
             }
         } else {
-            callback_text.text = "uri is unknown"
+            LogUtil.d("uri is unknown")
         }
 
-        callback_button.setOnClickListener {
-            var intent: Intent = Intent(this, AccountListActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(intent)
-            overridePendingTransition(0, 0)
-            finish()
-        }
 
     }
 }
