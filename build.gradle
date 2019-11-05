@@ -13,6 +13,7 @@ buildscript {
 
     ext.room_version = '2.2.1'
     ext.workmanager_version = '2.2.0'
+    ext.navigation_version = '2.1.0'
 
     ext.retrofit2_version = '2.6.1'
     ext.picasso_version = '2.71828'
@@ -21,7 +22,6 @@ buildscript {
 
     ext.koin_version = '2.0.1'
 
-    ext.android_material_version = '1.2.0-alpha01'
     ext.androidx_appcompat_version = '1.1.0'
     ext.androidx_core_version = '1.2.0-beta01'
     ext.androidx_constraintlayout_version = '1.1.3'
