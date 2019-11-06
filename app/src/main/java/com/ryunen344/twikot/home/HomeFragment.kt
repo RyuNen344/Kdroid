@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.nav_home_header.view.*
 import org.koin.android.scope.currentScope
+import org.koin.android.viewmodel.ext.android.viewModel
 import twitter4j.User
 import java.io.File
 
@@ -34,6 +35,7 @@ class HomeFragment : Fragment(), HomeContract.View {
     override val presenter : HomeContract.Presenter by currentScope.inject()
     var prevMenuItem: MenuItem? = null
     private lateinit var mSectionsPagerAdapter: HomeSectionsPagerAdapter
+    private val homeViewModel : HomeViewModel by viewModel()
 
     private var itemListener: HomeContract.MainItemListener = object : HomeContract.MainItemListener {
         override fun onImageClick(mediaUrl: String) {

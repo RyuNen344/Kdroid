@@ -51,12 +51,12 @@ object LogUtil {
         Log.d(getTag(), getMessage(null))
     }
 
-    fun d(msg : String) {
+    fun d(msg : String?) {
         if (!BuildConfig.DEBUG) return
         Log.d(getTag(), getMessage(msg))
     }
 
-    fun d(any : Any) {
+    fun d(any : Any?) {
         if (!BuildConfig.DEBUG) return
         Log.d(getTag(), getMessage(any.toString()))
     }
@@ -66,7 +66,7 @@ object LogUtil {
         Log.d(getTag(), getMessage(t.message), t)
     }
 
-    fun d(msg : String, t : Throwable) {
+    fun d(msg : String?, t : Throwable) {
         if (!BuildConfig.DEBUG) return
         Log.d(getTag(), getMessage(msg), t)
     }

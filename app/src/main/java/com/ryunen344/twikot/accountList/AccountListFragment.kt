@@ -12,21 +12,25 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.ryunen344.twikot.IOState
 import com.ryunen344.twikot.R.layout.fragment_account_list
 import com.ryunen344.twikot.R.string.consumer_key
 import com.ryunen344.twikot.R.string.consumer_secret_key
 import com.ryunen344.twikot.domain.entity.Account
 import com.ryunen344.twikot.domain.entity.AccountAndAccountDetail
+import com.ryunen344.twikot.errorMessage
 import com.ryunen344.twikot.home.HomeActivity
 import com.ryunen344.twikot.util.LogUtil
 import kotlinx.android.synthetic.main.activity_account_lsit.*
 import kotlinx.android.synthetic.main.fragment_account_list.*
 import kotlinx.android.synthetic.main.fragment_account_list.view.*
 import org.koin.android.scope.currentScope
+import org.koin.android.viewmodel.ext.android.viewModel
 import twitter4j.auth.OAuthAuthorization
 import twitter4j.auth.RequestToken
 import twitter4j.conf.ConfigurationContext
@@ -35,6 +39,8 @@ import twitter4j.conf.ConfigurationContext
 class AccountListFragment : Fragment(), AccountListContract.View {
 
     override val presenter : AccountListContract.Presenter by currentScope.inject()
+
+    private val accountListViewModel : AccountListViewModel by viewModel()
 
     private lateinit var noAccountListView : View
     private lateinit var noAccountIconView : ImageView
@@ -64,6 +70,16 @@ class AccountListFragment : Fragment(), AccountListContract.View {
         LogUtil.d()
         super.onCreate(savedInstanceState)
         presenter.view = this
+
+        accountListViewModel.ioState.observe(this, Observer { ioState ->
+            when (ioState) {
+                is IOState.NOPE -> return@Observer
+                is IOState.LOADING -> LogUtil.d("loading")
+                is IOState.LOADED -> LogUtil.d("load finish, hide seek bar")
+                is IOState.ERROR -> LogUtil.d(ioState.error.createMessage { errorMessage(it) })
+            }
+        })
+
     }
 
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
@@ -97,6 +113,7 @@ class AccountListFragment : Fragment(), AccountListContract.View {
     override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
         LogUtil.d()
         account_list.adapter = accountListAdapter
+        accountListViewModel.loadAccountList()
     }
 
     override fun onResume() {
