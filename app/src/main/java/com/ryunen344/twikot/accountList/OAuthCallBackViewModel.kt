@@ -1,21 +1,20 @@
 package com.ryunen344.twikot.accountList
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ryunen344.twikot.IOState
-import com.ryunen344.twikot.domain.entity.AccountAndAccountDetail
+import com.ryunen344.twikot.domain.entity.Account
 import com.ryunen344.twikot.domain.repository.AccountRepositoryImpl
 import com.ryunen344.twikot.domain.repository.OAuthRepositoryImpl
-import com.ryunen344.twikot.util.LogUtil
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.koin.core.KoinComponent
-import java.util.concurrent.TimeUnit
+import twitter4j.TwitterException
 
-class AccountListViewModel(
+class OAuthCallBackViewModel(
         private val accountRepositoryImpl : AccountRepositoryImpl,
         private val oAuthRepositoryImpl : OAuthRepositoryImpl
 ) : ViewModel(), KoinComponent {
@@ -26,36 +25,23 @@ class AccountListViewModel(
     val ioState : LiveData<IOState>
         get() = _ioState
 
-    private var _oAuthRequestUri : MutableLiveData<Uri> = MutableLiveData()
-    val oAuthRequestUri : LiveData<Uri>
-        get() = _oAuthRequestUri
+    fun saveAccessToken(uri : Uri) {
 
+        //oauth_verifierを取得する
+        val verifier = uri.getQueryParameter("oauth_verifier")
+        verifier ?: throw TwitterException("no verifier")
 
-    private var _items : MutableLiveData<List<AccountAndAccountDetail>> = MutableLiveData()
-    val items : LiveData<List<AccountAndAccountDetail>>
-        get() = _items
+        //AccessTokenオブジェクトを取得
+        val token = oAuthRepositoryImpl.loadAccessToken(verifier)
+        Log.d("OAuthCallBackActivity", "token is " + token.token)
 
-    init {
-        loadAccountList()
-    }
-
-    fun loadAccountList() {
-        LogUtil.d()
-
-        when (ioState.value) {
-            is IOState.LOADING, IOState.LOADED, IOState.ERROR("something happens!") ->
-                return
-        }
-
+        // 書き込み（永続化）
         _ioState.value = IOState.LOADING
-        accountRepositoryImpl.findAccountList()
-                .delay(800, TimeUnit.MILLISECONDS)
+        accountRepositoryImpl.insertAccount(Account(token.userId, token.screenName, token.token, token.tokenSecret))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {
                             _ioState.value = IOState.LOADED
-                            _items.value = it
                         },
                         {
                             _ioState.value = IOState.ERROR(it)
@@ -63,11 +49,5 @@ class AccountListViewModel(
                 ).let {
                     compositeDisposable.add(it)
                 }
-    }
-
-    fun generateOAuthRequestUri(consumerKey : String, consumerSecretKey : String) {
-        oAuthRepositoryImpl.initOAuthAuthorization(consumerKey, consumerSecretKey)
-
-        oAuthRepositoryImpl.loadAuthorizationURL().subscribe()
     }
 }
