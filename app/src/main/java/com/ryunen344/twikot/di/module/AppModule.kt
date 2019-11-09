@@ -1,8 +1,6 @@
 package com.ryunen344.twikot.di.module
 
-import com.ryunen344.twikot.accountList.AccountListContract
-import com.ryunen344.twikot.accountList.AccountListFragment
-import com.ryunen344.twikot.accountList.AccountListPresenter
+import com.ryunen344.twikot.accountlist.AccountListFragment
 import com.ryunen344.twikot.addTweetReply.AddTweetReplyContract
 import com.ryunen344.twikot.addTweetReply.AddTweetReplyFragment
 import com.ryunen344.twikot.addTweetReply.AddTweetReplyPresenter
@@ -46,9 +44,6 @@ val AppModule = module {
     single {AppProvider()}
 
     factory { AccountListFragment() }
-    scope(named<AccountListFragment>()) {
-        scoped { AccountListPresenter() as AccountListContract.Presenter }
-    }
 
     factory { HomeFragment() }
     scope(named<HomeFragment>()) {

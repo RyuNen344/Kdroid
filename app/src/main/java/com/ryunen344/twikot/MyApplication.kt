@@ -5,6 +5,7 @@ import com.ryunen344.twikot.di.module.ApiModule
 import com.ryunen344.twikot.di.module.AppModule
 import com.ryunen344.twikot.di.module.RepositoryModule
 import com.ryunen344.twikot.di.module.UtilModule
+import com.ryunen344.twikot.di.module.ViewModelModule
 import com.ryunen344.twikot.domain.database.AccountDatabase
 import com.ryunen344.twikot.util.LogUtil
 import org.koin.android.ext.koin.androidContext
@@ -27,7 +28,7 @@ class MyApplication : Application() {
             androidLogger(Level.DEBUG)
             androidContext(this@MyApplication)
             androidFileProperties()
-            modules(listOf(AppModule, UtilModule, ApiModule, RepositoryModule))
+            modules(listOf(AppModule, UtilModule, ApiModule, RepositoryModule, ViewModelModule))
         }
 
     }

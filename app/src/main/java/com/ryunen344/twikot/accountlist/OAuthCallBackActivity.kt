@@ -1,4 +1,4 @@
-package com.ryunen344.twikot.accountList
+package com.ryunen344.twikot.accountlist
 
 import android.content.Intent
 import android.os.Bundle

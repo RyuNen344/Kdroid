@@ -1,4 +1,4 @@
-package com.ryunen344.twikot.accountList
+package com.ryunen344.twikot.accountlist
 
 import android.net.Uri
 import android.util.Log

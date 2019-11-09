@@ -1,39 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:theme="@style/AppTheme.NoActionBar">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<ImageView
-        android:src="@android:drawable/sym_def_app_icon"
-        android:layout_width="60dp"
-        android:layout_height="55dp"
-        android:id="@+id/account_icon"/>
+    <data>
 
-<TextView
-        android:id="@+id/account_user_name"
-        android:layout_toEndOf="@id/account_icon"
-        android:layout_width="match_parent"
+        <variable
+            name="item"
+            type="com.ryunen344.twikot.domain.entity.AccountAndAccountDetail" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
-        android:text="User Name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:theme="@style/AppTheme.NoActionBar">
 
-<TextView
-        android:id="@+id/account_screen_name"
-        android:layout_toEndOf="@id/account_icon"
-        android:layout_below="@id/account_user_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
-        android:text="User ID"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        />
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/account_icon"
+            android:layout_width="60dp"
+            android:layout_height="55dp"
+            android:src="@android:drawable/sym_def_app_icon"
+            app:localImage="@{item.accountDetails.get(0).localProfileImage}" />
+
+        <TextView
+            android:id="@+id/account_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/account_icon"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:text="@{item.account.screenName}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+        <TextView
+            android:id="@+id/account_screen_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/account_user_name"
+            android:layout_toEndOf="@id/account_icon"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:text="@{item.accountDetails.get(0).userName}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+    </RelativeLayout>
+
+
+</layout>

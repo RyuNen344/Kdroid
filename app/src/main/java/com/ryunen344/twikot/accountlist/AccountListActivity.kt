@@ -1,9 +1,9 @@
-package com.ryunen344.twikot.accountList
+package com.ryunen344.twikot.accountlist
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.ryunen344.twikot.R.layout.activity_account_lsit
-import com.ryunen344.twikot.util.replaceFragmentInActivity
+import androidx.fragment.app.commit
+import com.ryunen344.twikot.R
 import kotlinx.android.synthetic.main.activity_account_lsit.*
 import org.koin.android.ext.android.inject
 
@@ -16,15 +16,12 @@ class AccountListActivity : AppCompatActivity() {
         const val INTENT_KEY_USER_ID : String = "key_user_id"
     }
 
-
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(activity_account_lsit)
+        setContentView(R.layout.activity_account_lsit)
 
-        supportFragmentManager.findFragmentById(accountListFrame.id) as AccountListFragment?
-                ?: accountListFragment.also {
-                    replaceFragmentInActivity(supportFragmentManager, it, accountListFrame.id)
-                }
-
+        supportFragmentManager.commit {
+            replace(accountListContainer.id, accountListFragment)
+        }
     }
 }
