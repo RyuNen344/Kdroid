@@ -24,19 +24,6 @@ class AccountListFragment : Fragment() {
     private lateinit var binding : FragmentAccountListBinding
     private val accountListViewModel : AccountListViewModel by viewModel()
 
-    private var itemListener : AccountItemListener = object : AccountItemListener {
-        override fun onAccountClick(clickedUserId : Long) {
-            //fixme
-            LogUtil.d("open timeline of $clickedUserId")
-            showAccountHome(clickedUserId)
-        }
-    }
-
-    override fun onCreate(savedInstanceState : Bundle?) {
-        LogUtil.d()
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
             inflater : LayoutInflater,
             container : ViewGroup?,
@@ -90,10 +77,6 @@ class AccountListFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
-        LogUtil.d()
-    }
-
     override fun onResume() {
         super.onResume()
         accountListViewModel.loadAccountList()
@@ -104,7 +87,7 @@ class AccountListFragment : Fragment() {
         startActivityForResult(Intent(Intent.ACTION_VIEW, uri), 0)
     }
 
-    fun showAccountHome(userId : Long) {
+    private fun showAccountHome(userId : Long) {
         LogUtil.d()
         val intent = Intent(context, HomeActivity::class.java)
         intent.putExtra(AccountListActivity.INTENT_KEY_USER_ID, userId)
