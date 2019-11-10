@@ -35,10 +35,6 @@ class AccountListViewModel(
     val items : LiveData<List<AccountAndAccountDetail>>
         get() = _items
 
-    init {
-        loadAccountList()
-    }
-
     fun loadAccountList() {
         LogUtil.d()
 

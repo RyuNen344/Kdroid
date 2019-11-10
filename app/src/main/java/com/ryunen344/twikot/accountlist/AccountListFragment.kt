@@ -59,6 +59,13 @@ class AccountListFragment : Fragment() {
             accountListViewModel.generateOAuthRequestUri(getString(R.string.consumer_key), getString(R.string.consumer_secret_key))
         }
 
+        (binding.accountList.adapter as AccountListAdapter).clickedUserId.observe(this@AccountListFragment.viewLifecycleOwner, Observer {
+            if (it != null) {
+                LogUtil.d()
+                showAccountHome(it)
+            }
+        })
+
         accountListViewModel.ioState.observe(this@AccountListFragment.viewLifecycleOwner, Observer { ioState ->
             when (ioState) {
                 is IOState.NOPE -> return@Observer
@@ -85,6 +92,10 @@ class AccountListFragment : Fragment() {
 
     override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
         LogUtil.d()
+    }
+
+    override fun onResume() {
+        super.onResume()
         accountListViewModel.loadAccountList()
     }
 
