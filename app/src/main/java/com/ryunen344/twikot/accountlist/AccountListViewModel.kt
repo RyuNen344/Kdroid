@@ -67,7 +67,16 @@ class AccountListViewModel(
 
     fun generateOAuthRequestUri(consumerKey : String, consumerSecretKey : String) {
         oAuthRepositoryImpl.initOAuthAuthorization(consumerKey, consumerSecretKey)
-
-        oAuthRepositoryImpl.loadAuthorizationURL().subscribe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            _oAuthRequestUri.value = oAuthRepositoryImpl.loadAuthorizationURL()
+                        },
+                        {
+                            _ioState.value = IOState.ERROR(it)
+                        }
+                ).let {
+                    compositeDisposable.add(it)
+                }
     }
 }

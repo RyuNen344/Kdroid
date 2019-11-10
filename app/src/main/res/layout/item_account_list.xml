@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="item"
             type="com.ryunen344.twikot.domain.entity.AccountAndAccountDetail" />
@@ -24,7 +23,7 @@
             android:layout_width="60dp"
             android:layout_height="55dp"
             android:src="@android:drawable/sym_def_app_icon"
-            app:localImage="@{item.accountDetails.get(0).localProfileImage}" />
+            app:localImage="@{item.accountDetails.size() > 0 ? item.accountDetails.get(0).localProfileImage : null}" />
 
         <TextView
             android:id="@+id/account_user_name"
@@ -44,9 +43,9 @@
             android:layout_toEndOf="@id/account_icon"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
-            android:text="@{item.accountDetails.get(0).userName}"
+            android:text="@{item.accountDetails.size() > 0 ? item.accountDetails.get(0).userName : null}"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-    </RelativeLayout>
 
+    </RelativeLayout>
 
 </layout>

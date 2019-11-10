@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -53,15 +54,24 @@ class AccountListFragment : Fragment() {
             it.viewModel = accountListViewModel
         }
 
-//      account_fab?.setOnClickListener {
-//          accountListViewModel.generateOAuthRequestUri(getString(consumer_key), getString(consumer_secret_key))
-//      }
+        binding.fabAddAccount.setOnClickListener {
+            LogUtil.d()
+            accountListViewModel.generateOAuthRequestUri(getString(R.string.consumer_key), getString(R.string.consumer_secret_key))
+        }
+
         accountListViewModel.ioState.observe(this@AccountListFragment.viewLifecycleOwner, Observer { ioState ->
             when (ioState) {
                 is IOState.NOPE -> return@Observer
                 is IOState.LOADING -> LogUtil.d("loading")
                 is IOState.LOADED -> LogUtil.d("load finish, hide seek bar")
-                is IOState.ERROR -> LogUtil.d(ioState.error.createMessage { errorMessage(it) })
+                is IOState.ERROR -> {
+                    LogUtil.d(ioState.error.createMessage { errorMessage(it) })
+                    Toast.makeText(
+                            context,
+                            ioState.error.createMessage { errorMessage(it) },
+                            Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         })
 

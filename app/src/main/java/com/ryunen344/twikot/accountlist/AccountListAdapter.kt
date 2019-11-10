@@ -7,9 +7,9 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.jakewharton.rxbinding3.view.clicks
+import com.ryunen344.twikot.R
+import com.ryunen344.twikot.databinding.ItemAccountListBinding
 import com.ryunen344.twikot.domain.entity.AccountAndAccountDetail
-import com.ryunen344.twikot.util.LogUtil
 import io.reactivex.disposables.CompositeDisposable
 
 
@@ -31,6 +31,8 @@ class AccountListAdapter : ListAdapter<AccountAndAccountDetail, AccountListAdapt
 
     private val compositeDisposable : CompositeDisposable = CompositeDisposable()
 
+    override fun getItemViewType(position : Int) : Int = R.layout.item_account_list
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
                 DataBindingUtil.inflate(
@@ -44,13 +46,14 @@ class AccountListAdapter : ListAdapter<AccountAndAccountDetail, AccountListAdapt
 
     override fun onBindViewHolder(holder : ViewHolder, position : Int) {
 
-        holder.itemView.clicks()
-                //.throttleFirst(3, TimeUnit.SECONDS)
-                .take(1)
-                .subscribe {
-                    //                    accountItemListener.onAccountClick(3)
-                    LogUtil.d("subscribe on account click")
-                }.let { compositeDisposable.add(it) }
+        (holder.binding as ItemAccountListBinding).item = getItem(position)
+//        holder.itemView.clicks()
+//                //.throttleFirst(3, TimeUnit.SECONDS)
+//                .take(1)
+//                .subscribe {
+//                    //accountItemListener.onAccountClick(3)
+//                    LogUtil.d("subscribe on account click")
+//                }.let { compositeDisposable.add(it) }
 
         holder.binding.executePendingBindings()
 

@@ -118,7 +118,7 @@ object LogUtil {
         var pattern : Pattern = Pattern.compile("[\\.]")
         val splitStr : List<String> = pattern.split(cla).toList()
 
-        return "${splitStr[splitStr.size - 1]}#${trace.methodName}:${trace.lineNumber} on {$threadName}"
+        return "${splitStr[splitStr.size - 1]}#${trace.methodName}:${trace.lineNumber} {$threadName}"
     }
 
     private fun getMessage(msg : String?) : String {

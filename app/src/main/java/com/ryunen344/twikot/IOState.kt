@@ -34,5 +34,5 @@ sealed class IOState(val status : Status) {
 fun errorMessage(throwable : Throwable?) : String = when (throwable) {
     is RuntimeException -> "This is RuntimeException"
     is IOException -> "IO Error"
-    else -> "Something wrong!"
+    else -> throwable.toString()
 }
