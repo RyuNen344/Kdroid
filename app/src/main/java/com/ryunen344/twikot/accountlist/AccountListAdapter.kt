@@ -40,13 +40,11 @@ class AccountListAdapter : ListAdapter<AccountAndAccountDetail, AccountListAdapt
     val clickedUserId : LiveData<Long>
         get() = _clickedUserId
 
-    override fun getItemViewType(position : Int) : Int = R.layout.item_account_list
-
     override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : ViewHolder {
         return ViewHolder(
                 DataBindingUtil.inflate(
                         LayoutInflater.from(parent.context),
-                        viewType,
+                        R.layout.item_account_list,
                         parent,
                         false
                 )
