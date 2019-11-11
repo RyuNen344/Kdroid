@@ -30,7 +30,6 @@ class AccountListViewModel(
     val oAuthRequestUri : LiveData<Uri>
         get() = _oAuthRequestUri
 
-
     private var _items : MutableLiveData<List<AccountAndAccountDetail>> = MutableLiveData()
     val items : LiveData<List<AccountAndAccountDetail>>
         get() = _items
@@ -39,8 +38,10 @@ class AccountListViewModel(
         LogUtil.d()
 
         when (ioState.value) {
-            is IOState.LOADING, IOState.LOADED, IOState.ERROR("something happens!") ->
+            is IOState.LOADING, IOState.ERROR("something happens!") -> {
+                LogUtil.d("state error ${ioState.value.toString()}")
                 return
+            }
         }
 
         _ioState.value = IOState.LOADING
@@ -50,6 +51,7 @@ class AccountListViewModel(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {
+                            LogUtil.d("account load subscribe")
                             _ioState.value = IOState.LOADED
                             _items.value = it
                         },
@@ -62,10 +64,21 @@ class AccountListViewModel(
     }
 
     fun generateOAuthRequestUri(consumerKey : String, consumerSecretKey : String) {
+        LogUtil.d()
+
+        when (ioState.value) {
+            is IOState.LOADING, IOState.ERROR("something happens!") -> {
+                LogUtil.d("state error ${ioState.value.toString()}")
+                return
+            }
+        }
+
+        _ioState.value = IOState.LOADING
         oAuthRepositoryImpl.initOAuthAuthorization(consumerKey, consumerSecretKey)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {
+                            _ioState.value = IOState.LOADED
                             _oAuthRequestUri.value = oAuthRepositoryImpl.loadAuthorizationURL()
                         },
                         {
@@ -76,7 +89,8 @@ class AccountListViewModel(
                 }
     }
 
-    fun onDestroy(){
-        compositeDisposable.dispose()
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.clear()
     }
 }

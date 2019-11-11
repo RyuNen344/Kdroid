@@ -7,14 +7,14 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.distinctUntilChanged
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ryunen344.twikot.R
 import com.ryunen344.twikot.databinding.ItemAccountListBinding
 import com.ryunen344.twikot.domain.entity.AccountAndAccountDetail
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import com.ryunen344.twikot.util.LogUtil
 
 class AccountListAdapter : ListAdapter<AccountAndAccountDetail, AccountListAdapter.ViewHolder>(
         object : DiffUtil.ItemCallback<AccountAndAccountDetail>() {
@@ -33,12 +33,9 @@ class AccountListAdapter : ListAdapter<AccountAndAccountDetail, AccountListAdapt
 
     var lifecycleOwner : LifecycleOwner? = null
 
-    private val clickUserId = PublishSubject.create<Long>()
-    val clickEvent: Observable<Long> = clickUserId
-
     private var _clickedUserId : MutableLiveData<Long> = MutableLiveData()
     val clickedUserId : LiveData<Long>
-        get() = _clickedUserId
+        get() = _clickedUserId.distinctUntilChanged()
 
     override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : ViewHolder {
         return ViewHolder(
@@ -53,9 +50,10 @@ class AccountListAdapter : ListAdapter<AccountAndAccountDetail, AccountListAdapt
 
     override fun onBindViewHolder(holder : ViewHolder, position : Int) {
 
+        LogUtil.d()
+
         (holder.binding as ItemAccountListBinding).item = getItem(position)
         holder.itemView.setOnClickListener {
-            clickUserId.onNext(getItem(position).account.userId)
             _clickedUserId.value = getItem(position).account.userId
         }
         lifecycleOwner.let {

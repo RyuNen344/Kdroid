@@ -1,7 +1,5 @@
 package com.ryunen344.twikot
 
-import java.io.IOException
-
 enum class Status {
     NOPE,
     SUCCESS,
@@ -31,8 +29,4 @@ sealed class IOState(val status : Status) {
     }
 }
 
-fun errorMessage(throwable : Throwable?) : String = when (throwable) {
-    is RuntimeException -> "This is RuntimeException"
-    is IOException -> "IO Error"
-    else -> throwable.toString()
-}
+fun errorMessage(throwable : Throwable?) : String = throwable.toString()
