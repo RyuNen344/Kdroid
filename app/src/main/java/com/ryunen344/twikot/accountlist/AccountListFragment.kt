@@ -92,7 +92,7 @@ class AccountListFragment : Fragment() {
     private fun showAccountHome(userId : Long) {
         LogUtil.d()
         val intent = Intent(context, HomeActivity::class.java)
-        intent.putExtra(AccountListActivity.INTENT_KEY_USER_ID, userId)
+        intent.putExtra(HomeActivity.INTENT_KEY_USER_ID, userId)
         startActivity(intent)
     }
 }
