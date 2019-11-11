@@ -75,4 +75,8 @@ class AccountListViewModel(
                     compositeDisposable.add(it)
                 }
     }
+
+    fun onDestroy(){
+        compositeDisposable.dispose()
+    }
 }

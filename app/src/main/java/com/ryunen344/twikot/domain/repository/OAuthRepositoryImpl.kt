@@ -23,7 +23,6 @@ class OAuthRepositoryImpl {
         }.subscribeOn(Schedulers.io())
     }
 
-
     fun loadAuthorizationURL() : Uri =
             Uri.parse(requestToken.authorizationURL)
 

@@ -16,6 +16,8 @@ import com.ryunen344.twikot.databinding.FragmentAccountListBinding
 import com.ryunen344.twikot.errorMessage
 import com.ryunen344.twikot.home.HomeActivity
 import com.ryunen344.twikot.util.LogUtil
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import org.koin.android.viewmodel.ext.android.viewModel
 
 
@@ -38,6 +40,7 @@ class AccountListFragment : Fragment() {
                 false
         ).also {
             it.lifecycleOwner = this@AccountListFragment.viewLifecycleOwner
+            (binding.accountList.adapter as AccountListAdapter).lifecycleOwner = this@AccountListFragment.viewLifecycleOwner
             it.viewModel = accountListViewModel
         }
 
@@ -46,10 +49,20 @@ class AccountListFragment : Fragment() {
             accountListViewModel.generateOAuthRequestUri(getString(R.string.consumer_key), getString(R.string.consumer_secret_key))
         }
 
+        (binding.accountList.adapter as AccountListAdapter).clickEvent.subscribe(
+                {
+                    LogUtil.d(it)
+                    //showAccountHome(it)
+                },
+                {
+                    LogUtil.d(it)
+                }
+        ).addTo(CompositeDisposable())
+
         (binding.accountList.adapter as AccountListAdapter).clickedUserId.observe(this@AccountListFragment.viewLifecycleOwner, Observer {
             if (it != null) {
                 LogUtil.d()
-                showAccountHome(it)
+                //showAccountHome(it)
             }
         })
 
@@ -80,6 +93,11 @@ class AccountListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         accountListViewModel.loadAccountList()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        accountListViewModel.onDestroy()
     }
 
     private fun showCallback(uri : Uri?) {
