@@ -69,20 +69,20 @@ class HomeFragment : Fragment(), HomeContract.View {
         setHasOptionsMenu(true)
 
         //configure float action button
-        fab.setOnLongClickListener { view ->
+        root.fab.setOnLongClickListener { view ->
             Snackbar.make(view, "Long tap action", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show()
             true
         }
-        fab.setOnClickListener {
+        root.fab.setOnClickListener {
             showAddNewTweet()
         }
 
-        var toggle : ActionBarDrawerToggle = ActionBarDrawerToggle(activity, activity?.drawer_layout, activity?.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
+        var toggle : ActionBarDrawerToggle = ActionBarDrawerToggle(activity, root.drawer_layout, root.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        root.drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        home_nav_view.setNavigationItemSelectedListener { item ->
+        root.home_nav_view.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_profile -> {
                     LogUtil.d()
@@ -112,21 +112,21 @@ class HomeFragment : Fragment(), HomeContract.View {
                     LogUtil.d()
                 }
             }
-            drawer_layout.closeDrawer(GravityCompat.START)
+            root.drawer_layout.closeDrawer(GravityCompat.START)
             true
         }
 
         //configure timeline_navigation bar
-        navigation.setOnNavigationItemSelectedListener { item ->
+        root.navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    view_pager_container.currentItem = 0
+                    root.view_pager_container.currentItem = 0
                 }
                 R.id.navigation_mention -> {
-                    view_pager_container.currentItem = 1
+                    root.view_pager_container.currentItem = 1
                 }
                 R.id.navigation_search -> {
-                    view_pager_container.currentItem = 2
+                    root.view_pager_container.currentItem = 2
                 }
             }
             false
@@ -143,11 +143,11 @@ class HomeFragment : Fragment(), HomeContract.View {
                 if (prevMenuItem != null) {
                     prevMenuItem?.setChecked(false)
                 } else {
-                    navigation.menu.getItem(0).isChecked = false
+                    root.navigation.menu.getItem(0).isChecked = false
                 }
 
-                navigation.menu.getItem(position).isChecked = true
-                prevMenuItem = activity?.navigation!!.menu.getItem(position)
+                root.navigation.menu.getItem(position).isChecked = true
+                prevMenuItem = navigation.menu.getItem(position)
 
             }
 
