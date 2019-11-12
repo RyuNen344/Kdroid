@@ -1,23 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
         tools:context=".home.HomeFragment">
 
-    <androidx.viewpager.widget.ViewPager
-            android:id="@+id/view_pager_container"
+    <data>
+
+        <variable
+                name="viewModel"
+                type="com.ryunen344.twikot.home.HomeViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:layout_editor_absoluteY="0dp"
-            tools:layout_editor_absoluteX="0dp">
-
-    </androidx.viewpager.widget.ViewPager>
+            android:fitsSystemWindows="true">
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.drawerlayout.widget.DrawerLayout
+                android:id="@+id/drawer_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                tools:context=".home.HomeActivity">
 
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                    android:id="@+id/coordinatorLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <com.google.android.material.appbar.AppBarLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/AppTheme.AppBarOverlay"
+                        app:elevation="0dp">
+
+                    <androidx.appcompat.widget.Toolbar
+                            android:id="@+id/toolbar"
+                            android:layout_width="match_parent"
+                            android:layout_height="?attr/actionBarSize"
+                            android:background="?attr/colorPrimary"
+                            app:layout_scrollFlags="scroll|enterAlways|snap"
+                            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+                </com.google.android.material.appbar.AppBarLayout>
+
+                <androidx.viewpager.widget.ViewPager
+                        android:id="@+id/view_pager_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                        tools:layout_editor_absoluteX="0dp"
+                        tools:layout_editor_absoluteY="0dp">
+
+                </androidx.viewpager.widget.ViewPager>
+
+                <com.google.android.material.bottomnavigation.BottomNavigationView
+                        android:id="@+id/navigation"
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_gravity="bottom"
+                        android:background="?android:attr/windowBackground"
+                        app:layout_behavior="com.ryunen344.twikot.behavior.BottomNavigationBehavior"
+                        app:layout_scrollFlags="snap"
+                        app:menu="@menu/timeline_navigation" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top"
+                        android:layout_margin="@dimen/fab_margin"
+                        app:layout_anchor="@id/navigation"
+                        app:layout_anchorGravity="top|end"
+                        app:layout_behavior="com.ryunen344.twikot.behavior.BottomNavigationFABBehavior"
+                        app:srcCompat="@android:drawable/ic_dialog_email"
+                        app:useCompatPadding="true" />
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+            <com.google.android.material.navigation.NavigationView
+                    android:id="@+id/home_nav_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start"
+                    android:fitsSystemWindows="true"
+                    app:headerLayout="@layout/nav_home_header"
+                    app:menu="@menu/drawer_home" />
+
+        </androidx.drawerlayout.widget.DrawerLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

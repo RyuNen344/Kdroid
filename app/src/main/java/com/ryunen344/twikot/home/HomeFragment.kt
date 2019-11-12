@@ -2,12 +2,8 @@ package com.ryunen344.twikot.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
@@ -17,10 +13,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.twikot.R
 import com.ryunen344.twikot.R.layout.fragment_home
 import com.ryunen344.twikot.addTweetReply.AddTweetReplyActivity
+import com.ryunen344.twikot.databinding.ActivityHomeBinding
 import com.ryunen344.twikot.profile.ProfileActivity
 import com.ryunen344.twikot.settings.SettingsActivity
 import com.ryunen344.twikot.util.LogUtil
-import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.nav_home_header.view.*
@@ -35,6 +31,8 @@ class HomeFragment : Fragment(), HomeContract.View {
     override val presenter : HomeContract.Presenter by currentScope.inject()
     var prevMenuItem: MenuItem? = null
     private lateinit var mSectionsPagerAdapter: HomeSectionsPagerAdapter
+
+    private lateinit var binding : ActivityHomeBinding
     private val homeViewModel : HomeViewModel by viewModel()
 
     private var itemListener: HomeContract.MainItemListener = object : HomeContract.MainItemListener {
@@ -224,23 +222,23 @@ class HomeFragment : Fragment(), HomeContract.View {
 
     override fun showSuccessfullyTweet() {
         LogUtil.d()
-        Snackbar.make(activity?.nestedScrollView!!, "tweet sent", Snackbar.LENGTH_LONG).show()
+        Toast.makeText(context, "tweet sent", Toast.LENGTH_SHORT).show()
     }
 
     override fun showFailTweet() {
         LogUtil.d()
-        Snackbar.make(activity?.nestedScrollView!!, "tweet fail", Snackbar.LENGTH_LONG).show()
+        Toast.makeText(context, "tweet fail", Toast.LENGTH_SHORT).show()
     }
 
     override fun showSuccessfullyUpdateProfile() {
         LogUtil.d()
-        Snackbar.make(activity?.nestedScrollView!!, "success update profile", Snackbar.LENGTH_LONG).show()
+        Toast.makeText(context, "success update profile", Toast.LENGTH_SHORT).show()
         presenter.checkImageStatus(context?.filesDir)
     }
 
     override fun showError(e: Throwable) {
         LogUtil.d()
-        Snackbar.make(activity?.nestedScrollView!!, e.localizedMessage, Snackbar.LENGTH_LONG).show()
+        Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
     }
 
 
