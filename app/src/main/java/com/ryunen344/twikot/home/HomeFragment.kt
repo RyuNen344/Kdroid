@@ -2,7 +2,12 @@ package com.ryunen344.twikot.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.net.toUri
@@ -29,14 +34,14 @@ import java.io.File
 class HomeFragment : Fragment(), HomeContract.View {
 
     override val presenter : HomeContract.Presenter by currentScope.inject()
-    var prevMenuItem: MenuItem? = null
-    private lateinit var mSectionsPagerAdapter: HomeSectionsPagerAdapter
+    var prevMenuItem : MenuItem? = null
+    private lateinit var mSectionsPagerAdapter : HomeSectionsPagerAdapter
 
     private lateinit var binding : ActivityHomeBinding
     private val homeViewModel : HomeViewModel by viewModel()
 
-    private var itemListener: HomeContract.MainItemListener = object : HomeContract.MainItemListener {
-        override fun onImageClick(mediaUrl: String) {
+    private var itemListener : HomeContract.MainItemListener = object : HomeContract.MainItemListener {
+        override fun onImageClick(mediaUrl : String) {
             LogUtil.d()
         }
 
@@ -45,7 +50,7 @@ class HomeFragment : Fragment(), HomeContract.View {
             LogUtil.d()
         }
 
-        override fun onAccountClick(user: User) {
+        override fun onAccountClick(user : User) {
             //fixme
             LogUtil.d()
         }
@@ -58,26 +63,26 @@ class HomeFragment : Fragment(), HomeContract.View {
         presenter.view = this
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
         LogUtil.d()
-        var root: View = inflater.inflate(fragment_home, container, false)
+        var root : View = inflater.inflate(fragment_home, container, false)
         setHasOptionsMenu(true)
 
         //configure float action button
-        activity?.fab?.setOnLongClickListener { view ->
+        fab.setOnLongClickListener { view ->
             Snackbar.make(view, "Long tap action", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show()
             true
         }
-        activity?.fab?.setOnClickListener {
+        fab.setOnClickListener {
             showAddNewTweet()
         }
 
-        var toggle: ActionBarDrawerToggle = ActionBarDrawerToggle(activity, activity?.drawer_layout, activity?.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        activity?.drawer_layout?.addDrawerListener(toggle)
+        var toggle : ActionBarDrawerToggle = ActionBarDrawerToggle(activity, activity?.drawer_layout, activity?.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        activity?.home_nav_view?.setNavigationItemSelectedListener { item ->
+        home_nav_view.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_profile -> {
                     LogUtil.d()
@@ -107,12 +112,12 @@ class HomeFragment : Fragment(), HomeContract.View {
                     LogUtil.d()
                 }
             }
-            activity?.drawer_layout?.closeDrawer(GravityCompat.START)
+            drawer_layout.closeDrawer(GravityCompat.START)
             true
         }
 
         //configure timeline_navigation bar
-        activity?.navigation!!.setOnNavigationItemSelectedListener { item ->
+        navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
                     view_pager_container.currentItem = 0
@@ -129,24 +134,24 @@ class HomeFragment : Fragment(), HomeContract.View {
 
         root.view_pager_container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            override fun onPageScrolled(position : Int, positionOffset : Float, positionOffsetPixels : Int) {
 
             }
 
-            override fun onPageSelected(position: Int) {
+            override fun onPageSelected(position : Int) {
 
                 if (prevMenuItem != null) {
                     prevMenuItem?.setChecked(false)
                 } else {
-                    activity?.navigation!!.menu.getItem(0).isChecked = false
+                    navigation.menu.getItem(0).isChecked = false
                 }
 
-                activity?.navigation!!.menu.getItem(position).isChecked = true
+                navigation.menu.getItem(position).isChecked = true
                 prevMenuItem = activity?.navigation!!.menu.getItem(position)
 
             }
 
-            override fun onPageScrollStateChanged(state: Int) {
+            override fun onPageScrollStateChanged(state : Int) {
             }
 
         })
@@ -154,13 +159,13 @@ class HomeFragment : Fragment(), HomeContract.View {
         return root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
+    override fun onActivityCreated(savedInstanceState : Bundle?) {
         LogUtil.d()
         super.onActivityCreated(savedInstanceState)
         setPagerAdapter()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
         LogUtil.d()
         presenter.start()
         presenter.initTwitter(context?.filesDir?.absolutePath)
@@ -172,38 +177,36 @@ class HomeFragment : Fragment(), HomeContract.View {
         super.onDestroy()
     }
 
-    override fun showDrawerProfile(userName: String?, screenName: String, profileImage: String?, profileBannerImage: String?) {
+    override fun showDrawerProfile(userName : String?, screenName : String, profileImage : String?, profileBannerImage : String?) {
 
-        activity?.let { activity ->
-            profileBannerImage.let {
-                LogUtil.d(it!!)
-                if (File(it).exists()) {
-                    LogUtil.d("file exists")
-                    activity.home_nav_view?.getHeaderView(0)?.header_profile_banner?.setImageURI(File(it).toUri())
-                } else {
-                    LogUtil.d(File(context?.filesDir, it).absolutePath)
-                }
+        profileBannerImage.let {
+            LogUtil.d(it!!)
+            if (File(it).exists()) {
+                LogUtil.d("file exists")
+                home_nav_view.getHeaderView(0).header_profile_banner?.setImageURI(File(it).toUri())
+            } else {
+                LogUtil.d(File(context?.filesDir, it).absolutePath)
             }
+        }
 
-            profileImage.let {
-                LogUtil.d(it!!)
-                if (File(it).exists()) {
-                    LogUtil.d("file exists")
-                    activity.home_nav_view?.getHeaderView(0)?.header_profile_icon?.setImageURI(File(it).toUri())
-                } else {
-                    LogUtil.d(File(context?.filesDir, it).absolutePath)
-                }
+        profileImage.let {
+            LogUtil.d(it!!)
+            if (File(it).exists()) {
+                LogUtil.d("file exists")
+                home_nav_view.getHeaderView(0).header_profile_icon?.setImageURI(File(it).toUri())
+            } else {
+                LogUtil.d(File(context?.filesDir, it).absolutePath)
             }
+        }
 
-            userName.let {
-                LogUtil.d(it!!)
-                activity.home_nav_view?.getHeaderView(0)?.header_user_name?.text = it
-            }
+        userName.let {
+            LogUtil.d(it!!)
+            home_nav_view.getHeaderView(0).header_user_name?.text = it
+        }
 
-            screenName.let {
-                LogUtil.d(it)
-                activity.home_nav_view?.getHeaderView(0)?.header_screen_name?.text = it
-            }
+        screenName.let {
+            LogUtil.d(it)
+            home_nav_view.getHeaderView(0).header_screen_name?.text = it
         }
 
     }
@@ -215,7 +218,7 @@ class HomeFragment : Fragment(), HomeContract.View {
         startActivityForResult(intent, AddTweetReplyActivity.REQUEST_ADD_TWEET)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?) {
         LogUtil.d()
         presenter.result(requestCode, resultCode)
     }
@@ -236,13 +239,13 @@ class HomeFragment : Fragment(), HomeContract.View {
         presenter.checkImageStatus(context?.filesDir)
     }
 
-    override fun showError(e: Throwable) {
+    override fun showError(e : Throwable) {
         LogUtil.d()
         Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(menu : Menu, inflater : MenuInflater) {
         LogUtil.d()
         inflater.inflate(R.menu.timeline_navigation, menu)
     }
