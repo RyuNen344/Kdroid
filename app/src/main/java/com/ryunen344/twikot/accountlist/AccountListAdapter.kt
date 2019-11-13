@@ -13,18 +13,18 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ryunen344.twikot.R
 import com.ryunen344.twikot.databinding.ItemAccountListBinding
-import com.ryunen344.twikot.entity.AccountAndAccountDetail
+import com.ryunen344.twikot.entity.Account
 import com.ryunen344.twikot.util.LogUtil
 
-class AccountListAdapter : ListAdapter<AccountAndAccountDetail, AccountListAdapter.ViewHolder>(
-        object : DiffUtil.ItemCallback<AccountAndAccountDetail>() {
-            override fun areItemsTheSame(oldItem : AccountAndAccountDetail, newItem : AccountAndAccountDetail) : Boolean =
+class AccountListAdapter : ListAdapter<Account, AccountListAdapter.ViewHolder>(
+        object : DiffUtil.ItemCallback<Account>() {
+            override fun areItemsTheSame(oldItem : Account, newItem : Account) : Boolean =
                     oldItem == newItem
 
-            override fun areContentsTheSame(oldItem : AccountAndAccountDetail, newItem : AccountAndAccountDetail) : Boolean {
+            override fun areContentsTheSame(oldItem : Account, newItem : Account) : Boolean {
 
-                if (oldItem.account.userId == newItem.account.userId
-                        && oldItem.account.screenName == newItem.account.screenName
+                if (oldItem.userId == newItem.userId
+                        && oldItem.screenName == newItem.screenName
                 ) return true
                 return false
             }
@@ -54,7 +54,7 @@ class AccountListAdapter : ListAdapter<AccountAndAccountDetail, AccountListAdapt
 
         (holder.binding as ItemAccountListBinding).item = getItem(position)
         holder.itemView.setOnClickListener {
-            _clickedUserId.value = getItem(position).account.userId
+            _clickedUserId.value = getItem(position).userId
         }
         lifecycleOwner.let { it ->
             holder.binding.lifecycleOwner = it

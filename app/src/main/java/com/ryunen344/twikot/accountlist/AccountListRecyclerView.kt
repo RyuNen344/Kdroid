@@ -3,7 +3,7 @@ package com.ryunen344.twikot.accountlist
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
-import com.ryunen344.twikot.entity.AccountAndAccountDetail
+import com.ryunen344.twikot.entity.Account
 import com.ryunen344.twikot.util.LogUtil
 
 class AccountListRecyclerView @JvmOverloads constructor(
@@ -16,7 +16,7 @@ class AccountListRecyclerView @JvmOverloads constructor(
         setAdapter(adapter)
     }
 
-    fun setItems(items : List<AccountAndAccountDetail>?) {
+    fun setItems(items : List<Account>?) {
         LogUtil.d("items size is ${items?.size}")
         adapter.submitList(items)
     }
