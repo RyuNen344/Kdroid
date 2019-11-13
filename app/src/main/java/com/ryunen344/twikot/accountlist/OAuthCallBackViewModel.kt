@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ryunen344.twikot.IOState
-import com.ryunen344.twikot.domain.entity.Account
-import com.ryunen344.twikot.domain.repository.AccountRepositoryImpl
-import com.ryunen344.twikot.domain.repository.OAuthRepositoryImpl
+import com.ryunen344.twikot.entity.Account
+import com.ryunen344.twikot.repository.AccountRepositoryImpl
+import com.ryunen344.twikot.repository.OAuthRepositoryImpl
 import com.ryunen344.twikot.util.LogUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

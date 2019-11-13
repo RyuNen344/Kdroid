@@ -1,4 +1,4 @@
-package com.ryunen344.twikot.domain.repository
+package com.ryunen344.twikot.repository
 
 import io.reactivex.Completable
 import io.reactivex.Single

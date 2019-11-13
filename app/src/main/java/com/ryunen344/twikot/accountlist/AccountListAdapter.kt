@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ryunen344.twikot.R
 import com.ryunen344.twikot.databinding.ItemAccountListBinding
-import com.ryunen344.twikot.domain.entity.AccountAndAccountDetail
+import com.ryunen344.twikot.entity.AccountAndAccountDetail
 import com.ryunen344.twikot.util.LogUtil
 
 class AccountListAdapter : ListAdapter<AccountAndAccountDetail, AccountListAdapter.ViewHolder>(
@@ -56,8 +56,8 @@ class AccountListAdapter : ListAdapter<AccountAndAccountDetail, AccountListAdapt
         holder.itemView.setOnClickListener {
             _clickedUserId.value = getItem(position).account.userId
         }
-        lifecycleOwner.let {
-            holder.binding.lifecycleOwner = lifecycleOwner
+        lifecycleOwner.let { it ->
+            holder.binding.lifecycleOwner = it
         }
         holder.binding.executePendingBindings()
     }

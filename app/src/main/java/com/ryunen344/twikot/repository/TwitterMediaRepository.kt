@@ -1,4 +1,4 @@
-package com.ryunen344.twikot.domain.repository
+package com.ryunen344.twikot.repository
 
 import io.reactivex.Single
 import okhttp3.ResponseBody

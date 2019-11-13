@@ -3,7 +3,7 @@ package com.ryunen344.twikot.settings.preferences.wallpaper
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import com.ryunen344.twikot.domain.repository.WallpaperRepositoryImpl
+import com.ryunen344.twikot.repository.WallpaperRepositoryImpl
 import com.ryunen344.twikot.settings.preferences.wallpaper.WallpaperPreferenceDialogFragmentCompat.Companion.REQUEST_IMAGE_GET
 import com.ryunen344.twikot.util.LogUtil
 import org.koin.core.KoinComponent

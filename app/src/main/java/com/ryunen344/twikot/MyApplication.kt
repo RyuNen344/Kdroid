@@ -1,12 +1,12 @@
 package com.ryunen344.twikot
 
 import android.app.Application
+import com.ryunen344.twikot.db.AccountDatabase
 import com.ryunen344.twikot.di.module.ApiModule
 import com.ryunen344.twikot.di.module.AppModule
 import com.ryunen344.twikot.di.module.RepositoryModule
 import com.ryunen344.twikot.di.module.UtilModule
 import com.ryunen344.twikot.di.module.ViewModelModule
-import com.ryunen344.twikot.domain.database.AccountDatabase
 import com.ryunen344.twikot.util.LogUtil
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties

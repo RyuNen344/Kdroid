@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.ryunen344.twikot.domain.repository.TwitterMediaRepositoryImpl
+import com.ryunen344.twikot.repository.TwitterMediaRepositoryImpl
 import com.ryunen344.twikot.util.LogUtil
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers

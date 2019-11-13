@@ -3,17 +3,14 @@ package com.ryunen344.twikot.home
 import android.app.Activity
 import androidx.work.Constraints
 import androidx.work.Data
-import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.ryunen344.twikot.addTweetReply.AddTweetReplyActivity
 import com.ryunen344.twikot.di.provider.AppProvider
-import com.ryunen344.twikot.domain.entity.AccountAndAccountDetail
-import com.ryunen344.twikot.domain.entity.AccountDetail
-import com.ryunen344.twikot.domain.repository.AccountRepositoryImpl
-import com.ryunen344.twikot.domain.repository.TwitterRepositoryImpl
+import com.ryunen344.twikot.entity.AccountAndAccountDetail
 import com.ryunen344.twikot.mediaViewer.MediaViewerActivity
+import com.ryunen344.twikot.repository.AccountRepositoryImpl
+import com.ryunen344.twikot.repository.TwitterRepositoryImpl
 import com.ryunen344.twikot.settings.SettingsActivity
 import com.ryunen344.twikot.util.LogUtil
 import com.ryunen344.twikot.util.splitLastThreeWord
@@ -46,14 +43,14 @@ class HomePresenter(private val userId : Long) : HomeContract.Presenter, KoinCom
 
     override fun initTwitter(absoluteDirPath : String?) {
         LogUtil.d()
-        val disposable : Disposable = accountRepositoryImpl.loadAccountById(userId)
+        val disposable : Disposable = accountRepositoryImpl.findAccountById(userId)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         {
-                            mTwitter.oAuthAccessToken = AccessToken(it.account.token, it.account.tokenSecret)
-                            mAccountAndDetail = it
+                            mTwitter.oAuthAccessToken = AccessToken(it.token, it.tokenSecret)
+//                            mAccountAndDetail = it
                             initProfile(absoluteDirPath)
-                            view.showDrawerProfile(it.accountDetails[0].userName, it.account.screenName, it.accountDetails[0].localProfileImage, it.accountDetails[0].localProfileBannerImage)
+//                            view.showDrawerProfile(it.accountDetails[0].userName, it.account.screenName, it.accountDetails[0].localProfileImage, it.accountDetails[0].localProfileBannerImage)
                         },
                         { e ->
                             LogUtil.e(e)
@@ -73,27 +70,27 @@ class HomePresenter(private val userId : Long) : HomeContract.Presenter, KoinCom
                     var insertLocalProfileBannerImage : String = absoluteDirPath + separator + splitLastThreeWord(it.profileBanner1500x500URL + ".png")
 
                     //compare local profile
-                    if (mAccountAndDetail.accountDetails.isEmpty()) {
-                        accountRepositoryImpl
-                                .insertAccountDetail(AccountDetail(userId, insertUserName, insertProfileImage, insertLocalProfileImage, insertProfileBannerImage, insertLocalProfileBannerImage))
-                                .subscribeOn(Schedulers.io())
-                                .subscribe {
-                                    view.showSuccessfullyUpdateProfile()
-                                }
-                    } else {
-                        if (insertUserName != mAccountAndDetail.accountDetails[0].userName ||
-                                insertProfileImage != mAccountAndDetail.accountDetails[0].profileImage ||
-                                insertProfileBannerImage != mAccountAndDetail.accountDetails[0].profileBannerImage) {
-
-                            accountRepositoryImpl
-                                    .insertAccountDetail(AccountDetail(userId, insertUserName, insertProfileImage, insertLocalProfileImage, insertProfileBannerImage, insertLocalProfileBannerImage))
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe {
-                                        view.showSuccessfullyUpdateProfile()
-
-                                    }
-                        }
-                    }
+//                    if (mAccountAndDetail.accountDetails.isEmpty()) {
+//                        accountRepositoryImpl
+//                                .insertAccountDetail(AccountDetail(userId, insertUserName, insertProfileImage, insertLocalProfileImage, insertProfileBannerImage, insertLocalProfileBannerImage))
+//                                .subscribeOn(Schedulers.io())
+//                                .subscribe {
+//                                    view.showSuccessfullyUpdateProfile()
+//                                }
+//                    } else {
+//                        if (insertUserName != mAccountAndDetail.accountDetails[0].userName ||
+//                                insertProfileImage != mAccountAndDetail.accountDetails[0].profileImage ||
+//                                insertProfileBannerImage != mAccountAndDetail.accountDetails[0].profileBannerImage) {
+//
+//                            accountRepositoryImpl
+//                                    .insertAccountDetail(AccountDetail(userId, insertUserName, insertProfileImage, insertLocalProfileImage, insertProfileBannerImage, insertLocalProfileBannerImage))
+//                                    .subscribeOn(Schedulers.io())
+//                                    .subscribe {
+//                                        view.showSuccessfullyUpdateProfile()
+//
+//                                    }
+//                        }
+//                    }
                 }
                 , { e ->
             LogUtil.e(e)
@@ -114,39 +111,39 @@ class HomePresenter(private val userId : Long) : HomeContract.Presenter, KoinCom
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
-        val disposable : Disposable = accountRepositoryImpl.loadAccountById(userId)
+        val disposable : Disposable = accountRepositoryImpl.findAccountById(userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    if (it.accountDetails.isNotEmpty()) {
-                        LogUtil.d(File(it.accountDetails[0].localProfileImage).exists())
-                        if (!File(it.accountDetails[0].localProfileImage).exists()) {
-                            LogUtil.d("work request")
-                            //work manager request save image
-                            workManager.beginUniqueWork(
-                                    ProfileUpdateWorker.WORK_ID_PROFILE_IMAGE,
-                                    ExistingWorkPolicy.REPLACE,
-                                    OneTimeWorkRequestBuilder<ProfileUpdateWorker>()
-                                            .setConstraints(constraints)
-                                            .setInputData(createInputDataForUrl(it.accountDetails[0].localProfileImage!!, it.accountDetails[0].profileImage!!))
-                                            .build()
-                            ).enqueue()
-                        }
-                        LogUtil.d(File(it.accountDetails[0].localProfileBannerImage).exists())
-                        if (!File(it.accountDetails[0].localProfileBannerImage).exists()) {
-                            LogUtil.d("work request")
-                            //work manager request save image
-                            workManager.beginUniqueWork(
-                                    ProfileUpdateWorker.WORK_ID_PROFILE_BANNER_IMAGE,
-                                    ExistingWorkPolicy.REPLACE,
-                                    OneTimeWorkRequestBuilder<ProfileUpdateWorker>()
-                                            .setConstraints(constraints)
-                                            .setInputData(createInputDataForUrl(it.accountDetails[0].localProfileBannerImage!!, it.accountDetails[0].profileBannerImage!!))
-                                            .build()
-                            ).enqueue()
-                        }
-
-                    }
+                    //                    if (it.accountDetails.isNotEmpty()) {
+//                        LogUtil.d(File(it.accountDetails[0].localProfileImage).exists())
+//                        if (!File(it.accountDetails[0].localProfileImage).exists()) {
+//                            LogUtil.d("work request")
+//                            //work manager request save image
+//                            workManager.beginUniqueWork(
+//                                    ProfileUpdateWorker.WORK_ID_PROFILE_IMAGE,
+//                                    ExistingWorkPolicy.REPLACE,
+//                                    OneTimeWorkRequestBuilder<ProfileUpdateWorker>()
+//                                            .setConstraints(constraints)
+//                                            .setInputData(createInputDataForUrl(it.accountDetails[0].localProfileImage!!, it.accountDetails[0].profileImage!!))
+//                                            .build()
+//                            ).enqueue()
+//                        }
+//                        LogUtil.d(File(it.accountDetails[0].localProfileBannerImage).exists())
+//                        if (!File(it.accountDetails[0].localProfileBannerImage).exists()) {
+//                            LogUtil.d("work request")
+//                            //work manager request save image
+//                            workManager.beginUniqueWork(
+//                                    ProfileUpdateWorker.WORK_ID_PROFILE_BANNER_IMAGE,
+//                                    ExistingWorkPolicy.REPLACE,
+//                                    OneTimeWorkRequestBuilder<ProfileUpdateWorker>()
+//                                            .setConstraints(constraints)
+//                                            .setInputData(createInputDataForUrl(it.accountDetails[0].localProfileBannerImage!!, it.accountDetails[0].profileBannerImage!!))
+//                                            .build()
+//                            ).enqueue()
+//                        }
+//
+//                    }
                 },
                         { e ->
                             LogUtil.e(e)

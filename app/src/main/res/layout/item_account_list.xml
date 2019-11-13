@@ -5,7 +5,7 @@
     <data>
         <variable
             name="item"
-            type="com.ryunen344.twikot.domain.entity.AccountAndAccountDetail" />
+            type="com.ryunen344.twikot.entity.Account" />
     </data>
 
     <RelativeLayout
@@ -23,7 +23,7 @@
             android:layout_width="60dp"
             android:layout_height="55dp"
             android:src="@android:drawable/sym_def_app_icon"
-            app:localImage="@{item.accountDetails.size() > 0 ? item.accountDetails.get(0).localProfileImage : null}" />
+            app:localImage="@{item.localProfileImage != null ? item.localProfileImage : null}" />
 
         <TextView
             android:id="@+id/account_user_name"
@@ -32,7 +32,7 @@
             android:layout_toEndOf="@id/account_icon"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
-            android:text="@{item.account.screenName}"
+            android:text="@{item.screenName}"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <TextView
@@ -43,7 +43,7 @@
             android:layout_toEndOf="@id/account_icon"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
-            android:text="@{item.accountDetails.size() > 0 ? item.accountDetails.get(0).userName : null}"
+            android:text="@{item.userName}"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
     </RelativeLayout>

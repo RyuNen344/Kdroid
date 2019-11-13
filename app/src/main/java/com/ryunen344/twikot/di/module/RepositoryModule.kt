@@ -1,16 +1,17 @@
 package com.ryunen344.twikot.di.module
 
-import com.ryunen344.twikot.domain.repository.AccountRepositoryImpl
-import com.ryunen344.twikot.domain.repository.OAuthRepositoryImpl
-import com.ryunen344.twikot.domain.repository.TwitterMediaRepositoryImpl
-import com.ryunen344.twikot.domain.repository.TwitterRepositoryImpl
-import com.ryunen344.twikot.domain.repository.WallpaperRepositoryImpl
+import com.ryunen344.twikot.db.AccountDatabase
+import com.ryunen344.twikot.repository.AccountRepositoryImpl
+import com.ryunen344.twikot.repository.OAuthRepositoryImpl
+import com.ryunen344.twikot.repository.TwitterMediaRepositoryImpl
+import com.ryunen344.twikot.repository.TwitterRepositoryImpl
+import com.ryunen344.twikot.repository.WallpaperRepositoryImpl
 import org.koin.dsl.module
 
 val RepositoryModule = module {
     single { TwitterRepositoryImpl() }
     single { TwitterMediaRepositoryImpl() }
     single { OAuthRepositoryImpl() }
-    single { AccountRepositoryImpl() }
+    single { AccountRepositoryImpl(AccountDatabase.getInstance().accountDao()) }
     single { WallpaperRepositoryImpl(get()) }
 }

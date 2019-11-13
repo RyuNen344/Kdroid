@@ -2,7 +2,7 @@ package com.ryunen344.twikot.home.tweet
 
 import android.widget.ImageView
 import com.ryunen344.twikot.di.provider.AppProvider
-import com.ryunen344.twikot.domain.repository.TwitterRepositoryImpl
+import com.ryunen344.twikot.repository.TwitterRepositoryImpl
 import com.ryunen344.twikot.util.LogUtil
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
