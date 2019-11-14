@@ -18,7 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.ryunen344.twikot.R
 import com.ryunen344.twikot.R.layout.fragment_home
 import com.ryunen344.twikot.addTweetReply.AddTweetReplyActivity
-import com.ryunen344.twikot.databinding.ActivityHomeBinding
+import com.ryunen344.twikot.databinding.FragmentHomeBinding
 import com.ryunen344.twikot.profile.ProfileActivity
 import com.ryunen344.twikot.settings.SettingsActivity
 import com.ryunen344.twikot.util.LogUtil
@@ -37,7 +37,7 @@ class HomeFragment : Fragment(), HomeContract.View {
     var prevMenuItem : MenuItem? = null
     private lateinit var mSectionsPagerAdapter : HomeSectionsPagerAdapter
 
-    private lateinit var binding : ActivityHomeBinding
+    private lateinit var binding : FragmentHomeBinding
     private val homeViewModel : HomeViewModel by viewModel()
 
     private var itemListener : HomeContract.MainItemListener = object : HomeContract.MainItemListener {

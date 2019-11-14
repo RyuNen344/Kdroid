@@ -7,7 +7,6 @@ import io.reactivex.Single
 
 class AccountRepositoryImpl(private val accountDao : AccountDao) : AccountRepository {
 
-
     override fun findAccountList() : Single<List<Account>> = accountDao.findAccountList()
 
     override fun findAccountById(id : Long) : Single<Account> = accountDao.loadAccountById(id)

@@ -3,30 +3,40 @@ package com.ryunen344.twikot.accountlist
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.ryunen344.twikot.IOState
 import com.ryunen344.twikot.R
+import com.ryunen344.twikot.databinding.ActivityOauthCallbackBinding
 import com.ryunen344.twikot.errorMessage
 import com.ryunen344.twikot.util.LogUtil
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class OAuthCallBackActivity : AppCompatActivity() {
 
+    private lateinit var binding : ActivityOauthCallbackBinding
     private val oAuthCallBackViewModel : OAuthCallBackViewModel by viewModel()
+
 
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_oauth_callback)
+        binding = DataBindingUtil.setContentView<ActivityOauthCallbackBinding>(
+                this,
+                R.layout.activity_oauth_callback
+        ).also {
+            it.lifecycleOwner = this
+            it.viewModel = oAuthCallBackViewModel
+        }
 
         //Twitterの認証画面から発行されるIntentからUriを取得
         val uri = intent.data
         LogUtil.d(uri)
-        uri ?: return
-        if (uri.getQueryParameter("denied")?.isNotBlank() != null && uri.getQueryParameter("denied")?.isNotBlank()!!) {
+        if (uri == null || uri.getQueryParameter("denied") != null) {
             LogUtil.d("oauth denied")
             finishSave()
             return
         }
+
         oAuthCallBackViewModel.saveAccessToken(uri)
 
         oAuthCallBackViewModel.ioState.observe(this, Observer { ioState ->
