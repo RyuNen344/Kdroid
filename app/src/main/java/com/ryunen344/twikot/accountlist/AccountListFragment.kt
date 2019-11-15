@@ -11,18 +11,24 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.ryunen344.twikot.IOState
+import com.ryunen344.twikot.LoggingLifecycleObserver
 import com.ryunen344.twikot.R
 import com.ryunen344.twikot.databinding.FragmentAccountListBinding
 import com.ryunen344.twikot.errorMessage
 import com.ryunen344.twikot.home.HomeActivity
 import com.ryunen344.twikot.util.LogUtil
+import com.ryunen344.twikot.util.throttledClicks
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import org.koin.android.viewmodel.ext.android.viewModel
-
 
 class AccountListFragment : Fragment() {
 
     private lateinit var binding : FragmentAccountListBinding
     private val accountListViewModel : AccountListViewModel by viewModel()
+    private val disposable = CompositeDisposable()
+    private val fragmentLifecycleObserver = LoggingLifecycleObserver()
 
     override fun onCreateView(
             inflater : LayoutInflater,
@@ -37,32 +43,14 @@ class AccountListFragment : Fragment() {
         ).also {
             it.lifecycleOwner = this@AccountListFragment.viewLifecycleOwner
             it.viewModel = accountListViewModel
+            (it.accountList.adapter as AccountListAdapter).lifecycleOwner = this@AccountListFragment.viewLifecycleOwner
         }
-        (binding.accountList.adapter as AccountListAdapter).lifecycleOwner = this@AccountListFragment.viewLifecycleOwner
 
+        this@AccountListFragment.lifecycle.addObserver(fragmentLifecycleObserver)
         initOnclick(binding)
+        observeViewModelState()
+        observeOAuthRequestUri()
 
-        accountListViewModel.ioState.observe(this@AccountListFragment.viewLifecycleOwner, Observer { ioState ->
-            when (ioState) {
-                is IOState.NOPE -> return@Observer
-                is IOState.LOADING -> LogUtil.d("loading")
-                is IOState.LOADED -> LogUtil.d("load finish, hide seek bar")
-                is IOState.ERROR -> {
-                    LogUtil.d(ioState.error.createMessage { errorMessage(it) })
-                    Toast.makeText(
-                            context,
-                            ioState.error.createMessage { errorMessage(it) },
-                            Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        })
-
-        accountListViewModel.oAuthRequestUri.observe(this@AccountListFragment.viewLifecycleOwner, Observer { uri ->
-            if (uri != null) {
-                showCallback(uri)
-            }
-        })
         return binding.root
     }
 
@@ -71,18 +59,56 @@ class AccountListFragment : Fragment() {
         accountListViewModel.loadAccountList()
     }
 
+    override fun onStop() {
+        super.onStop()
+        disposable.clear()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        this@AccountListFragment.lifecycle.removeObserver(fragmentLifecycleObserver)
+    }
+
     private fun initOnclick(binding : FragmentAccountListBinding) {
 
-        binding.fabAddAccount.setOnClickListener {
-            accountListViewModel.generateOAuthRequestUri(getString(R.string.consumer_key), getString(R.string.consumer_secret_key))
-        }
+        binding.fabAddAccount.throttledClicks()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    accountListViewModel.generateOAuthRequestUri(getString(R.string.consumer_key), getString(R.string.consumer_secret_key))
+                }
+                .addTo(disposable)
 
         (binding.accountList.adapter as AccountListAdapter).clickedUserId.observe(this@AccountListFragment.viewLifecycleOwner, Observer {
+            LogUtil.d("id is $id")
             if (it != null) {
                 showAccountHome(it)
             }
         })
     }
+
+    private fun observeViewModelState() =
+            accountListViewModel.ioState.observe(this@AccountListFragment.viewLifecycleOwner, Observer { ioState ->
+                when (ioState) {
+                    is IOState.NOPE -> return@Observer
+                    is IOState.LOADING -> LogUtil.d("loading")
+                    is IOState.LOADED -> LogUtil.d("load finish, hide seek bar")
+                    is IOState.ERROR -> {
+                        LogUtil.d(ioState.error.createMessage { errorMessage(it) })
+                        Toast.makeText(
+                                context,
+                                ioState.error.createMessage { errorMessage(it) },
+                                Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            })
+
+    private fun observeOAuthRequestUri() =
+            accountListViewModel.oAuthRequestUri.observe(this@AccountListFragment.viewLifecycleOwner, Observer { uri ->
+                if (uri != null) {
+                    showCallback(uri)
+                }
+            })
 
     private fun showCallback(uri : Uri?) {
         LogUtil.d()
