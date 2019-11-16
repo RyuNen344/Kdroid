@@ -17,7 +17,6 @@ class OAuthCallBackActivity : AppCompatActivity() {
     private lateinit var binding : ActivityOauthCallbackBinding
     private val oAuthCallBackViewModel : OAuthCallBackViewModel by viewModel()
 
-
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView<ActivityOauthCallbackBinding>(
