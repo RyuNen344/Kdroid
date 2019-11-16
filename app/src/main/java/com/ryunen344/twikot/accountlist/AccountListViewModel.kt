@@ -13,13 +13,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
-import org.koin.core.KoinComponent
 import java.util.concurrent.TimeUnit
 
 class AccountListViewModel(
         private val accountRepositoryImpl : AccountRepositoryImpl,
         private val oAuthRepositoryImpl : OAuthRepositoryImpl
-) : ViewModel(), KoinComponent {
+) : ViewModel() {
 
     private var disposable : CompositeDisposable = CompositeDisposable()
 
