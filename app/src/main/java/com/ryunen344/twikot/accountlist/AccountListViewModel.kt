@@ -11,6 +11,7 @@ import com.ryunen344.twikot.repository.OAuthRepositoryImpl
 import com.ryunen344.twikot.util.LogUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import org.koin.core.KoinComponent
 import java.util.concurrent.TimeUnit
@@ -20,7 +21,7 @@ class AccountListViewModel(
         private val oAuthRepositoryImpl : OAuthRepositoryImpl
 ) : ViewModel(), KoinComponent {
 
-    private var compositeDisposable : CompositeDisposable = CompositeDisposable()
+    private var disposable : CompositeDisposable = CompositeDisposable()
 
     private var _ioState : MutableLiveData<IOState> = MutableLiveData(IOState.NOPE)
     val ioState : LiveData<IOState>
@@ -58,9 +59,7 @@ class AccountListViewModel(
                         {
                             _ioState.value = IOState.ERROR(it)
                         }
-                ).let {
-                    compositeDisposable.add(it)
-                }
+                ).addTo(disposable)
     }
 
     fun generateOAuthRequestUri(consumerKey : String, consumerSecretKey : String) {
@@ -84,13 +83,11 @@ class AccountListViewModel(
                         {
                             _ioState.value = IOState.ERROR(it)
                         }
-                ).let {
-                    compositeDisposable.add(it)
-                }
+                ).addTo(disposable)
     }
 
     override fun onCleared() {
         super.onCleared()
-        compositeDisposable.clear()
+        disposable.clear()
     }
 }
