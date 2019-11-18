@@ -30,6 +30,11 @@ class AccountListFragment : Fragment() {
     private val disposable = CompositeDisposable()
     private val fragmentLifecycleObserver = LoggingLifecycleObserver()
 
+    override fun onCreate(savedInstanceState : Bundle?) {
+        super.onCreate(savedInstanceState)
+        this@AccountListFragment.lifecycle.addObserver(fragmentLifecycleObserver)
+    }
+
     override fun onCreateView(
             inflater : LayoutInflater,
             container : ViewGroup?,
@@ -46,7 +51,6 @@ class AccountListFragment : Fragment() {
             (it.accountList.adapter as AccountListAdapter).lifecycleOwner = this@AccountListFragment.viewLifecycleOwner
         }
 
-        this@AccountListFragment.lifecycle.addObserver(fragmentLifecycleObserver)
         initOnclick(binding)
         observeViewModelState()
         observeOAuthRequestUri()

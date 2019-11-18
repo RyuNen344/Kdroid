@@ -8,37 +8,37 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
+import com.ryunen344.twikot.LoggingLifecycleObserver
 import com.ryunen344.twikot.R
-import com.ryunen344.twikot.R.layout.fragment_home
 import com.ryunen344.twikot.addTweetReply.AddTweetReplyActivity
 import com.ryunen344.twikot.databinding.FragmentHomeBinding
 import com.ryunen344.twikot.profile.ProfileActivity
 import com.ryunen344.twikot.settings.SettingsActivity
 import com.ryunen344.twikot.util.LogUtil
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.nav_home_header.view.*
 import org.koin.android.scope.currentScope
 import org.koin.android.viewmodel.ext.android.viewModel
 import twitter4j.User
 import java.io.File
 
+class HomeFragment : Fragment() {
 
-class HomeFragment : Fragment(), HomeContract.View {
-
-    override val presenter : HomeContract.Presenter by currentScope.inject()
     var prevMenuItem : MenuItem? = null
     private lateinit var mSectionsPagerAdapter : HomeSectionsPagerAdapter
 
     private lateinit var binding : FragmentHomeBinding
     private val homeViewModel : HomeViewModel by viewModel()
+    private val disposable = CompositeDisposable()
+    private val fragmentLifecycleObserver = LoggingLifecycleObserver()
 
     private var itemListener : HomeContract.MainItemListener = object : HomeContract.MainItemListener {
         override fun onImageClick(mediaUrl : String) {
@@ -59,30 +59,69 @@ class HomeFragment : Fragment(), HomeContract.View {
     override fun onCreate(savedInstanceState : Bundle?) {
         LogUtil.d()
         super.onCreate(savedInstanceState)
+        this@HomeFragment.lifecycle.addObserver(fragmentLifecycleObserver)
         currentScope.getKoin().setProperty(HomeActivity.INTENT_KEY_USER_ID, arguments!!.getLong(HomeActivity.INTENT_KEY_USER_ID))
-        presenter.view = this
     }
 
-    override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?, savedInstanceState : Bundle?) : View? {
+    override fun onCreateView(
+            inflater : LayoutInflater,
+            container : ViewGroup?,
+            savedInstanceState : Bundle?
+    ) : View? {
         LogUtil.d()
-        var root : View = inflater.inflate(fragment_home, container, false)
-        setHasOptionsMenu(true)
+        binding = DataBindingUtil.inflate<FragmentHomeBinding>(
+                inflater,
+                R.layout.fragment_home,
+                container,
+                false
+        ).also {
+            it.lifecycleOwner = this@HomeFragment.viewLifecycleOwner
+            it.viewModel = homeViewModel
+        }
+
+        initFab(binding)
+        initDrawerLayout(binding)
+        initPagerContainer(binding)
+
+        return binding.root
+    }
+
+    override fun onActivityCreated(savedInstanceState : Bundle?) {
+        LogUtil.d()
+        super.onActivityCreated(savedInstanceState)
+        setPagerAdapter()
+    }
+
+    override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
+//        presenter.initTwitter(context?.filesDir?.absolutePath)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        this@HomeFragment.lifecycle.removeObserver(fragmentLifecycleObserver)
+    }
+
+    private fun initFab(binding : FragmentHomeBinding) {
 
         //configure float action button
-        root.fab.setOnLongClickListener { view ->
+        binding.fab.setOnLongClickListener { view ->
             Snackbar.make(view, "Long tap action", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show()
             true
         }
-        root.fab.setOnClickListener {
-            showAddNewTweet()
+        binding.fab.setOnClickListener {
+            showPostTweet()
         }
+    }
 
-        var toggle : ActionBarDrawerToggle = ActionBarDrawerToggle(activity, root.drawer_layout, root.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        root.drawer_layout.addDrawerListener(toggle)
+    private fun initDrawerLayout(binding : FragmentHomeBinding) {
+        setHasOptionsMenu(true)
+
+        val toggle = ActionBarDrawerToggle(activity, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        root.home_nav_view.setNavigationItemSelectedListener { item ->
+        binding.homeNavView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_profile -> {
                     LogUtil.d()
@@ -112,72 +151,50 @@ class HomeFragment : Fragment(), HomeContract.View {
                     LogUtil.d()
                 }
             }
-            root.drawer_layout.closeDrawer(GravityCompat.START)
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
+    }
 
+    private fun initPagerContainer(binding : FragmentHomeBinding) {
         //configure timeline_navigation bar
-        root.navigation.setOnNavigationItemSelectedListener { item ->
+        binding.navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    root.view_pager_container.currentItem = 0
+                    binding.viewPagerContainer.currentItem = 0
                 }
                 R.id.navigation_mention -> {
-                    root.view_pager_container.currentItem = 1
+                    binding.viewPagerContainer.currentItem = 1
                 }
                 R.id.navigation_search -> {
-                    root.view_pager_container.currentItem = 2
+                    binding.viewPagerContainer.currentItem = 2
                 }
             }
             false
         }
 
-        root.view_pager_container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        binding.viewPagerContainer.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 
-            override fun onPageScrolled(position : Int, positionOffset : Float, positionOffsetPixels : Int) {
-
-            }
+            override fun onPageScrolled(position : Int, positionOffset : Float, positionOffsetPixels : Int) {}
 
             override fun onPageSelected(position : Int) {
 
                 if (prevMenuItem != null) {
-                    prevMenuItem?.setChecked(false)
+                    prevMenuItem?.isChecked = false
                 } else {
-                    root.navigation.menu.getItem(0).isChecked = false
+                    binding.navigation.menu.getItem(0).isChecked = false
                 }
 
-                root.navigation.menu.getItem(position).isChecked = true
+                binding.navigation.menu.getItem(position).isChecked = true
                 prevMenuItem = navigation.menu.getItem(position)
 
             }
 
-            override fun onPageScrollStateChanged(state : Int) {
-            }
-
+            override fun onPageScrollStateChanged(state : Int) {}
         })
-
-        return root
     }
 
-    override fun onActivityCreated(savedInstanceState : Bundle?) {
-        LogUtil.d()
-        super.onActivityCreated(savedInstanceState)
-        setPagerAdapter()
-    }
-
-    override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
-        LogUtil.d()
-        presenter.start()
-        presenter.initTwitter(context?.filesDir?.absolutePath)
-    }
-
-    override fun onDestroy() {
-        LogUtil.d()
-        presenter.clearDisposable()
-        super.onDestroy()
-    }
-
-    override fun showDrawerProfile(userName : String?, screenName : String, profileImage : String?, profileBannerImage : String?) {
+    private fun showDrawerProfile(userName : String?, screenName : String, profileImage : String?, profileBannerImage : String?) {
 
         profileBannerImage.let {
             LogUtil.d(it!!)
@@ -212,38 +229,15 @@ class HomeFragment : Fragment(), HomeContract.View {
     }
 
 
-    override fun showAddNewTweet() {
-        //fixme
+    private fun showPostTweet() {
         val intent = Intent(context, AddTweetReplyActivity::class.java)
         startActivityForResult(intent, AddTweetReplyActivity.REQUEST_ADD_TWEET)
     }
 
     override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?) {
         LogUtil.d()
-        presenter.result(requestCode, resultCode)
+//        presenter.result(requestCode, resultCode)
     }
-
-    override fun showSuccessfullyTweet() {
-        LogUtil.d()
-        Toast.makeText(context, "tweet sent", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun showFailTweet() {
-        LogUtil.d()
-        Toast.makeText(context, "tweet fail", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun showSuccessfullyUpdateProfile() {
-        LogUtil.d()
-        Toast.makeText(context, "success update profile", Toast.LENGTH_SHORT).show()
-        presenter.checkImageStatus(context?.filesDir)
-    }
-
-    override fun showError(e : Throwable) {
-        LogUtil.d()
-        Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
-    }
-
 
     override fun onCreateOptionsMenu(menu : Menu, inflater : MenuInflater) {
         LogUtil.d()
@@ -256,5 +250,4 @@ class HomeFragment : Fragment(), HomeContract.View {
         view_pager_container.adapter = mSectionsPagerAdapter
         view_pager_container.offscreenPageLimit = mSectionsPagerAdapter.count - 1
     }
-
 }
